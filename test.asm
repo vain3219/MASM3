@@ -34,20 +34,24 @@ strSetString		 		BYTE 	"Please input a string: ", 0
 strNwLn						BYTE 	0Ah, 0	
 	;Code segment
 	.code						
-
 ;----------------------------------------------------------------------------------------------------
-setString proc PUBLIC, intStrAddr:DWORD
+setString proc PUBLIC
 ;
 ;		Sets the value of String1.
 ;
 ;	Receives the offset address of strString1 from masm3.asm.
 ;	Returns nothing
 ;----------------------------------------------------------------------------------------------------
+	intStrAddr EQU[EBP + 8]							;create label
+	PUSH EBP										;save EBP
+	MOV EBP, ESP									;set ebp = esp
+	
 	CALL Clrscr										;clear the screen
 	
 	INVOKE putString, addr strSetString				;output strSetString to the console
 	INVOKE getString, intStrAddr, 32				;get input from the console and store it in memory labeled intStr1Addr
 	
+	POP EBP											;restore ebp
 	RET												;return
 setString ENDP									;end of setString1
 
@@ -194,11 +198,12 @@ L1:
 	MOV [EDI + 1], BL								;move the null terminator into the last index of [EDI]
 	
 	RET			
-String_copy ENDP
+String_copy ENDP 
 
 
-;----------------------------------------------------------------------------------------------------
 String_substring_1 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD, intEndInd:DWORD
+;----------------------------------------------------------------------------------------------------
+;String_substring_1 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD, intEndInd:DWORD
 ;
 ;		This sub routine will create a newly allocated comprised of a sub string from the string of the 
 ;	address provided on the stack.  A prompt will be displayed to the console asking the user for a 
@@ -299,126 +304,6 @@ RETURN:
 	RET
 String_charat ENDP
 
-
-;-----------------------------------------------------------------------------------------------------------
-String_startsWith_1 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD, intPos:DWORD
-;
-;		This sub routine checks if string1 starts with string2 at the specified starting position.
-;	If the comparison is true a 1 will be returned into the AL register, otherwise a zero will be returned.
-;
-;	Receives the addresses of string1, string2, and an integer
-;	Returns a 1 or 0 to the AL register
-;-----------------------------------------------------------------------------------------------------------
-	MOV EDI, intStrAddr								;move string1 address into EDI
-	MOV ESI, intStr2Addr							;move string2 address into ESI
-	MOV EBX, intPos 								;move intPos into EBX
-	ADD EDI, ebx									;add the offset of the position to string1
-	PUSH EDI										;push EDI because the next routine uses edi
-	
-	INVOKE String_length, ESI						;get the length of string2
-	MOV ECX, EAX									;move the length of string2 into ECX
-	POP EDI											;restore EDI
-	
-L1:
-	MOV BL, [ESI]									;move the nth element of string2 into BL
-	CMP BL, [EDI]									;compare nth element to the n+pos'th element
-	JNE NOTEQL										;jump if not equal
-	INC ESI											;increment ESI
-	INC EDI											;increment EDI
-	LOOP L1											;loop to L1
-	
-	MOV AL, 1										;move 1 into AL (true condition)
-	JMP RETURN										;jump to return
-	
-NOTEQL:
-	MOV AL, 0										;move 0 into AL (false condition)
-	
-RETURN:	
-	RET
-String_startsWith_1 ENDP
-
-
-;----------------------------------------------------------------------------------------------------------
-String_startsWith_2 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
-;
-;		This sub routine checks if string1 starts with string2 If the comparison is true a 1 will be 
-;	returned into the AL register, otherwise a zero will be returned.
-;
-;	Receives the addresses of string1, string2, and an integer
-;	Returns a 1 or 0 to the AL register
-;-----------------------------------------------------------------------------------------------------------
-	MOV EDI, intStrAddr								;move string1 address into EDI
-	MOV ESI, intStr2Addr							;move string2 address into ESI
-	PUSH EDI										;push EDI because the next routine uses edi
-	
-	INVOKE String_length, ESI						;get the length of string2
-	MOV ECX, EAX									;move the length of string2 into ECX
-	POP EDI											;restore EDI
-	
-L1:
-	MOV BL, [ESI]									;move the nth element of string2 into BL
-	CMP BL, [EDI]									;compare nth element to the nth element
-	JNE NOTEQL										;jump if not equal
-	INC ESI											;increment ESI
-	INC EDI											;increment EDI
-	LOOP L1											;loop to L1
-	
-	MOV AL, 1										;move 1 into AL (true condition)
-	JMP RETURN										;jump to return
-	
-NOTEQL:
-	MOV AL, 0										;move 0 into AL (false condition)
-	
-RETURN:	
-	RET
-String_startsWith_2 ENDP
-
-
-;--------------------------------------------------------------------------------------------------------------
-String_endsWith proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
-;
-;
-;
-;
-;
-;--------------------------------------------------------------------------------------------------------------
-	MOV EDI, intStrAddr								;move string1 address into EDI
-	MOV ESI, intStr2Addr							;move string2 address into ESI
-	PUSH EDI										;push EDI because the next routine uses edi
-	
-	INVOKE String_length, intStr2Addr				;get length of intStr2Addr
-	MOV EBX, EAX									;move the length into EBX
-	PUSH EBX										;push EBX
-	
-	INVOKE String_length, intStrAddr				;get the length of int Str2Addr
-	POP EBX											;pop EBX
-	
-	SUB EAX, EBX									;EAX - EBX
-	PUSH EAX										;push EAX
-	
-	INVOKE String_length, ESI						;get the length of string2
-	MOV ECX, EAX									;move the length of string2 into ECX
-	POP EAX
-	POP EDI											;restore EDI
-	
-	ADD EDI, EAX									;go to the beginning of the suffix
-L1:
-	MOV BL, [ESI]									;move the nth element of string2 into BL
-	CMP BL, [EDI]									;compare nth element to the nth element
-	JNE NOTEQL										;jump if not equal
-	INC ESI											;increment ESI
-	INC EDI											;increment EDI
-	LOOP L1											;loop to L1
-	
-	MOV AL, 1										;move 1 into AL (true condition)
-	JMP RETURN										;jump to return
-	
-NOTEQL:
-	MOV AL, 0										;move 0 into AL (false condition)
-	
-RETURN:
-	RET
-String_endsWith ENDP
 END
 
 
