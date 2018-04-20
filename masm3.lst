@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 23:17:07
 masm3.asm						     Page 1 - 1
 
 
@@ -1110,7 +1110,7 @@ masm3.asm						     Page 1 - 1
  00000795			String_length ENDP						;end of String_length
 
 				end main								;end of main
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 23:17:07
 masm3.asm						     Symbols 2 - 1
 
 

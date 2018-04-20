@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 23:17:07
 string2.asm						     Page 1 - 1
 
 
@@ -425,319 +425,319 @@ string2.asm						     Page 1 - 1
  00000249  8A C2			mov AL, DL
 					
  0000024B			_end:
- 0000024B  8B C6			mov eax, esi
- 0000024D  8B E5			mov ESP, EBP										;restore stackpointer to original location
- 0000024F  59				pop ECX												;restore ecx
- 00000250  5B				pop EBX												;restore ebx
- 00000251  5E				pop ESI												;restore esi
- 00000252  5F				pop EDI												;restore EDI
- 00000253  5A				pop EDX												;restore EDX
- 00000254  5D				pop EBP												;restore ebp
- 00000255  C3				ret													;return 
+ 0000024B  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000024D  59				pop ECX												;restore ecx
+ 0000024E  5B				pop EBX												;restore ebx
+ 0000024F  5E				pop ESI												;restore esi
+ 00000250  5F				pop EDI												;restore EDI
+ 00000251  5A				pop EDX												;restore EDX
+ 00000252  5D				pop EBP												;restore ebp
+ 00000253  C3				ret													;return 
 
- 00000256			String_indexOf_3 ENDP
+ 00000254			String_indexOf_3 ENDP
 
 				;----------------------------------------------------------------------------------------------------
- 00000256			String_lastIndexOf_1 PROC
+ 00000254			String_lastIndexOf_1 PROC
 				;
 				;	prompts user to enter a character, and then finds the last occurrence of the chosen character
 				;   and returns the index.
 				;		
 				;----------------------------------------------------------------------------------------------------
- 00000256  55				push EBP											;save ebp
- 00000257  57				push EDI
- 00000258  56				push ESI											;save esi
- 00000259  53				push EBX											;save ebx
- 0000025A  51				push ECX											;save ecx
- 0000025B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
- 0000025D  BE 00000000			mov ESI,0											;clear esi for indexing into string
- 00000262  B9 00000000			mov ECX,0											;clears ECX
- 00000267  B8 00000000			mov EAX, 0											;clears eax
+ 00000254  55				push EBP											;save ebp
+ 00000255  57				push EDI
+ 00000256  56				push ESI											;save esi
+ 00000257  53				push EBX											;save ebx
+ 00000258  51				push ECX											;save ecx
+ 00000259  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000025B  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 00000260  B9 00000000			mov ECX,0											;clears ECX
+ 00000265  B8 00000000			mov EAX, 0											;clears eax
 					invoke putstring, ADDR strIndexPrompt				;displays input prompt
 					invoke getstring, ADDR userInput,1					;gets user input
- 00000282  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
- 00000288  8B 5D 18			mov EBX, [EBP + 24]									;move offset address of string1 into EBX
+ 00000280  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
+ 00000286  8B 5D 18			mov EBX, [EBP + 24]									;move offset address of string1 into EBX
 
- 0000028B			_search:
+ 00000289			_search:
 
- 0000028B  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+ 00000289  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
 					.IF AL == 0											;reached the end of he string if character == null
- 00000292  EB 0B				jmp _next									    ;jump to _endstring once the end of the string is reached
+ 00000290  EB 0B				jmp _next									    ;jump to _endstring once the end of the string is reached
 					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
- 0000029A  8B FE				mov EDI, ESI
+ 00000298  8B FE				mov EDI, ESI
 					.ENDIF
- 0000029C  46				inc ESI												;increment ESI to move to next byte
- 0000029D  EB EC			jmp _search											;loop _search
+ 0000029A  46				inc ESI												;increment ESI to move to next byte
+ 0000029B  EB EC			jmp _search											;loop _search
 					
 
- 0000029F			_next:
+ 0000029D			_next:
 					
- 0000029F  8B C7			mov EAX, EDI										;stores index in EAX
- 000002A1  EB 00			jmp _end
+ 0000029D  8B C7			mov EAX, EDI										;stores index in EAX
+ 0000029F  EB 00			jmp _end
 					
- 000002A3			_end:
+ 000002A1			_end:
 
- 000002A3  8B E5			mov ESP, EBP										;restore stackpointer to original location
- 000002A5  59				pop ECX												;restore ecx
- 000002A6  5B				pop EBX												;restore ebx
- 000002A7  5E				pop ESI												;restore esi
- 000002A8  5F				Pop EDI
- 000002A9  5D				pop EBP												;restore ebp
- 000002AA  C3				ret			
+ 000002A1  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 000002A3  59				pop ECX												;restore ecx
+ 000002A4  5B				pop EBX												;restore ebx
+ 000002A5  5E				pop ESI												;restore esi
+ 000002A6  5F				Pop EDI
+ 000002A7  5D				pop EBP												;restore ebp
+ 000002A8  C3				ret			
 
- 000002AB			String_lastIndexOf_1 ENDP
+ 000002A9			String_lastIndexOf_1 ENDP
 
 				;----------------------------------------------------------------------------------------------------
- 000002AB			String_lastIndexOf_2 PROC
+ 000002A9			String_lastIndexOf_2 PROC
 				;
 				;	prompts user to enter a character, then an index to start the search from, and then finds the 
 				;   last occurrence of the  chosen character and returns the index.
 				;		
 				;----------------------------------------------------------------------------------------------------
- 000002AB  55				push EBP											;save ebp
- 000002AC  57				push EDI
- 000002AD  56				push ESI											;save esi
- 000002AE  53				push EBX											;save ebx
- 000002AF  51				push ECX											;save ecx
- 000002B0  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
- 000002B2  BE 00000000			mov ESI,0											;clear esi for indexing into string
- 000002B7  B9 00000000			mov ECX,0											;clear ECX
- 000002BC  B8 00000000			mov EAX, 0											;clear EAX
+ 000002A9  55				push EBP											;save ebp
+ 000002AA  57				push EDI
+ 000002AB  56				push ESI											;save esi
+ 000002AC  53				push EBX											;save ebx
+ 000002AD  51				push ECX											;save ecx
+ 000002AE  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 000002B0  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 000002B5  B9 00000000			mov ECX,0											;clear ECX
+ 000002BA  B8 00000000			mov EAX, 0											;clear EAX
 					invoke putstring, ADDR strIndexPrompt				;displays input prompt for character
 					invoke getstring, ADDR userInput,1					;gets user input
- 000002D7  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
+ 000002D5  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
 					invoke putstring, ADDR indexOf2Prompt				;displays input prompt for the index
 					invoke getstring, ADDR indexOF2input,2				;gets user input
 					invoke ascint32, ADDR indexOF2input					;converts user input to an integer for indexing
- 000002FD  8B 5D 18			mov EBX, [EBP + 24]									;move offset address of string1 into EBX
- 00000300  8B F0			mov ESI, EAX										;move specified index into ESI 
- 00000302  B8 00000000			mov EAX, 0											;clear EAX
+ 000002FB  8B 5D 18			mov EBX, [EBP + 24]									;move offset address of string1 into EBX
+ 000002FE  8B F0			mov ESI, EAX										;move specified index into ESI 
+ 00000300  B8 00000000			mov EAX, 0											;clear EAX
 					
- 00000307			_search:
+ 00000305			_search:
 
- 00000307  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+ 00000305  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
 					.IF AL == 0											;reached the end of he string if character == null
- 0000030E  EB 0B				jmp _next									    ;jump to _endstring once the end of the string is reached
+ 0000030C  EB 0B				jmp _next									    ;jump to _endstring once the end of the string is reached
 					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
- 00000316  8B FE				mov EDI, ESI
+ 00000314  8B FE				mov EDI, ESI
 					.ENDIF
- 00000318  46				inc ESI												;increment ESI to move to next byte
- 00000319  EB EC			jmp _search											;loop _search
+ 00000316  46				inc ESI												;increment ESI to move to next byte
+ 00000317  EB EC			jmp _search											;loop _search
 					
 
- 0000031B			_next:
+ 00000319			_next:
 					
- 0000031B  8B C7			mov EAX, EDI										;stores index in EAX
- 0000031D  EB 00			jmp _end
+ 00000319  8B C7			mov EAX, EDI										;stores index in EAX
+ 0000031B  EB 00			jmp _end
 
- 0000031F			_end:
+ 0000031D			_end:
 
- 0000031F  8B E5			mov ESP, EBP										;restore stackpointer to original location
- 00000321  59				pop ECX												;restore ecx
- 00000322  5B				pop EBX												;restore ebx
- 00000323  5E				pop ESI												;restore esi
- 00000324  5F				pop EDI
- 00000325  5D				pop EBP												;restore ebp
- 00000326  C3				ret													;return
+ 0000031D  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000031F  59				pop ECX												;restore ecx
+ 00000320  5B				pop EBX												;restore ebx
+ 00000321  5E				pop ESI												;restore esi
+ 00000322  5F				pop EDI
+ 00000323  5D				pop EBP												;restore ebp
+ 00000324  C3				ret													;return
 
- 00000327			String_lastIndexOf_2 ENDP
+ 00000325			String_lastIndexOf_2 ENDP
 
 				;----------------------------------------------------------------------------------------------------
- 00000327			String_lastIndexOf_3 PROC
+ 00000325			String_lastIndexOf_3 PROC
 				;
 				;	finds the last occurrence of string 2 within string 1 and returns the index
 				;		
 				;----------------------------------------------------------------------------------------------------
 
- 00000327  55				push EBP											;save ebp
- 00000328  52				push EDX											;save EDX
- 00000329  57				push EDI											;save EDI
- 0000032A  56				push ESI											;save esi
- 0000032B  53				push EBX											;save ebx
- 0000032C  51				push ECX											;save ecx
- 0000032D  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
- 0000032F  BE 00000000			mov ESI,0											;clear esi for indexing into string
- 00000334  BF 00000000			mov EDI,0											;clears EDI for indexing into string
- 00000339  B9 00000000			mov ECX,0											;clears ECX
- 0000033E  B8 00000000			mov EAX,0											;clears eax
- 00000343  8B 5D 1C			mov EBX, [EBP + 28]									;move offset address of string1 into EBX
- 00000346  8B 4D 20			mov ECX, [EBP + 32]									;move offset address of string2 into ECX
+ 00000325  55				push EBP											;save ebp
+ 00000326  52				push EDX											;save EDX
+ 00000327  57				push EDI											;save EDI
+ 00000328  56				push ESI											;save esi
+ 00000329  53				push EBX											;save ebx
+ 0000032A  51				push ECX											;save ecx
+ 0000032B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000032D  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 00000332  BF 00000000			mov EDI,0											;clears EDI for indexing into string
+ 00000337  B9 00000000			mov ECX,0											;clears ECX
+ 0000033C  B8 00000000			mov EAX,0											;clears eax
+ 00000341  8B 5D 1C			mov EBX, [EBP + 28]									;move offset address of string1 into EBX
+ 00000344  8B 4D 20			mov ECX, [EBP + 32]									;move offset address of string2 into ECX
 					
 
- 00000349			_search:
+ 00000347			_search:
 					
- 00000349  8A 04 0F			mov AL, byte ptr[ECX+EDI]							;moves each byte into AL for comparison
- 0000034C  8A 24 1E			mov AH, byte ptr[EBX+ESI]							;moves each byte into AH for comparison
+ 00000347  8A 04 0F			mov AL, byte ptr[ECX+EDI]							;moves each byte into AL for comparison
+ 0000034A  8A 24 1E			mov AH, byte ptr[EBX+ESI]							;moves each byte into AH for comparison
 					.IF AL == 0											;reached the end of string2 if character == null
- 00000353  EB 14				jmp _endstring2									;jump to _endstring once the end of the string is reached
+ 00000351  EB 14				jmp _endstring2									;jump to _endstring once the end of the string is reached
 					.ELSEIF AH == 0										;checks to see if end of string 1
- 0000035B  EB 14				Jmp _endstring1
+ 00000359  EB 14				Jmp _endstring1
 					.ELSEIF AL == AH
- 00000363  8B D6				mov EDX, ESI
- 00000365  47					inc EDI
+ 00000361  8B D6				mov EDX, ESI
+ 00000363  47					inc EDI
 					.ENDIF
- 00000366  46				inc ESI												;increment ESI to move to next byte
- 00000367  EB E0			jmp _search											;loop _search
+ 00000364  46				inc ESI												;increment ESI to move to next byte
+ 00000365  EB E0			jmp _search											;loop _search
 					
- 00000369			_endstring2:
- 00000369  BF 00000000			mov EDI, 0
- 0000036E  46				inc ESI
- 0000036F  EB D8			jmp _search
+ 00000367			_endstring2:
+ 00000367  BF 00000000			mov EDI, 0
+ 0000036C  46				inc ESI
+ 0000036D  EB D8			jmp _search
 
- 00000371			_endstring1:
+ 0000036F			_endstring1:
 
- 00000371  B8 00000000			mov EAX, 0
- 00000376  4A				dec EDX
- 00000377  2B D7			sub EDX, EDI
- 00000379  8A C2			mov AL, DL
+ 0000036F  B8 00000000			mov EAX, 0
+ 00000374  4A				dec EDX
+ 00000375  2B D7			sub EDX, EDI
+ 00000377  8A C2			mov AL, DL
 					
- 0000037B			_end:
- 0000037B  8B C6			mov eax, esi
- 0000037D  8B E5			mov ESP, EBP										;restore stackpointer to original location
- 0000037F  59				pop ECX												;restore ecx
- 00000380  5B				pop EBX												;restore ebx
- 00000381  5E				pop ESI												;restore esi
- 00000382  5F				pop EDI												;restore EDI
- 00000383  5A				pop EDX												;restore EDX
- 00000384  5D				pop EBP												;restore ebp
- 00000385  C3				ret													;return 
+ 00000379			_end:
+ 00000379  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000037B  59				pop ECX												;restore ecx
+ 0000037C  5B				pop EBX												;restore ebx
+ 0000037D  5E				pop ESI												;restore esi
+ 0000037E  5F				pop EDI												;restore EDI
+ 0000037F  5A				pop EDX												;restore EDX
+ 00000380  5D				pop EBP												;restore ebp
+ 00000381  C3				ret													;return 
 
- 00000386			String_lastIndexOf_3 ENDP
+ 00000382			String_lastIndexOf_3 ENDP
 
 				;----------------------------------------------------------------------------------------------------
- 00000386			String_replace PROC
+ 00000382			String_replace PROC
 				;
 				;	prompts user to choose a string, then choose a character they wish to replace, and then choose
 				;	the character they would like to replace it with.
 				;		
 				;----------------------------------------------------------------------------------------------------
- 00000386  55				push EBP											;save ebp
- 00000387  57				push EDI											;save EDI
- 00000388  56				push ESI											;save esi
- 00000389  53				push EBX											;save ebx
- 0000038A  51				push ECX											;save ecx
- 0000038B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
- 0000038D  BE 00000000			mov ESI,0											;clear esi for indexing into string
- 00000392  B9 00000000			mov ECX,0											;clears ECX
- 00000397  B8 00000000			mov EAX, 0											;clears eax
+ 00000382  55				push EBP											;save ebp
+ 00000383  57				push EDI											;save EDI
+ 00000384  56				push ESI											;save esi
+ 00000385  53				push EBX											;save ebx
+ 00000386  51				push ECX											;save ecx
+ 00000387  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 00000389  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 0000038E  B9 00000000			mov ECX,0											;clears ECX
+ 00000393  B8 00000000			mov EAX, 0											;clears eax
 					
- 0000039C			_begin:
+ 00000398			_begin:
 
 					invoke putstring, ADDR lowerPrompt					;displays input prompt
 					invoke getstring, ADDR userInput,1					;gets user input
- 000003B2  A0 00000130 R		mov AL, userInput									;stores userInput in AL for comparison
+ 000003AE  A0 00000130 R		mov AL, userInput									;stores userInput in AL for comparison
 					.IF AL == 31h	
- 000003BB  8B 5D 18				mov EBX, [EBP + 24]								;move offset address of string1 into EBX
- 000003BE  8B 7D 18				mov EDI, [EBP + 24]
+ 000003B7  8B 5D 18				mov EBX, [EBP + 24]								;move offset address of string1 into EBX
+ 000003BA  8B 7D 18				mov EDI, [EBP + 24]
 					.ELSEIF AL == 32h
- 000003C7  8B 5D 1C				mov EBX, [EBP + 28]								;move offset address of string2 into EBX
- 000003CA  8B 7D 1C				mov EDI, [EBP + 28]
+ 000003C3  8B 5D 1C				mov EBX, [EBP + 28]								;move offset address of string2 into EBX
+ 000003C6  8B 7D 1C				mov EDI, [EBP + 28]
 					.ELSE
 						invoke putstring, ADDR invalidPrompt1			;first half of error message
 						invoke putstring, ADDR userInput				;display the invalid entry
 						invoke putstring, ADDR invalidPrompt2			;second half of error message
- 000003ED  EB AD				jmp _begin
+ 000003E9  EB AD				jmp _begin
 					.ENDIF
 
 					invoke putstring, ADDR toReplacePrompt
 					invoke getstring, ADDR strChartoReplace,1
 					invoke putstring, ADDR ReplaceWith
 					invoke getstring, ADDR strReplace,1
- 0000041B  8A 0D 0000020A R		mov CL, strChartoReplace
- 00000421  8A 2D 0000020C R		mov CH, strReplace
+ 00000417  8A 0D 0000020A R		mov CL, strChartoReplace
+ 0000041D  8A 2D 0000020C R		mov CH, strReplace
 					
- 00000427			_search:
+ 00000423			_search:
 
- 00000427  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+ 00000423  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
 					.IF AL == 0											;reached the end of he string if character == null
- 0000042E  EB 0C				jmp _end										;jump to _endstring once the end of the string is reached
+ 0000042A  EB 0C				jmp _end										;jump to _endstring once the end of the string is reached
 					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
- 00000436  88 2C 1E				mov byte ptr[EBX+ESI],CH						;if byte contains character, jump to _next
+ 00000432  88 2C 1E				mov byte ptr[EBX+ESI],CH						;if byte contains character, jump to _next
 					.ENDIF
- 00000439  46				inc ESI												;increment ESI to move to next byte
- 0000043A  EB EB			jmp _search											;loop _search
+ 00000435  46				inc ESI												;increment ESI to move to next byte
+ 00000436  EB EB			jmp _search											;loop _search
 					
- 0000043C			_end:
- 0000043C  8B C7			mov EAX, EDI
- 0000043E  8B E5			mov ESP, EBP										;restore stackpointer to original location
- 00000440  59				pop ECX												;restore ecx
- 00000441  5B				pop EBX												;restore ebx
- 00000442  5E				pop ESI												;restore esi
- 00000443  5F				pop EDI
- 00000444  5D				pop EBP												;restore ebp
- 00000445  C3				ret													;return 
+ 00000438			_end:
+ 00000438  8B C7			mov EAX, EDI
+ 0000043A  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000043C  59				pop ECX												;restore ecx
+ 0000043D  5B				pop EBX												;restore ebx
+ 0000043E  5E				pop ESI												;restore esi
+ 0000043F  5F				pop EDI
+ 00000440  5D				pop EBP												;restore ebp
+ 00000441  C3				ret													;return 
 
- 00000446			String_replace ENDP
+ 00000442			String_replace ENDP
+
 
 				;----------------------------------------------------------------------------------------------------
- 00000446			String_concat PROC
+ 00000442			String_concat PROC
 				;
 				;	concatenates string 2 to the end of string 1
 				;		
 				;----------------------------------------------------------------------------------------------------
- 00000446  55				push EBP											;save ebp
- 00000447  57				push EDI											;save EDI
- 00000448  52				push EDX											;save EDX
- 00000449  56				push esi											;save esi
- 0000044A  53				push ebx											;save ebx
- 0000044B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
- 0000044D  BE 00000000			mov ESI,0											;clear esi for indexing into strings
- 00000452  B8 00000000			mov EAX,0											;Clear EAX
- 00000457  BF 00000000			mov edi,0											;clear EDI
+ 00000442  55				push EBP											;save ebp
+ 00000443  57				push EDI											;save EDI
+ 00000444  52				push EDX											;save EDX
+ 00000445  56				push esi											;save esi
+ 00000446  53				push ebx											;save ebx
+ 00000447  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 00000449  BE 00000000			mov ESI,0											;clear esi for indexing into strings
+ 0000044E  B8 00000000			mov EAX,0											;Clear EAX
+ 00000453  BF 00000000			mov edi,0											;clear EDI
 					invoke memoryallocBailey, 64						;allocate memory for new string
 					.IF EAX == 0										
- 00000467  EB 3C				jmp _error
+ 00000463  EB 3C				jmp _error
 					.ELSE
- 0000046B  8B D0				mov EDX, EAX
+ 00000467  8B D0				mov EDX, EAX
 					.ENDIF
- 0000046D  8B 5D 18			mov ebx, [EBP+24]									;move offset of string 1 into ebx
- 00000470  B8 00000000			mov EAX,0
+ 00000469  8B 5D 18			mov ebx, [EBP+24]									;move offset of string 1 into ebx
+ 0000046C  B8 00000000			mov EAX,0
 					
- 00000475			_start:
- 00000475  8A 24 17			mov AH, byte ptr [EDX+EDI]							;index into new memory
- 00000478  8A 04 1E			mov AL, byte ptr [EBX+ESI]							;index into string1
-					.IF AL != 0											;keep going if not at end of the string
- 0000047F  8A E0				mov AH, AL										;copy byte from str1 into new location
- 00000481  46					inc esi											;increment index
- 00000482  47					inc edi											;increment index
-					.ELSE
- 00000485  EB 02				jmp _next
-					.ENDIF
- 00000487  EB EC			jmp _start
-					
- 00000489			_next:
- 00000489  BE 00000000			mov esi,0
- 0000048E  8B 5D 1C			mov ebx, [EBP+28]									;offset string 2
-					
- 00000491			_loop:
- 00000491  8A 24 17			mov AH, byte ptr [EDX+EDI]							;index into new memory
- 00000494  8A 04 1E			mov AL, byte ptr [EBX+ESI]							;index into string2
-					.IF AL != 0											;this loop is the same for string 2
- 0000049B  8A E0				mov AH, AL
- 0000049D  46					inc esi
- 0000049E  47					inc edi
- 0000049F  EB F0				jmp _loop
-					.ENDIF
-					
- 000004A1  8B C2			mov EAX, EDX
- 000004A3  EB 0A			jmp _end
- 000004A5			_error:
-					invoke putstring, addr memError 
- 000004AF			_end:
- 000004AF  8B E5			mov ESP, EBP										;restore stackpointer to original location
- 000004B1  5B				pop EBX												;restore ebx
- 000004B2  5E				pop ESI												;restore esi
- 000004B3  5A				pop EDX
- 000004B4  5F				pop EDI
- 000004B5  5D				pop EBP												;restore ebp
- 000004B6  C3				ret													;return 
+ 00000471			_start:
 
- 000004B7			String_concat ENDP
+ 00000471  8A 04 1E			mov AL, byte ptr [EBX+ESI]							;index into string1
+					.IF AL != 0											;keep going if not at end of the string
+ 00000478  8A E0				mov AH, AL										;copy byte from str1 into new location
+ 0000047A  88 24 17				mov byte ptr [EDX+EDI],AH
+ 0000047D  46					inc esi											;increment index
+ 0000047E  47					inc edi											;increment index
+					.ELSE
+ 00000481  EB 02				jmp _next
+					.ENDIF
+ 00000483  EB EC			jmp _start
+					
+ 00000485			_next:
+ 00000485  BE 00000000			mov esi,0
+ 0000048A  8B 5D 1C			mov ebx, [EBP+28]									;offset string 2
+					
+ 0000048D			_loop:
+ 0000048D  8A 04 1E			mov AL, byte ptr [EBX+ESI]							;index into string2
+					.IF AL != 0											;this loop is the same for string 2
+ 00000494  8A E0				mov AH, AL
+ 00000496  88 24 17				mov  byte ptr [EDX+EDI], AH						;index into new memory
+ 00000499  46					inc esi
+ 0000049A  47					inc edi
+ 0000049B  EB F0				jmp _loop
+					.ENDIF
+					
+ 0000049D  8B C2			mov EAX, EDX
+ 0000049F  EB 0A			jmp _end
+ 000004A1			_error:
+					invoke putstring, addr memError 
+ 000004AB			_end:
+ 000004AB  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 000004AD  5B				pop EBX												;restore ebx
+ 000004AE  5E				pop ESI												;restore esi
+ 000004AF  5A				pop EDX
+ 000004B0  5F				pop EDI
+ 000004B1  5D				pop EBP												;restore ebp
+ 000004B2  C3				ret													;return 
+
+ 000004B3			String_concat ENDP
 
 
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 23:17:07
 string2.asm						     Symbols 2 - 1
 
 
@@ -832,7 +832,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 0000023D Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000004B7 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000004B3 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -920,12 +920,12 @@ Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-String_concat  . . . . . . . . .	P Near	 00000446 _TEXT	Length= 00000071 Public STDCALL
-  _start . . . . . . . . . . . .	L Near	 00000475 _TEXT	
-  _next  . . . . . . . . . . . .	L Near	 00000489 _TEXT	
-  _loop  . . . . . . . . . . . .	L Near	 00000491 _TEXT	
-  _error . . . . . . . . . . . .	L Near	 000004A5 _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 000004AF _TEXT	
+String_concat  . . . . . . . . .	P Near	 00000442 _TEXT	Length= 00000071 Public STDCALL
+  _start . . . . . . . . . . . .	L Near	 00000471 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 00000485 _TEXT	
+  _loop  . . . . . . . . . . . .	L Near	 0000048D _TEXT	
+  _error . . . . . . . . . . . .	L Near	 000004A1 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 000004AB _TEXT	
 String_indexOf_1 . . . . . . . .	P Near	 00000112 _TEXT	Length= 0000005D Public STDCALL
   _search  . . . . . . . . . . .	L Near	 00000146 _TEXT	
   _endstring . . . . . . . . . .	L Near	 0000015A _TEXT	
@@ -936,28 +936,28 @@ String_indexOf_2 . . . . . . . .	P Near	 0000016F _TEXT	Length= 00000084 Public 
   _endstring . . . . . . . . . .	L Near	 000001DE _TEXT	
   _next  . . . . . . . . . . . .	L Near	 000001EA _TEXT	
   _end . . . . . . . . . . . . .	L Near	 000001EC _TEXT	
-String_indexOf_3 . . . . . . . .	P Near	 000001F3 _TEXT	Length= 00000063 Public STDCALL
+String_indexOf_3 . . . . . . . .	P Near	 000001F3 _TEXT	Length= 00000061 Public STDCALL
   _search  . . . . . . . . . . .	L Near	 00000215 _TEXT	
   _endstring1  . . . . . . . . .	L Near	 00000235 _TEXT	
   _endstring2  . . . . . . . . .	L Near	 00000241 _TEXT	
   _end . . . . . . . . . . . . .	L Near	 0000024B _TEXT	
-String_lastIndexOf_1 . . . . . .	P Near	 00000256 _TEXT	Length= 00000055 Public STDCALL
-  _search  . . . . . . . . . . .	L Near	 0000028B _TEXT	
-  _next  . . . . . . . . . . . .	L Near	 0000029F _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 000002A3 _TEXT	
-String_lastIndexOf_2 . . . . . .	P Near	 000002AB _TEXT	Length= 0000007C Public STDCALL
-  _search  . . . . . . . . . . .	L Near	 00000307 _TEXT	
-  _next  . . . . . . . . . . . .	L Near	 0000031B _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 0000031F _TEXT	
-String_lastIndexOf_3 . . . . . .	P Near	 00000327 _TEXT	Length= 0000005F Public STDCALL
-  _search  . . . . . . . . . . .	L Near	 00000349 _TEXT	
-  _endstring2  . . . . . . . . .	L Near	 00000369 _TEXT	
-  _endstring1  . . . . . . . . .	L Near	 00000371 _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 0000037B _TEXT	
-String_replace . . . . . . . . .	P Near	 00000386 _TEXT	Length= 000000C0 Public STDCALL
-  _begin . . . . . . . . . . . .	L Near	 0000039C _TEXT	
-  _search  . . . . . . . . . . .	L Near	 00000427 _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 0000043C _TEXT	
+String_lastIndexOf_1 . . . . . .	P Near	 00000254 _TEXT	Length= 00000055 Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000289 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 0000029D _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 000002A1 _TEXT	
+String_lastIndexOf_2 . . . . . .	P Near	 000002A9 _TEXT	Length= 0000007C Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000305 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 00000319 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 0000031D _TEXT	
+String_lastIndexOf_3 . . . . . .	P Near	 00000325 _TEXT	Length= 0000005D Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000347 _TEXT	
+  _endstring2  . . . . . . . . .	L Near	 00000367 _TEXT	
+  _endstring1  . . . . . . . . .	L Near	 0000036F _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 00000379 _TEXT	
+String_replace . . . . . . . . .	P Near	 00000382 _TEXT	Length= 000000C0 Public STDCALL
+  _begin . . . . . . . . . . . .	L Near	 00000398 _TEXT	
+  _search  . . . . . . . . . . .	L Near	 00000423 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 00000438 _TEXT	
 String_toLowerCase . . . . . . .	P Near	 00000000 _TEXT	Length= 00000089 Public STDCALL
   _begin . . . . . . . . . . . .	L Near	 00000010 _TEXT	
   _lowerconvert  . . . . . . . .	L Near	 00000067 _TEXT	

@@ -305,7 +305,6 @@ _endstring2:
 	mov AL, DL
 	
 _end:
-	mov eax, esi
 	mov ESP, EBP										;restore stackpointer to original location
 	pop ECX												;restore ecx
 	pop EBX												;restore ebx
@@ -472,7 +471,6 @@ _endstring1:
 	mov AL, DL
 	
 _end:
-	mov eax, esi
 	mov ESP, EBP										;restore stackpointer to original location
 	pop ECX												;restore ecx
 	pop EBX												;restore ebx
@@ -549,6 +547,7 @@ _end:
 
 String_replace ENDP
 
+
 ;----------------------------------------------------------------------------------------------------
 String_concat PROC
 ;
@@ -574,10 +573,11 @@ String_concat PROC
 	mov EAX,0
 	
 _start:
-	mov AH, byte ptr [EDX+EDI]							;index into new memory
+
 	mov AL, byte ptr [EBX+ESI]							;index into string1
 	.IF AL != 0											;keep going if not at end of the string
 		mov AH, AL										;copy byte from str1 into new location
+		mov byte ptr [EDX+EDI],AH
 		inc esi											;increment index
 		inc edi											;increment index
 	.ELSE
@@ -590,10 +590,10 @@ _next:
 	mov ebx, [EBP+28]									;offset string 2
 	
 _loop:
-	mov AH, byte ptr [EDX+EDI]							;index into new memory
 	mov AL, byte ptr [EBX+ESI]							;index into string2
 	.IF AL != 0											;this loop is the same for string 2
 		mov AH, AL
+		mov  byte ptr [EDX+EDI], AH						;index into new memory
 		inc esi
 		inc edi
 		jmp _loop
