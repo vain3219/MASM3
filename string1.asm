@@ -245,7 +245,7 @@ intEndInd  EQU [EBP+16]
 	ADD ESI, intStartInd							;move the to specified starting address
 	MOV ECX, intEndInd								;move the ending index number into ECX
 	SUB ECX, intStartInd							;subtract tarting index from ending index to get 
-	INC ECX
+	;INC ECX
 	
 	INVOKE memoryallocBailey, ECX					;allocate memory of size (end - start) + 1
 	MOV EDI, EAX									;move the address of the newly allocated string into the ESI register

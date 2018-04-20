@@ -37,16 +37,16 @@
 	EXTERN String_startsWith_1@0:PROC
 	EXTERN String_startsWith_2@0:PROC
 	EXTERN String_endsWith@0:PROC
-	EXTERN String_indexOf_1@0:PROC
-	EXTERN String_indexOf_2@0:PROC
-	EXTERN String_indexOf_3@0:PROC
-	EXTERN String_lastIndexOf_1@0:PROC
-	EXTERN String_lastIndexOf_2@0:PROC
-	EXTERN String_lastIndexOf_3@0:PROC
-	EXTERN String_replace@0:PROC
-	EXTERN String_concat@0:PROC
-	EXTERN String_toLowerCase@0:PROC
-	EXTERN String_toUpperCase@0:PROC
+;	EXTERN String_indexOf_1@0:PROC
+;	EXTERN String_indexOf_2@0:PROC
+;	EXTERN String_indexOf_3@0:PROC
+;	EXTERN String_lastIndexOf_1@0:PROC
+;	EXTERN String_lastIndexOf_2@0:PROC
+;	EXTERN String_lastIndexOf_3@0:PROC
+;	EXTERN String_replace@0:PROC
+;	EXTERN String_concat@0:PROC
+;	EXTERN String_toLowerCase@0:PROC
+;	EXTERN String_toUpperCase@0:PROC
 	
 	;Constants
 
@@ -532,42 +532,42 @@ J12:
 	.elseif EDX == 13;-----------------------
 	Call CLrscr
 	push EBX
-	call String_indexOf_1
+	;call String_indexOf_1
 	add esp, 4
-	mov dIndex1, DWORD PTR [AL]
+	;mov dIndex1, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 14;-----------------------
 	Call CLrscr
 	push offset strString1
-	call String_indexOf_2
+;	call String_indexOf_2
 	add esp, 4
-	mov dIndex2, DWORD PTR [AL]
+	;mov dIndex2, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 15;-----------------------
 	Call CLrscr
 	push offset strString2
 	push offset strString1
-	call String_indexOf_3
+;	call String_indexOf_3
 	add esp, 8
-	mov dIndex3, DWORD PTR [AL]
+	;mov dIndex3, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 16;-----------------------
 	Call CLrscr
 	push offset strString1
-	call String_lastIndexOf_1
+;	call String_lastIndexOf_1
 	add esp, 4
-	mov dLastIndex1, DWORD PTR [AL]
+;	mov dLastIndex1, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 17;-----------------------
 	Call CLrscr
 	push offset strString1
-	call String_lastIndexOf_2
+;	call String_lastIndexOf_2
 	add esp, 4
-	mov dLastIndex2, DWORD PTR [AL]
+;	mov dLastIndex2, DWORD PTR [AL]
 	
 	JMP RETURN
 	
@@ -575,16 +575,16 @@ J12:
 	call CLrscr
 	push offset strString2
 	push offset strString1
-	call String_lastIndexOf_3
+;	call String_lastIndexOf_3
 	add esp, 8
-	mov dLastIndex3, DWORD PTR [AL]
+;	mov dLastIndex3, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 19;-----------------------
 	call CLrscr
 	push offset strString2
 	push offset strString1
-	call String_replace
+;	call String_replace
 	add esp, 8
 	mov dReplacePtr, EAX
 	JMP RETURN
@@ -597,7 +597,7 @@ J12:
 	call CLrscr
 	push EAX
 	push EBX
-	call String_toLowerCase@0
+;	call String_toLowerCase@0
 	add esp, 8
 	mov dLowerPtr, EAX
 	JMP RETURN
@@ -606,7 +606,7 @@ J12:
 	call CLrscr
 	push EAX
 	push EBX
-	call String_toUpperCase@0
+;	call String_toUpperCase@0
 	add esp, 8
 	mov dUpperPtr, EAX
 	JMP RETURN
