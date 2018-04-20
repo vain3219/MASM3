@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/17/18 16:12:24
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 17:11:34
 masm3.asm						     Page 1 - 1
 
 
@@ -11,8 +11,9 @@ masm3.asm						     Page 1 - 1
 				;		Class			:	CS 3B || Asm Lang
 				;		Date			:	4/02/2018
 				;		Purpose			:
-				;		This program will
-				;
+				;		This program will display a menu list of String-class-like operations that will be executed.
+				;	After a menu choice is input and executed the menu will be updated to reflect the result of the 
+				;	operation.
 				;----------------------------------------------------------------------------------------------------
 
 					.486
@@ -38,25 +39,25 @@ masm3.asm						     Page 1 - 1
 			      C 
 					include string1.inc
 			      C 
-			      C setString PROTO stringAddr:DWORD
+			      C setString PROTO 
 			      C 
-			      C String_equals PROTO intStr1Addr:DWORD, intStr2Addr:DWORD
+			      C String_equals PROTO
 			      C 
-			      C String_equalsIgnoreCase PROTO intStr1Addr:DWORD, intStr2Addr:DWORD
+			      C String_equalsIgnoreCase PROTO
 			      C 
-			      C String_copy PROTO intStr1Addr:DWORD
+			      C String_copy PROTO 
 			      C 
-			      C String_substring_1 PROTO intStrAddr:DWORD, intBeginInd:DWORD, intEndInd:DWORD
+			      C String_substring_1 PROTO 
 			      C 
-			      C String_substring_2 PROTO intStrAddr:DWORD, intStartInd:DWORD
+			      C String_substring_2 PROTO
 			      C 
-			      C String_charat PROTO intStrAddr:DWORD, intStrLength:DWORD
+			      C String_charat PROTO
 			      C 
-			      C String_startsWith_1 PROTO intStrAddr:DWORD, intStr2Addr:DWORD, intPos:DWORD
+			      C String_startsWith_1 PROTO 
 			      C 
-			      C String_startsWith_2 PROTO intStrAddr:DWORD, intStr2Addr:DWORD
+			      C String_startsWith_2 PROTO 
 			      C 
-			      C String_endsWith PROTO intStrAddr:DWORD, intStr2Addr:DWORD
+			      C String_endsWith PROTO 
 			      C 
 					
 					;Prototypes
@@ -67,16 +68,16 @@ masm3.asm						     Page 1 - 1
 					ExitProcess PROTO, dwExitCode:dword
 					
 					;External Prototypes
-					EXTERN setString@4:PROC
-					EXTERN String_equals@8:PROC
-					EXTERN String_equalsIgnoreCase@8:PROC
-					EXTERN String_copy@4:PROC
-					EXTERN String_substring_1@12:PROC
-					EXTERN String_substring_2@8:PROC
-					EXTERN String_charat@8:PROC
-					EXTERN String_startsWith_1@12:PROC
-					EXTERN String_startsWith_2@8:PROC
-					EXTERN String_endsWith@8:PROC
+					EXTERN setString@0:PROC
+					EXTERN String_equals@0:PROC
+					EXTERN String_equalsIgnoreCase@0:PROC
+					EXTERN String_copy@0:PROC
+					EXTERN String_substring_1@0:PROC
+					EXTERN String_substring_2@0:PROC
+					EXTERN String_charat@0:PROC
+					EXTERN String_startsWith_1@0:PROC
+					EXTERN String_startsWith_2@0:PROC
+					EXTERN String_endsWith@0:PROC
 
 					;Constants
 
@@ -191,7 +192,7 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 000001EF 000006E4 R		dEqualsPtr		DWORD OFFSET strFalse
+ 000001EF 00000728 R		dEqualsPtr		DWORD OFFSET strFalse
  000001F3 0A 2A 20 3C 35	strMenu7		BYTE 0Ah,   "* <5> String_equalsIgnoreCase(string1, string2)  currently:", 0
 	   3E 20 53 74 72
 	   69 6E 67 5F 65
@@ -205,7 +206,7 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 00000230 000006E4 R		dCaseEqualsPtr	DWORD OFFSET strFalse
+ 00000230 00000728 R		dCaseEqualsPtr	DWORD OFFSET strFalse
  00000234 0A 2A 20 3C 36	strMenu8		BYTE 0Ah,   "* <6> String_copy(string1)                       &", 0
 	   3E 20 53 74 72
 	   69 6E 67 5F 63
@@ -220,7 +221,8 @@ masm3.asm						     Page 1 - 1
  00000268 20 20 63 75 72	strMenu8a		BYTE "  currently:", 0
 	   72 65 6E 74 6C
 	   79 3A 00
- 00000275 0A 2A 20 3C 37	strMenu9		BYTE 0Ah,   "* <7> String_substring_1                         &", 0
+ 00000275 0000076F R		dStr6Ptr		DWORD OFFSET strNull
+ 00000279 0A 2A 20 3C 37	strMenu9		BYTE 0Ah,   "* <7> String_substring_1                         &", 0
 	   3E 20 53 74 72
 	   69 6E 67 5F 73
 	   75 62 73 74 72
@@ -231,10 +233,11 @@ masm3.asm						     Page 1 - 1
 	   20 20 20 20 20
 	   20 20 20 20 20
 	   26 00
- 000002A9 20 20 63 75 72	strMenu9a		BYTE "  currently:", 0
+ 000002AD 20 20 63 75 72	strMenu9a		BYTE "  currently:", 0
 	   72 65 6E 74 6C
 	   79 3A 00
- 000002B6 0A 2A 20 3C 38	strMenu10		BYTE 0Ah,   "* <8> String_substring_2                         &", 0
+ 000002BA 0000076F R		dStr7Ptr		DWORD OFFSET strNull
+ 000002BE 0A 2A 20 3C 38	strMenu10		BYTE 0Ah,   "* <8> String_substring_2                         &", 0
 	   3E 20 53 74 72
 	   69 6E 67 5F 73
 	   75 62 73 74 72
@@ -245,10 +248,11 @@ masm3.asm						     Page 1 - 1
 	   20 20 20 20 20
 	   20 20 20 20 20
 	   26 00
- 000002EA 20 20 63 75 72	strMenu10a		BYTE "  currently:", 0
+ 000002F2 20 20 63 75 72	strMenu10a		BYTE "  currently:", 0
 	   72 65 6E 74 6C
 	   79 3A 00
- 000002F7 0A 2A 20 3C 39	strMenu11		BYTE 0Ah,   "* <9> String_charAt                              currently:", 0
+ 000002FF 0000076F R		dStr8Ptr		DWORD OFFSET strNull
+ 00000303 0A 2A 20 3C 39	strMenu11		BYTE 0Ah,   "* <9> String_charAt                              currently:", 0
 	   3E 20 53 74 72
 	   69 6E 67 5F 63
 	   68 61 72 41 74
@@ -261,10 +265,11 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 00000334  00000002 [		strCharAt 		BYTE 2 DUP(0)
+ 00000340  00000002 [		strCharAt 		BYTE 2 DUP(0)
 	    00
 	   ]
- 00000336 0A 2A 20 3C 31	strMenu12		BYTE 0Ah,   "* <10> String_startsWith_1                       currently:", 0
+ 00000342 0000076F R		dPtrCharAt		DWORD OFFSET strNull
+ 00000346 0A 2A 20 3C 31	strMenu12		BYTE 0Ah,   "* <10> String_startsWith_1                       currently:", 0
 	   30 3E 20 53 74
 	   72 69 6E 67 5F
 	   73 74 61 72 74
@@ -277,7 +282,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 00000373 0A 2A 20 3C 31	strMenu13		BYTE 0Ah,   "* <11> String_startsWith_2                       currently:", 0
+ 00000383 00000728 R		dStarts1Ptr		DWORD OFFSET strFalse
+ 00000387 0A 2A 20 3C 31	strMenu13		BYTE 0Ah,   "* <11> String_startsWith_2                       currently:", 0
 	   31 3E 20 53 74
 	   72 69 6E 67 5F
 	   73 74 61 72 74
@@ -290,7 +296,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 000003B0 0A 2A 20 3C 31	strMenu14		BYTE 0Ah,   "* <12> String_endsWith                           currently:", 0
+ 000003C4 00000728 R		dStarts2Ptr		DWORD OFFSET strFalse
+ 000003C8 0A 2A 20 3C 31	strMenu14		BYTE 0Ah,   "* <12> String_endsWith                           currently:", 0
 	   32 3E 20 53 74
 	   72 69 6E 67 5F
 	   65 6E 64 73 57
@@ -303,7 +310,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 000003ED 0A 2A 20 3C 31	strMenu15		BYTE 0Ah,   "* <13> String_indexOf_1                          currently:", 0
+ 00000405 00000728 R		dEndsPtr		DWORD OFFSET strFalse
+ 00000409 0A 2A 20 3C 31	strMenu15		BYTE 0Ah,   "* <13> String_indexOf_1                          currently:", 0
 	   33 3E 20 53 74
 	   72 69 6E 67 5F
 	   69 6E 64 65 78
@@ -316,7 +324,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 0000042A 0A 2A 20 3C 31	strMenu16		BYTE 0Ah,   "* <14> String_indexOf_2                          currently:", 0
+ 00000446 FFFFFFFF		dIndex1			DWORD -1
+ 0000044A 0A 2A 20 3C 31	strMenu16		BYTE 0Ah,   "* <14> String_indexOf_2                          currently:", 0
 	   34 3E 20 53 74
 	   72 69 6E 67 5F
 	   69 6E 64 65 78
@@ -329,7 +338,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 00000467 0A 2A 20 3C 31	strMenu17		BYTE 0Ah,   "* <15> String_indexOf_3                          currently:", 0
+ 00000487 FFFFFFFF		dIndex2			DWORD -1
+ 0000048B 0A 2A 20 3C 31	strMenu17		BYTE 0Ah,   "* <15> String_indexOf_3                          currently:", 0
 	   35 3E 20 53 74
 	   72 69 6E 67 5F
 	   69 6E 64 65 78
@@ -342,7 +352,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 000004A4 0A 2A 20 3C 31	strMenu18		BYTE 0Ah,   "* <16> String_lastIndexOf_1                      currently:", 0
+ 000004C8 FFFFFFFF		dIndex3			DWORD -1
+ 000004CC 0A 2A 20 3C 31	strMenu18		BYTE 0Ah,   "* <16> String_lastIndexOf_1                      currently:", 0
 	   36 3E 20 53 74
 	   72 69 6E 67 5F
 	   6C 61 73 74 49
@@ -355,7 +366,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 000004E1 0A 2A 20 3C 31	strMenu19		BYTE 0Ah,   "* <17> String_lastIndexOf_2                      currently:", 0
+ 00000509 FFFFFFFF		dLastIndex1		DWORD -1
+ 0000050D 0A 2A 20 3C 31	strMenu19		BYTE 0Ah,   "* <17> String_lastIndexOf_2                      currently:", 0
 	   37 3E 20 53 74
 	   72 69 6E 67 5F
 	   6C 61 73 74 49
@@ -368,7 +380,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 0000051E 0A 2A 20 3C 31	strMenu20		BYTE 0Ah,   "* <18> String_lastIndexOf_3                      currently:", 0
+ 0000054A FFFFFFFF		dLastIndex2		DWORD -1
+ 0000054E 0A 2A 20 3C 31	strMenu20		BYTE 0Ah,   "* <18> String_lastIndexOf_3                      currently:", 0
 	   38 3E 20 53 74
 	   72 69 6E 67 5F
 	   6C 61 73 74 49
@@ -381,7 +394,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 0000055B 0A 2A 20 3C 31	strMenu21		BYTE 0Ah,   "* <19> String_concat                             currently:", 0
+ 0000058B FFFFFFFF		dLastIndex3		DWORD -1
+ 0000058F 0A 2A 20 3C 31	strMenu21		BYTE 0Ah,   "* <19> String_concat                             currently:", 0
 	   39 3E 20 53 74
 	   72 69 6E 67 5F
 	   63 6F 6E 63 61
@@ -394,7 +408,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 00000598 0A 2A 20 3C 32	strMenu22		BYTE 0Ah,   "* <20> String_replace                            currently:", 0
+ 000005CC 0000076F R		dConcatPtr		DWORD OFFSET strNull
+ 000005D0 0A 2A 20 3C 32	strMenu22		BYTE 0Ah,   "* <20> String_replace                            currently:", 0
 	   30 3E 20 53 74
 	   72 69 6E 67 5F
 	   72 65 70 6C 61
@@ -407,7 +422,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 000005D5 0A 2A 20 3C 32	strMenu23		BYTE 0Ah,   "* <21> String_toLowerCase                        currently:", 0
+ 0000060D 0000076F R		dReplacePtr		DWORD OFFSET strNull
+ 00000611 0A 2A 20 3C 32	strMenu23		BYTE 0Ah,   "* <21> String_toLowerCase                        currently:", 0
 	   31 3E 20 53 74
 	   72 69 6E 67 5F
 	   74 6F 4C 6F 77
@@ -420,7 +436,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 00000612 0A 2A 20 3C 32	strMenu24		BYTE 0Ah,   "* <22> String_toUpperCase                        currently:", 0
+ 0000064E 0000076F R		dLowerPtr		DWORD OFFSET strNull
+ 00000652 0A 2A 20 3C 32	strMenu24		BYTE 0Ah,   "* <22> String_toUpperCase                        currently:", 0
 	   32 3E 20 53 74
 	   72 69 6E 67 5F
 	   74 6F 55 70 70
@@ -433,7 +450,8 @@ masm3.asm						     Page 1 - 1
 	   63 75 72 72 65
 	   6E 74 6C 79 3A
 	   00
- 0000064F 0A 2A 20 3C 32	strMenu25		BYTE 0Ah,   "* <23> Quit                                               *", 0Ah
+ 0000068F 0000076F R		dUpperPtr		DWORD OFFSET strNull
+ 00000693 0A 2A 20 3C 32	strMenu25		BYTE 0Ah,   "* <23> Quit                                               *", 0Ah
 	   33 3E 20 51 75
 	   69 74 20 20 20
 	   20 20 20 20 20
@@ -446,7 +464,7 @@ masm3.asm						     Page 1 - 1
 	   20 20 20 20 20
 	   20 20 20 20 2A
 	   0A
- 0000068C 2A 2A 2A 2A 2A	strMenu26		BYTE        "***********************************************************"
+ 000006D0 2A 2A 2A 2A 2A	strMenu26		BYTE        "***********************************************************"
 	   2A 2A 2A 2A 2A
 	   2A 2A 2A 2A 2A
 	   2A 2A 2A 2A 2A
@@ -458,33 +476,33 @@ masm3.asm						     Page 1 - 1
 	   2A 2A 2A 2A 2A
 	   2A 2A 2A 2A 2A
 	   2A 2A 2A 2A
- 000006C7 0A 43 68 6F 69	strChoice		BYTE 0Ah, "Choice (1-23): ", 0
+ 0000070B 0A 43 68 6F 69	strChoice		BYTE 0Ah, "Choice (1-23): ", 0
 	   63 65 20 28 31
 	   2D 32 33 29 3A
 	   20 00
 
- 000006D8  00000003 [		strInput		BYTE 3 DUP(?), 0
+ 0000071C  00000003 [		strInput		BYTE 3 DUP(?), 0
 	    00
 	   ] 00
- 000006DC 00000000		dChoice			DWORD ?
- 000006E0 00000000		dlength			DWORD 0
- 000006E4 46 41 4C 53 45	strFalse		BYTE "FALSE", 0
+ 00000720 00000000		dChoice			DWORD ?
+ 00000724 00000000		dlength			DWORD 0
+ 00000728 46 41 4C 53 45	strFalse		BYTE "FALSE", 0
 	   00
- 000006EA 54 52 55 45 00	strTrue			BYTE "TRUE", 0 
- 000006EF 54 68 65 20 64	strErrChoice	BYTE "The desired choice does not exist, re-enter your choice.", 0Ah, 0
-	   65 73 69 72 65
-	   64 20 63 68 6F
-	   69 63 65 20 64
-	   6F 65 73 20 6E
-	   6F 74 20 65 78
-	   69 73 74 2C 20
-	   72 65 2D 65 6E
-	   74 65 72 20 79
-	   6F 75 72 20 63
+ 0000072E 54 52 55 45 00	strTrue			BYTE "TRUE", 0 
+ 00000733 0A 0A 54 68 65	strErrChoice	BYTE 0Ah, 0Ah, "The desired choice does not exist, re-enter your choice.", 0Ah, 0
+	   20 64 65 73 69
+	   72 65 64 20 63
 	   68 6F 69 63 65
-	   2E 0A 00
- 00000729 4E 55 4C 4C 00	strNull			BYTE "NULL", 0
- 0000072E 57 68 69 63 68	strStringSelect BYTE "Which string do you want the length of( 1 or 2): ", 0
+	   20 64 6F 65 73
+	   20 6E 6F 74 20
+	   65 78 69 73 74
+	   2C 20 72 65 2D
+	   65 6E 74 65 72
+	   20 79 6F 75 72
+	   20 63 68 6F 69
+	   63 65 2E 0A 00
+ 0000076F 4E 55 4C 4C 00	strNull			BYTE "NULL", 0
+ 00000774 57 68 69 63 68	strStringSelect BYTE "Which string do you want the length of( 1 or 2): ", 0
 	   20 73 74 72 69
 	   6E 67 20 64 6F
 	   20 79 6F 75 20
@@ -494,46 +512,38 @@ masm3.asm						     Page 1 - 1
 	   20 6F 66 28 20
 	   31 20 6F 72 20
 	   32 29 3A 20 00
- 00000760  00000002 [		strSelection    BYTE 2 DUP(0)
+ 000007A6  00000002 [		strSelection    BYTE 2 DUP(0)
 	    00
 	   ]
 
- 00000762 00000729 R		dStr6Ptr		DWORD OFFSET strNull
- 00000766 00000729 R		dStr7Ptr		DWORD OFFSET strNull
- 0000076A 00000729 R		dStr8Ptr		DWORD OFFSET strNull
- 0000076E 00000729 R		dPtrCharAt		DWORD OFFSET strNull
- 00000772 000006E4 R		dStarts1Ptr		DWORD OFFSET strFalse
- 00000776 000006E4 R		dStarts2Ptr		DWORD OFFSET strFalse
- 0000077A 000006E4 R		dEndsPtr		DWORD OFFSET strFalse
-
- 0000077E 50 6C 65 61 73	strCharAtPrompt				BYTE 	"Please input an index: ", 0	
+ 000007A8 50 6C 65 61 73	strCharAtPrompt				BYTE 	"Please input an index: ", 0	
 	   65 20 69 6E 70
 	   75 74 20 61 6E
 	   20 69 6E 64 65
 	   78 3A 20 00
- 00000796 50 6C 65 61 73	strSubStringPrompt			BYTE 	"Please input a starting index: ", 0
+ 000007C0 50 6C 65 61 73	strSubStringPrompt			BYTE 	"Please input a starting index: ", 0
 	   65 20 69 6E 70
 	   75 74 20 61 20
 	   73 74 61 72 74
 	   69 6E 67 20 69
 	   6E 64 65 78 3A
 	   20 00
- 000007B6 0A 50 6C 65 61	strSubStringPrompt2			BYTE 	0Ah, "Please input an ending index: ", 0
+ 000007E0 0A 50 6C 65 61	strSubStringPrompt2			BYTE 	0Ah, "Please input an ending index: ", 0
 	   73 65 20 69 6E
 	   70 75 74 20 61
 	   6E 20 65 6E 64
 	   69 6E 67 20 69
 	   6E 64 65 78 3A
 	   20 00
- 000007D6  00000005 [		strStartInd					BYTE 	5 DUP(0)
+ 00000800  00000005 [		strStartInd					BYTE 	5 DUP(0)
 	    00
 	   ]
- 000007DB  00000005 [		strEndInd					BYTE 	5 DUP(0)
+ 00000805  00000005 [		strEndInd					BYTE 	5 DUP(0)
 	    00
 	   ]
- 000007E0 00000000		intStartInd					DWORD 	?
- 000007E4 00000000		intEndInd					DWORD	?
- 000007E8 0A 54 68 65 20	strOutOBounds				BYTE 	0Ah, "The specified index is out of bounds, please re-enter your selection", 0Ah, 0
+ 0000080A 00000000		intStartInd					DWORD 	?
+ 0000080E 00000000		intEndInd					DWORD	?
+ 00000812 0A 54 68 65 20	strOutOBounds				BYTE 	0Ah, "The specified index is out of bounds, please re-enter your selection", 0Ah, 0
 	   73 70 65 63 69
 	   66 69 65 64 20
 	   69 6E 64 65 78
@@ -548,13 +558,13 @@ masm3.asm						     Page 1 - 1
 	   73 65 6C 65 63
 	   74 69 6F 6E 0A
 	   00
- 0000082F  00000005 [		strCharInd					BYTE 	5 DUP(0)
+ 00000859  00000005 [		strCharInd					BYTE 	5 DUP(0)
 	    00
 	   ]
- 00000834 00000000		intCharInd					DWORD	?
+ 0000085E 00000000		intCharInd					DWORD	?
 
 
- 00000838 0A 00			strNewLn		BYTE 0Ah, 0
+ 00000862 0A 00			strNewLn		BYTE 0Ah, 0
 					;Code segment
  00000000				.code
  00000000			main proc								;start of main ;start of program
@@ -563,11 +573,11 @@ masm3.asm						     Page 1 - 1
  00000005			START:		
  00000005  E8 00000017			CALL menu								;call the menu sub routine
 					
- 0000000A  83 3D 000006DC R		CMP dChoice, 23							;compare dChoice value to 23
+ 0000000A  83 3D 00000720 R		CMP dChoice, 23							;compare dChoice value to 23
 	   17
  00000011  74 07			JE QUIT									;if dChoice is equal to 23 then jump to QUIT
 					
- 00000013  E8 00000201			CALL getSubRoutine						;call the getSubRoutine sub routine
+ 00000013  E8 000002A2			CALL getSubRoutine						;call the getSubRoutine sub routine
 					
  00000018  EB EB			JMP START								;jump to START
 					
@@ -591,22 +601,22 @@ masm3.asm						     Page 1 - 1
  0000002B			GET:
 					INVOKE getstring, addr strInput, 3		;get the string from the console and store it into memory labeled 'strInput'
 					INVOKE ascint32, addr strInput			;convert the string from ascii values to integer values
- 00000041  A3 000006DC R		MOV dChoice, EAX						;move the value resulting from ascint32 to memory labeled dChoice
+ 00000041  A3 00000720 R		MOV dChoice, EAX						;move the value resulting from ascint32 to memory labeled dChoice
 					
- 00000046  83 3D 000006DC R		cmp dChoice, 23							;compare dChoice to 23
+ 00000046  83 3D 00000720 R		cmp dChoice, 23							;compare dChoice to 23
 	   17
  0000004D  74 23			JE RETURN								;jump to RETURN if the comparison is equal
  0000004F  7F 0B			JG INVALID								;jump to INVALID if the comparison is greater than 23
 					
- 00000051  83 3D 000006DC R		CMP dChoice, 1							;compare dChoice to 1
+ 00000051  83 3D 00000720 R		CMP dChoice, 1							;compare dChoice to 1
 	   01
  00000058  7C 02			JL INVALID								;jump to invalid if the comparison is less than 1
  0000005A  EB 16			JMP RETURN								;jump to RETURN
 					
  0000005C			INVALID:
- 0000005C  BA 000006EF R		MOV EDX, OFFSET strErrChoice			;move the offset address of strErrChoice into EDX
+ 0000005C  BA 00000733 R		MOV EDX, OFFSET strErrChoice			;move the offset address of strErrChoice into EDX
  00000061  E8 00000000 E		CALL WriteString						;call WriteString sub routine
- 00000066  BA 000006C7 R		MOV EDX, OFFSET strChoice				;move the offset address of strChoice into EDX
+ 00000066  BA 0000070B R		MOV EDX, OFFSET strChoice				;move the offset address of strChoice into EDX
  0000006B  E8 00000000 E		CALL WriteString						;call WriteString sub routine
  00000070  EB B9			JMP GET									;jump to GET
 					
@@ -636,18 +646,39 @@ masm3.asm						     Page 1 - 1
 					INVOKE putstring, addr strMenu7
 					INVOKE putstring, dCaseEqualsPtr
 					INVOKE putstring, addr strMenu8
- 000000E5  A1 00000762 R		MOV EAX, dStr6Ptr
- 000000EA  E8 00000000 E		CALL WriteHex
+ 000000E5  81 3D 00000275 R		CMP dStr6Ptr, OFFSET strNull
+	   0000076F R
+ 000000EF  75 07			JNE LSIXA
+ 000000F1  B8 00000000			MOV EAX, 0h
+ 000000F6  EB 05			JMP LSIXB
+ 000000F8			LSIXA:
+ 000000F8  A1 00000275 R		MOV EAX, dStr6Ptr
+ 000000FD			LSIXB:	
+ 000000FD  E8 00000000 E		CALL WriteHex
 					INVOKE putstring, addr strMenu8a
 					INVOKE putstring, dStr6Ptr
 					INVOKE putstring, addr strMenu9
- 0000010E  A1 00000766 R		MOV EAX, dStr7Ptr
- 00000113  E8 00000000 E		CALL WriteHex
+ 00000121  81 3D 000002BA R		CMP dStr7Ptr, OFFSET strNull
+	   0000076F R
+ 0000012B  75 07			JNE LSEVA
+ 0000012D  B8 00000000			MOV EAX, 0h
+ 00000132  EB 05			JMP LSEVB
+ 00000134			LSEVA:
+ 00000134  A1 000002BA R		MOV EAX, dStr7Ptr
+ 00000139			LSEVB:	
+ 00000139  E8 00000000 E		CALL WriteHex
 					INVOKE putstring, addr strMenu9a
 					INVOKE putstring, dStr7Ptr
 					INVOKE putstring, addr strMenu10
- 00000137  A1 0000076A R		MOV EAX, dStr8Ptr
- 0000013C  E8 00000000 E		CALL WriteHex
+ 0000015D  81 3D 000002FF R		CMP dStr8Ptr, OFFSET strNull
+	   0000076F R
+ 00000167  75 07			JNE LEIGHTA
+ 00000169  B8 00000000			MOV EAX, 0h
+ 0000016E  EB 05			JMP LEIGHTB
+ 00000170			LEIGHTA:
+ 00000170  A1 000002FF R		MOV EAX, dStr8Ptr
+ 00000175			LEIGHTB:	
+ 00000175  E8 00000000 E		CALL WriteHex
 					INVOKE putstring, addr strMenu10a
 					INVOKE putstring, dStr8Ptr
 					INVOKE putstring, addr strMenu11
@@ -659,23 +690,39 @@ masm3.asm						     Page 1 - 1
 					INVOKE putstring, addr strMenu14
 					INVOKE putString, dEndsPtr
 					INVOKE putstring, addr strMenu15
+ 000001ED  A1 00000446 R		MOV EAX, dIndex1
+ 000001F2  E8 00000000 E		CALL WriteInt
 					INVOKE putstring, addr strMenu16
+ 00000201  A1 00000487 R		MOV EAX, dIndex2
+ 00000206  E8 00000000 E		CALL WriteInt
 					INVOKE putstring, addr strMenu17
+ 00000215  A1 000004C8 R		MOV EAX, dIndex3
+ 0000021A  E8 00000000 E		CALL WriteInt	
 					INVOKE putstring, addr strMenu18
+ 00000229  A1 00000509 R		MOV EAX, dLastIndex1
+ 0000022E  E8 00000000 E		CALL WriteInt
 					INVOKE putstring, addr strMenu19
+ 0000023D  A1 0000054A R		MOV EAX, dLastIndex2
+ 00000242  E8 00000000 E		CALL WriteInt
 					INVOKE putstring, addr strMenu20
+ 00000251  A1 0000058B R		MOV EAX, dLastIndex3
+ 00000256  E8 00000000 E		CALL WriteInt
 					INVOKE putstring, addr strMenu21
+					INVOKE putstring, dConcatPtr
 					INVOKE putstring, addr strMenu22
+					INVOKE putstring, dReplacePtr
 					INVOKE putstring, addr strMenu23
+					INVOKE putstring, dLowerPtr
 					INVOKE putstring, addr strMenu24
+					INVOKE putstring, dUpperPtr
 					INVOKE putstring, addr strMenu25
 					
- 00000218  C3				RET
- 00000219			menuOut ENDP
+ 000002B9  C3				RET
+ 000002BA			menuOut ENDP
 
 
 				;----------------------------------------------------------------------------------------------------
- 00000219			getSubRoutine proc
+ 000002BA			getSubRoutine proc
 				;
 				;		This sub routine will first push the offset addresses for strString1 and strString2 on to the 
 				;	stack and then call the appropriate sub routine.  The choice that was input from the menu sub routine
@@ -684,297 +731,306 @@ masm3.asm						     Page 1 - 1
 				;	Receives nothing 
 				;	Returns nothing
 				;----------------------------------------------------------------------------------------------------
- 00000219  B8 00000020 R		MOV EAX, OFFSET strString2				;move the offset address of strString2 into EAX
- 0000021E  BB 00000000 R		MOV EBX, OFFSET strString1				;move the offset address of strString1 into EBX
+ 000002BA  B8 00000020 R		MOV EAX, OFFSET strString2				;move the offset address of strString2 into EAX
+ 000002BF  BB 00000000 R		MOV EBX, OFFSET strString1				;move the offset address of strString1 into EBX
 					
- 00000223  8B 15 000006DC R		MOV EDX, dChoice						;move dChoice into EDX for if statements
+ 000002C4  8B 15 00000720 R		MOV EDX, dChoice						;move dChoice into EDX for if statements
 					
 					.if EDX == 1;---------------------------	
- 0000022E  53				PUSH EBX								;push EBX
- 0000022F  E8 00000000 E		CALL setString@4						;call setString@4
-					;ADD ESP, 4								;add 4 bytes to ESP
+ 000002CF  53				PUSH EBX								;push EBX
+ 000002D0  E8 00000000 E		CALL setString@0						;call setString@4
+ 000002D5  83 C4 04			ADD ESP, 4								;add 4 bytes to ESP
 					
- 00000234  E9 00000360			JMP RETURN
+ 000002D8  E9 0000037E			JMP RETURN
 					
 					.elseif EDX == 2;-----------------------
- 00000243  50				PUSH EAX								;push EAX
- 00000244  E8 00000000 E		CALL setString@4						;call setString@4
-					;ADD ESP, 4								;add 4 bytes to ESP
+ 000002E7  50				PUSH EAX								;push EAX
+ 000002E8  E8 00000000 E		CALL setString@0						;call setString@4
+ 000002ED  83 C4 04			ADD ESP, 4								;add 4 bytes to ESP
 					
- 00000249  E9 0000034B			JMP RETURN
+ 000002F0  E9 00000366			JMP RETURN
 					
 					.elseif EDX == 3;-----------------------
- 00000258  E8 00000000 E		CALL Clrscr
+ 000002FF  E8 00000000 E		CALL Clrscr
 					
 					INVOKE putString, addr strStringSelect	;display prompt
 					INVOKE getString, addr strSelection, 3	;get input
 					
- 00000273  80 3D 00000760 R		CMP strSelection, 32h					;compare to ascii code for integer 1
+ 0000031A  80 3D 000007A6 R		CMP strSelection, 32h					;compare to ascii code for integer 2
 	   32
- 0000027A  74 03			JE STR2
+ 00000321  74 03			JE STR2
 					
- 0000027C  53				PUSH EBX								;push EBX
- 0000027D  EB 06			JMP LENGTHCALL							;jump to call
- 0000027F			STR2:
- 0000027F  B8 00000020 R		MOV EAX, OFFSET strString2				;move the offset address of strString2 into EAX
- 00000284  50				PUSH EAX								;push EAX
+ 00000323  53				PUSH EBX								;push EBX
+ 00000324  EB 06			JMP LENGTHCALL							;jump to call
+ 00000326			STR2:
+ 00000326  B8 00000020 R		MOV EAX, OFFSET strString2				;move the offset address of strString2 into EAX
+ 0000032B  50				PUSH EAX								;push EAX
 					
- 00000285			LENGTHCALL:
- 00000285  E8 00000310			CALL String_length						;call String_length
+ 0000032C			LENGTHCALL:
+ 0000032C  E8 0000032B			CALL String_length						;call String_length
 					INVOKE intasc32, addr bLength, EAX		;convert integer into ascii characters
 					
- 00000295  E9 000002FF			JMP RETURN
+ 0000033C  E9 0000031A			JMP RETURN
 					
 					.elseif EDX == 4;-----------------------
- 000002A4  BA 000006E4 R		MOV EDX, OFFSET strFalse				;move the offset address of strFalse into EDX
- 000002A9  89 15 000001EF R		MOV dEqualsPtr, EDX						;set dEqualsPtr equal to EDX
+ 0000034B  BA 00000728 R		MOV EDX, OFFSET strFalse				;move the offset address of strFalse into EDX
+ 00000350  89 15 000001EF R		MOV dEqualsPtr, EDX						;set dEqualsPtr equal to EDX
 					
- 000002AF  50				PUSH EAX								;push EAX
- 000002B0  53				PUSH EBX								;push EBX
- 000002B1  E8 00000000 E		CALL String_equals@8					;call String_equals@8
+ 00000356  50				PUSH EAX								;push EAX
+ 00000357  53				PUSH EBX								;push EBX
+ 00000358  E8 00000000 E		CALL String_equals@0					;call String_equals@8
+ 0000035D  83 C4 08			ADD ESP, 8
 					
- 000002B6  3C 00			CMP AL, 0								;compare AL to zero
- 000002B8  74 0B			JE J4									;jump to J4 if AL == 0
- 000002BA  BA 000006EA R		MOV EDX, OFFSET strTrue					;move the offset address of strTrue into EDX
- 000002BF  89 15 000001EF R		MOV dEqualsPtr, EDX						;set dEqualsPtr equal to EDX
- 000002C5			J4:
- 000002C5  E9 000002CF			JMP RETURN
+ 00000360  3C 00			CMP AL, 0								;compare AL to zero
+ 00000362  74 0B			JE J4									;jump to J4 if AL == 0
+ 00000364  BA 0000072E R		MOV EDX, OFFSET strTrue					;move the offset address of strTrue into EDX
+ 00000369  89 15 000001EF R		MOV dEqualsPtr, EDX						;set dEqualsPtr equal to EDX
+ 0000036F			J4:
+ 0000036F  E9 000002E7			JMP RETURN
 					
 					.elseif EDX == 5;-----------------------
- 000002D4  BA 000006E4 R		MOV EDX, OFFSET strFalse				;move the offset address of strFalse into EDX
- 000002D9  89 15 00000230 R		MOV dCaseEqualsPtr, EDX					;set dCaseEqualsPtr equal to EDX
+ 0000037E  BA 00000728 R		MOV EDX, OFFSET strFalse				;move the offset address of strFalse into EDX
+ 00000383  89 15 00000230 R		MOV dCaseEqualsPtr, EDX					;set dCaseEqualsPtr equal to EDX
 					
- 000002DF  50				PUSH EAX								;push EAX
- 000002E0  53				PUSH EBX								;push EBX
- 000002E1  E8 00000000 E		CALL String_equalsIgnoreCase@8			;call String_equalsIgnoreCase
+ 00000389  50				PUSH EAX								;push EAX
+ 0000038A  53				PUSH EBX								;push EBX
+ 0000038B  E8 00000000 E		CALL String_equalsIgnoreCase@0			;call String_equalsIgnoreCase
+ 00000390  83 C4 08			ADD ESP, 8
 					
- 000002E6  3C 00			CMP AL, 0								;compare AL to zero
- 000002E8  74 0B			JE J5									;jump to J5 if AL == 0
- 000002EA  BA 000006EA R		MOV EDX, OFFSET strTrue					;move the offset address of strTrue into EDX
- 000002EF  89 15 00000230 R		MOV dCaseEqualsPtr, EDX					;set dCaseEqualsPtr equal to EDX
- 000002F5			J5:
- 000002F5  E9 0000029F			JMP RETURN
+ 00000393  3C 00			CMP AL, 0								;compare AL to zero
+ 00000395  74 0B			JE J5									;jump to J5 if AL == 0
+ 00000397  BA 0000072E R		MOV EDX, OFFSET strTrue					;move the offset address of strTrue into EDX
+ 0000039C  89 15 00000230 R		MOV dCaseEqualsPtr, EDX					;set dCaseEqualsPtr equal to EDX
+ 000003A2			J5:
+ 000003A2  E9 000002B4			JMP RETURN
 					
 					.elseif EDX == 6;-----------------------
- 00000304  53				PUSH EBX								;push EBX to the stack
- 00000305  E8 00000000 E		CALL String_copy@4						;call String_copy@4
- 0000030A  A3 00000762 R		MOV dStr6Ptr, EAX						;move new address into memory
+ 000003B1  53				PUSH EBX								;push EBX to the stack
+ 000003B2  E8 00000000 E		CALL String_copy@0						;call String_copy@4
+ 000003B7  83 C4 04			ADD ESP, 4
+ 000003BA  A3 00000275 R		MOV dStr6Ptr, EAX						;move new address into memory
 					
- 0000030F  E9 00000285			JMP RETURN
+ 000003BF  E9 00000297			JMP RETURN
 					
 					.elseif EDX == 7;-----------------------
- 00000322  E8 00000000 E		CALL Clrscr										;clear the screen
+ 000003D2  E8 00000000 E		CALL Clrscr										;clear the screen
 					
- 00000327				PROMPT7a:
- 00000327  BB 00000000			MOV EBX, 0										;move 0 into EBX
+ 000003D7				PROMPT7a:
+ 000003D7  BB 00000000			MOV EBX, 0										;move 0 into EBX
 					INVOKE putString, addr strSubStringPrompt		;write prompt to the console
 					INVOKE getString, addr strStartInd, 3			;get input from the console
 					INVOKE ascint32, addr strStartInd				;convert ascii values to real integer values
- 0000034C  8B C8			MOV ECX, EAX									;move result into ECX
+ 000003FC  8B C8			MOV ECX, EAX									;move result into ECX
 					
- 0000034E  83 F9 01			CMP ECX, 1										;compare result to 1
- 00000351  7C 5C			JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
- 00000353  BE 00000000 R		MOV ESI, OFFSET strString1						;move the offset address of strString1 into ESI
- 00000358  56				PUSH ESI										;push ESI
- 00000359  E8 0000023C			CALL String_length								;get length of [intStrAddr]	
- 0000035E  3B C8			CMP ECX, EAX									;compare result to stringLrngth
- 00000360  7F 4D			JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
+ 000003FE  83 F9 01			CMP ECX, 1										;compare result to 1
+ 00000401  7C 5F			JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
+ 00000403  BE 00000000 R		MOV ESI, OFFSET strString1						;move the offset address of strString1 into ESI
+ 00000408  56				PUSH ESI										;push ESI
+ 00000409  E8 0000024E			CALL String_length								;get length of [intStrAddr]	
+ 0000040E  3B C8			CMP ECX, EAX									;compare result to stringLrngth
+ 00000410  7F 50			JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
 					
- 00000362			PROMPT7b:	
- 00000362  BB 00000001			MOV EBX, 1										;move 1 into EBX
+ 00000412			PROMPT7b:										;move 1 into EBX
 					INVOKE putString, addr strSubStringPrompt2		;write prompt to the console							;call WriteString
 					INVOKE getString, addr strEndInd, 3				;get the input from the console
 					INVOKE ascint32, addr strEndInd					;convert ascii values to real integer values
- 00000387  A3 000007E4 R		MOV intEndInd, EAX								;move result of conversion into intEndInd
- 0000038C  8B D0			MOV EDX, EAX									;move result into EDX
+ 00000432  A3 0000080E R		MOV intEndInd, EAX								;move result of conversion into intEndInd
+ 00000437  8B D0			MOV EDX, EAX									;move result into EDX
 
- 0000038E  83 FA 01			CMP EDX, 1										;compare result to 1
- 00000391  7C 1C			JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
- 00000393  56				PUSH ESI										;push ESI
- 00000394  E8 00000201			CALL String_length								;get length of [intStrAddr]	
- 00000399  3B D0			CMP EDX, EAX									;compare result to stringLrngth
- 0000039B  7F 12			JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
+ 00000439  BB 00000001			MOV EBX, 1	
+ 0000043E  83 FA 01			CMP EDX, 1										;compare result to 1
+ 00000441  7C 1F			JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
+ 00000443  56				PUSH ESI										;push ESI
+ 00000444  E8 00000213			CALL String_length								;get length of [intStrAddr]	
+ 00000449  3B D0			CMP EDX, EAX									;compare result to stringLrngth
+ 0000044B  7F 15			JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
 					
- 0000039D  52				PUSH EDX										;push EDX
- 0000039E  51				PUSH ECX										;push ECX
- 0000039F  56				PUSH ESI										;PUSH ESI
- 000003A0  E8 00000000 E		CALL String_substring_1@12						;call String_substring_1@8
- 000003A5  A3 00000766 R		MOV dStr7Ptr, EAX								;move resulting address to dStr7Ptr
+ 0000044D  52				PUSH EDX										;push EDX
+ 0000044E  51				PUSH ECX										;push ECX
+ 0000044F  56				PUSH ESI										;PUSH ESI
+ 00000450  E8 00000000 E		CALL String_substring_1@0						;call String_substring_1@8
+ 00000455  83 C4 0C			ADD ESP, 12
+ 00000458  A3 000002BA R		MOV dStr7Ptr, EAX								;move resulting address to dStr7Ptr
 					
- 000003AA  E9 000001EA			JMP RETURN
+ 0000045D  E9 000001F9			JMP RETURN
 					
- 000003AF			OUTOFBOUNDS7:
+ 00000462			OUTOFBOUNDS7:
 					INVOKE putString, addr strOutOBounds			;output out of bounds message to the console
- 000003B9  83 FB 00			CMP EBX, 0										;compare EBX to 0 (first or second prompt)
- 000003BC  0F 84 FFFFFF65		JE PROMPT7a										;jump if equal to PROMPT1
- 000003C2  EB 9E			JMP PROMPT7b									;otherwise jump to PROMPT2
+ 0000046C  83 FB 00			CMP EBX, 0										;compare EBX to 0 (first or second prompt)
+ 0000046F  0F 84 FFFFFF62		JE PROMPT7a										;jump if equal to PROMPT1
+ 00000475  EB 9B			JMP PROMPT7b									;otherwise jump to PROMPT2
 					
 					.elseif EDX == 8;-----------------------
- 000003CE  E8 00000000 E		CALL Clrscr										;call clear screen
+ 00000481  E8 00000000 E		CALL Clrscr										;call clear screen
 
- 000003D3				PROMPT8:
- 000003D3  BB 00000000			MOV EBX, 0										;move 0 into EBX
+ 00000486				PROMPT8:
+ 00000486  BB 00000000			MOV EBX, 0										;move 0 into EBX
 					INVOKE putString, addr strSubStringPrompt		;write prompt to the console
 					INVOKE getString, addr strStartInd, 3			;get input from the console
 					INVOKE ascint32, addr strStartInd				;convert ascii values to real integer values
- 000003F8  8B C8			MOV ECX, EAX									;move result into ECX
+ 000004AB  8B C8			MOV ECX, EAX									;move result into ECX
 					
- 000003FA  83 F9 01			CMP ECX, 1										;compare result to 1
- 000003FD  7C 20			JL OUTOFBOUNDS8									;jump to OUTOFBOUNDS if the input value is >1
- 000003FF  BE 00000000 R		MOV ESI, OFFSET strString1						;move the offset address of strString1 into ESI
- 00000404  56				PUSH ESI										;push ESI
- 00000405  E8 00000190			CALL String_length								;get length of [intStrAddr]	
- 0000040A  3B C8			CMP ECX, EAX									;compare result to stringLrngth
- 0000040C  7F 11			JG OUTOFBOUNDS8									;jump to OUTOFBOUNDS if the input value > length
+ 000004AD  83 F9 01			CMP ECX, 1										;compare result to 1
+ 000004B0  7C 23			JL OUTOFBOUNDS8									;jump to OUTOFBOUNDS if the input value is >1
+ 000004B2  BE 00000000 R		MOV ESI, OFFSET strString1						;move the offset address of strString1 into ESI
+ 000004B7  56				PUSH ESI										;push ESI
+ 000004B8  E8 0000019F			CALL String_length								;get length of [intStrAddr]	
+ 000004BD  3B C8			CMP ECX, EAX									;compare result to stringLrngth
+ 000004BF  7F 14			JG OUTOFBOUNDS8									;jump to OUTOFBOUNDS if the input value > length
 					
 
- 0000040E  51				PUSH ECX										;push ECX
- 0000040F  56				PUSH ESI										;push ESI
- 00000410  E8 00000000 E		CALL String_substring_2@8						;call String_substring_1@8
- 00000415  A3 0000076A R		MOV dStr8Ptr, EAX								;move new address into memory
+ 000004C1  51				PUSH ECX										;push ECX
+ 000004C2  56				PUSH ESI										;push ESI
+ 000004C3  E8 00000000 E		CALL String_substring_2@0						;call String_substring_1@8
+ 000004C8  83 C4 08			ADD ESP, 8
+ 000004CB  A3 000002FF R		MOV dStr8Ptr, EAX								;move new address into memory
 					
- 0000041A  E9 0000017A			JMP RETURN
+ 000004D0  E9 00000186			JMP RETURN
 					
- 0000041F			OUTOFBOUNDS8:
+ 000004D5			OUTOFBOUNDS8:
 					INVOKE putString, addr strOutOBounds			;output the out of bounds message to the console
- 00000429  EB A8			JMP PROMPT8
+ 000004DF  EB A5			JMP PROMPT8
 					
 					.elseif EDX == 9;-----------------------
- 00000435  E8 00000000 E		CALL Clrscr											;call clear screen
+ 000004EB  E8 00000000 E		CALL Clrscr											;call clear screen
 					
 					INVOKE putString, addr strCharAtPrompt			;write index prompt to the console
 					INVOKE getString, addr strCharInd, 3			;get input from the console
 					INVOKE ascint32, addr strCharInd				;convert ascii values to real integer values
 					
- 0000045A  50				PUSH EAX										;push EAX
- 0000045B  53				PUSH EBX										;push ESI
- 0000045C  E8 00000000 E		CALL String_charat@8							;call String_charat
+ 00000510  50				PUSH EAX										;push EAX
+ 00000511  53				PUSH EBX										;push ESI
+ 00000512  E8 00000000 E		CALL String_charat@0							;call String_charat
+ 00000517  83 C4 08			ADD ESP, 8										
 					
- 00000461  3C 00			CMP AL, 0
- 00000463  0F 84 00000130		JE RETURN
- 00000469  C7 05 0000076E R		MOV dPtrCharAt, OFFSET strCharAt
-	   00000334 R
- 00000473  A2 00000334 R		MOV strCharAt, AL
+ 0000051A  3C 00			CMP AL, 0
+ 0000051C  0F 84 00000139		JE RETURN
+ 00000522  C7 05 00000342 R		MOV dPtrCharAt, OFFSET strCharAt				;move char address into memory
+	   00000340 R
+ 0000052C  A2 00000340 R		MOV strCharAt, AL
 					
- 00000478  E9 0000011C			JMP RETURN
+ 00000531  E9 00000125			JMP RETURN
 					
 					.elseif EDX == 10;-----------------------
- 00000487  E8 00000000 E		CALL Clrscr
- 0000048C  BA 000006E4 R		MOV EDX, OFFSET strFalse						;move the offset address of strFalse into EDX
- 00000491  89 15 00000772 R		MOV dStarts1Ptr, EDX							;set dEqualsPtr equal to EDX
+ 00000540  E8 00000000 E		CALL Clrscr
+ 00000545  BA 00000728 R		MOV EDX, OFFSET strFalse						;move the offset address of strFalse into EDX
+ 0000054A  89 15 00000383 R		MOV dStarts1Ptr, EDX							;set dEqualsPtr equal to EDX
 					
 					INVOKE putString, addr strCharAtPrompt			;write index prompt to the console
 					INVOKE getString, addr strCharInd, 3			;get input from the console
 					INVOKE ascint32, addr strCharInd				;convert ascii values to real integer values
 					
- 000004B7  50				PUSH EAX										;push EAX
- 000004B8  B8 00000020 R		MOV EAX, OFFSET strString2						;move the offset address of strString2 into EAX
- 000004BD  50				PUSH EAX										;push EAX
- 000004BE  53				PUSH EBX										;push ESI
- 000004BF  E8 00000000 E		CALL String_startsWith_1@12						;call String_startsWith_1
+ 00000570  50				PUSH EAX										;push EAX
+ 00000571  B8 00000020 R		MOV EAX, OFFSET strString2						;move the offset address of strString2 into EAX
+ 00000576  50				PUSH EAX										;push EAX
+ 00000577  53				PUSH EBX										;push ESI
+ 00000578  E8 00000000 E		CALL String_startsWith_1@0						;call String_startsWith_1
+ 0000057D  83 C4 0C			ADD ESP, 12
 					
- 000004C4  3C 00			CMP AL, 0										;compare AL to zero
- 000004C6  74 0B			JE J10											;jump to J4 if AL == 0
- 000004C8  BA 000006EA R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
- 000004CD  89 15 00000772 R		MOV dStarts1Ptr, EDX							;set dEqualsPtr equal to EDX
- 000004D3			J10:
- 000004D3  E9 000000C1			JMP RETURN
+ 00000580  3C 00			CMP AL, 0										;compare AL to zero
+ 00000582  74 0B			JE J10											;jump to J4 if AL == 0
+ 00000584  BA 0000072E R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
+ 00000589  89 15 00000383 R		MOV dStarts1Ptr, EDX							;set dEqualsPtr equal to EDX
+ 0000058F			J10:
+ 0000058F  E9 000000C7			JMP RETURN
 					
 					.elseif EDX == 11;-----------------------
- 000004E2  E8 00000000 E		CALL Clrscr
- 000004E7  BA 000006E4 R		MOV EDX, OFFSET strFalse						;move the offset address of strFalse into EDX
- 000004EC  89 15 00000776 R		MOV dStarts2Ptr, EDX							;set dEqualsPtr equal to EDX
+ 0000059E  E8 00000000 E		CALL Clrscr
+ 000005A3  BA 00000728 R		MOV EDX, OFFSET strFalse						;move the offset address of strFalse into EDX
+ 000005A8  89 15 000003C4 R		MOV dStarts2Ptr, EDX							;set dEqualsPtr equal to EDX
 					
- 000004F2  50				PUSH EAX										;push EAX
- 000004F3  53				PUSH EBX										;push ESI
- 000004F4  E8 00000000 E		CALL String_startsWith_2@8						;call String_startsWith_1
+ 000005AE  50				PUSH EAX										;push EAX
+ 000005AF  53				PUSH EBX										;push ESI
+ 000005B0  E8 00000000 E		CALL String_startsWith_2@0						;call String_startsWith_1
+ 000005B5  83 C4 08			ADD ESP, 8
 					
- 000004F9  3C 00			CMP AL, 0										;compare AL to zero
- 000004FB  74 0B			JE J11											;jump to J4 if AL == 0
- 000004FD  BA 000006EA R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
- 00000502  89 15 00000776 R		MOV dStarts2Ptr, EDX							;set dEqualsPtr equal to EDX
- 00000508			J11:
- 00000508  E9 0000008C			JMP RETURN
+ 000005B8  3C 00			CMP AL, 0										;compare AL to zero
+ 000005BA  74 0B			JE J11											;jump to J4 if AL == 0
+ 000005BC  BA 0000072E R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
+ 000005C1  89 15 000003C4 R		MOV dStarts2Ptr, EDX							;set dEqualsPtr equal to EDX
+ 000005C7			J11:
+ 000005C7  E9 0000008F			JMP RETURN
 					
 					.elseif EDX == 12;-----------------------
- 00000517  E8 00000000 E		CALL Clrscr
- 0000051C  BA 000006E4 R		MOV EDX, OFFSET strFalse						;move the offset address of strFalse into EDX
- 00000521  89 15 0000077A R		MOV dEndsPtr, EDX								;set dEqualsPtr equal to EDX
+ 000005D6  E8 00000000 E		CALL Clrscr
+ 000005DB  BA 00000728 R		MOV EDX, OFFSET strFalse						;move the offset address of strFalse into EDX
+ 000005E0  89 15 00000405 R		MOV dEndsPtr, EDX								;set dEqualsPtr equal to EDX
 					
- 00000527  50				PUSH EAX										;push EAX
- 00000528  53				PUSH EBX										;push ESI
- 00000529  E8 00000000 E		CALL String_endsWith@8							;call String_startsWith_1
+ 000005E6  50				PUSH EAX										;push EAX
+ 000005E7  53				PUSH EBX										;push ESI
+ 000005E8  E8 00000000 E		CALL String_endsWith@0							;call String_startsWith_1
+ 000005ED  83 C5 08			ADD EBP, 8
 					
- 0000052E  3C 00			CMP AL, 0										;compare AL to zero
- 00000530  74 0B			JE J12											;jump to J4 if AL == 0
- 00000532  BA 000006EA R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
- 00000537  89 15 0000077A R		MOV dEndsPtr, EDX								;set dEqualsPtr equal to EDX
- 0000053D			J12:
- 0000053D  EB 5A			JMP RETURN
+ 000005F0  3C 00			CMP AL, 0										;compare AL to zero
+ 000005F2  74 0B			JE J12											;jump to J4 if AL == 0
+ 000005F4  BA 0000072E R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
+ 000005F9  89 15 00000405 R		MOV dEndsPtr, EDX								;set dEqualsPtr equal to EDX
+ 000005FF			J12:
+ 000005FF  EB 5A			JMP RETURN
 					
 					.elseif EDX == 13;-----------------------
- 00000546  EB 51			JMP RETURN
+ 00000608  EB 51			JMP RETURN
 					
 					.elseif EDX == 14;-----------------------
- 0000054F  EB 48			JMP RETURN
+ 00000611  EB 48			JMP RETURN
 					
 					.elseif EDX == 15;-----------------------
- 00000558  EB 3F			JMP RETURN
+ 0000061A  EB 3F			JMP RETURN
 					
 					.elseif EDX == 16;-----------------------
- 00000561  EB 36			JMP RETURN
+ 00000623  EB 36			JMP RETURN
 					
 					.elseif EDX == 17;-----------------------
- 0000056A  EB 2D			JMP RETURN
+ 0000062C  EB 2D			JMP RETURN
 					
 					.elseif EDX == 18;-----------------------
- 00000573  EB 24			JMP RETURN
+ 00000635  EB 24			JMP RETURN
 					
 					.elseif EDX == 19;-----------------------
- 0000057C  EB 1B			JMP RETURN
+ 0000063E  EB 1B			JMP RETURN
 					
 					.elseif EDX == 20;-----------------------
- 00000585  EB 12			JMP RETURN
+ 00000647  EB 12			JMP RETURN
 					
 					.elseif EDX == 21;-----------------------
- 0000058E  EB 09			JMP RETURN
+ 00000650  EB 09			JMP RETURN
 					
 					.elseif EDX == 22;-----------------------
- 00000597  EB 00			JMP RETURN
+ 00000659  EB 00			JMP RETURN
 					
 					.endif
 					
- 00000599			RETURN:
- 00000599  C3				RET										;return
- 0000059A			getSubRoutine ENDP						;end of getSubRoutine
+ 0000065B			RETURN:
+ 0000065B  C3				RET										;return
+ 0000065C			getSubRoutine ENDP						;end of getSubRoutine
 
 				;----------------------------------------------------------------------------------------------------
- 0000059A			String_length proc, intStrAddr:DWORD
+ 0000065C			String_length proc, intStrAddr:DWORD
 				;
 				;		This sub routine counts the number of elements in strStringX and stores the result in EAX.
 				;
 				;	Receives the address of strStringX
 				;	Returns the value in the EAX register
 				;----------------------------------------------------------------------------------------------------
- 0000059D  BB 00000000			MOV EBX, 0								;clear the EBX register
- 000005A2  B8 00000000			MOV EAX, 0								;clear the EAX register
+ 0000065F  BB 00000000			MOV EBX, 0								;clear the EBX register
+ 00000664  B8 00000000			MOV EAX, 0								;clear the EAX register
 					
- 000005A7  8B 7D 08			MOV EDI, intStrAddr						;move str1Addr into EDI for indirect addressing
+ 00000669  8B 7D 08			MOV EDI, intStrAddr						;move str1Addr into EDI for indirect addressing
 					
- 000005AA			L1:
- 000005AA  8A 1F			MOV BL, [EDI]							;move the nth element of strString1 into BL
- 000005AC  80 FB 00			CMP BL, 0								;compare BL to 0
- 000005AF  74 04			JE RETURN								;jump to RETURN if the comparison is equal
- 000005B1  40				INC EAX									;increment EAX
- 000005B2  47				INC EDI									;increment string address to go to the next element
- 000005B3  EB F5			JMP L1									;loop to L1
+ 0000066C			L1:
+ 0000066C  8A 1F			MOV BL, [EDI]							;move the nth element of strString1 into BL
+ 0000066E  80 FB 00			CMP BL, 0								;compare BL to 0
+ 00000671  74 04			JE RETURN								;jump to RETURN if the comparison is equal
+ 00000673  40				INC EAX									;increment EAX
+ 00000674  47				INC EDI									;increment string address to go to the next element
+ 00000675  EB F5			JMP L1									;loop to L1
 					
- 000005B5			RETURN:
+ 00000677			RETURN:
 					RET										;return
- 000005B9			String_length ENDP						;end of String_length
+ 0000067B			String_length ENDP						;end of String_length
 
 				end main								;end of main
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/17/18 16:12:24
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 17:11:34
 masm3.asm						     Symbols 2 - 1
 
 
@@ -1068,8 +1124,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000083A Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000005B9 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000864 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000067B Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -1162,10 +1218,10 @@ String_copy  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 String_endsWith  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_equalsIgnoreCase  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_equals  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-String_length  . . . . . . . . .	P Near	 0000059A _TEXT	Length= 0000001F Public STDCALL
+String_length  . . . . . . . . .	P Near	 0000065C _TEXT	Length= 0000001F Public STDCALL
   intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  L1 . . . . . . . . . . . . . .	L Near	 000005AA _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 000005B5 _TEXT	
+  L1 . . . . . . . . . . . . . .	L Near	 0000066C _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 00000677 _TEXT	
 String_startsWith_1  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_startsWith_2  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_substring_1 . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1190,26 +1246,32 @@ WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ascint32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-getSubRoutine  . . . . . . . . .	P Near	 00000219 _TEXT	Length= 00000381 Public STDCALL
-  STR2 . . . . . . . . . . . . .	L Near	 0000027F _TEXT	
-  LENGTHCALL . . . . . . . . . .	L Near	 00000285 _TEXT	
-  J4 . . . . . . . . . . . . . .	L Near	 000002C5 _TEXT	
-  J5 . . . . . . . . . . . . . .	L Near	 000002F5 _TEXT	
-  PROMPT7a . . . . . . . . . . .	L Near	 00000327 _TEXT	
-  PROMPT7b . . . . . . . . . . .	L Near	 00000362 _TEXT	
-  OUTOFBOUNDS7 . . . . . . . . .	L Near	 000003AF _TEXT	
-  PROMPT8  . . . . . . . . . . .	L Near	 000003D3 _TEXT	
-  OUTOFBOUNDS8 . . . . . . . . .	L Near	 0000041F _TEXT	
-  J10  . . . . . . . . . . . . .	L Near	 000004D3 _TEXT	
-  J11  . . . . . . . . . . . . .	L Near	 00000508 _TEXT	
-  J12  . . . . . . . . . . . . .	L Near	 0000053D _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 00000599 _TEXT	
+getSubRoutine  . . . . . . . . .	P Near	 000002BA _TEXT	Length= 000003A2 Public STDCALL
+  STR2 . . . . . . . . . . . . .	L Near	 00000326 _TEXT	
+  LENGTHCALL . . . . . . . . . .	L Near	 0000032C _TEXT	
+  J4 . . . . . . . . . . . . . .	L Near	 0000036F _TEXT	
+  J5 . . . . . . . . . . . . . .	L Near	 000003A2 _TEXT	
+  PROMPT7a . . . . . . . . . . .	L Near	 000003D7 _TEXT	
+  PROMPT7b . . . . . . . . . . .	L Near	 00000412 _TEXT	
+  OUTOFBOUNDS7 . . . . . . . . .	L Near	 00000462 _TEXT	
+  PROMPT8  . . . . . . . . . . .	L Near	 00000486 _TEXT	
+  OUTOFBOUNDS8 . . . . . . . . .	L Near	 000004D5 _TEXT	
+  J10  . . . . . . . . . . . . .	L Near	 0000058F _TEXT	
+  J11  . . . . . . . . . . . . .	L Near	 000005C7 _TEXT	
+  J12  . . . . . . . . . . . . .	L Near	 000005FF _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 0000065B _TEXT	
 getstring  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 intasc32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000021 Public STDCALL
   START  . . . . . . . . . . . .	L Near	 00000005 _TEXT	
   QUIT . . . . . . . . . . . . .	L Near	 0000001A _TEXT	
-menuOut  . . . . . . . . . . . .	P Near	 00000073 _TEXT	Length= 000001A6 Public STDCALL
+menuOut  . . . . . . . . . . . .	P Near	 00000073 _TEXT	Length= 00000247 Public STDCALL
+  LSIXA  . . . . . . . . . . . .	L Near	 000000F8 _TEXT	
+  LSIXB  . . . . . . . . . . . .	L Near	 000000FD _TEXT	
+  LSEVA  . . . . . . . . . . . .	L Near	 00000134 _TEXT	
+  LSEVB  . . . . . . . . . . . .	L Near	 00000139 _TEXT	
+  LEIGHTA  . . . . . . . . . . .	L Near	 00000170 _TEXT	
+  LEIGHTB  . . . . . . . . . . .	L Near	 00000175 _TEXT	
 menu . . . . . . . . . . . . . .	P Near	 00000021 _TEXT	Length= 00000052 Public STDCALL
   GET  . . . . . . . . . . . . .	L Near	 0000002B _TEXT	
   INVALID  . . . . . . . . . . .	L Near	 0000005C _TEXT	
@@ -1350,15 +1412,15 @@ STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch
 STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
 STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
 SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
-String_charat@8  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_copy@4  . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_endsWith@8  . . . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_equals@8  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_equalsIgnoreCase@8  . . .	L Near	 00000000 FLAT	External STDCALL
-String_startsWith_1@12 . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_startsWith_2@8  . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_substring_1@12  . . . . .	L Near	 00000000 FLAT	External STDCALL
-String_substring_2@8 . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_charat@0  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_copy@0  . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_endsWith@0  . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_equals@0  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_equalsIgnoreCase@0  . . .	L Near	 00000000 FLAT	External STDCALL
+String_startsWith_1@0  . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_startsWith_2@0  . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_substring_1@0 . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_substring_2@0 . . . . . .	L Near	 00000000 FLAT	External STDCALL
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
@@ -1449,24 +1511,34 @@ blue . . . . . . . . . . . . . .	Number	 00000001h
 brown  . . . . . . . . . . . . .	Number	 00000006h   
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
 dCaseEqualsPtr . . . . . . . . .	DWord	 00000230 _DATA	
-dChoice  . . . . . . . . . . . .	DWord	 000006DC _DATA	
-dEndsPtr . . . . . . . . . . . .	DWord	 0000077A _DATA	
+dChoice  . . . . . . . . . . . .	DWord	 00000720 _DATA	
+dConcatPtr . . . . . . . . . . .	DWord	 000005CC _DATA	
+dEndsPtr . . . . . . . . . . . .	DWord	 00000405 _DATA	
 dEqualsPtr . . . . . . . . . . .	DWord	 000001EF _DATA	
-dPtrCharAt . . . . . . . . . . .	DWord	 0000076E _DATA	
-dStarts1Ptr  . . . . . . . . . .	DWord	 00000772 _DATA	
-dStarts2Ptr  . . . . . . . . . .	DWord	 00000776 _DATA	
+dIndex1  . . . . . . . . . . . .	DWord	 00000446 _DATA	
+dIndex2  . . . . . . . . . . . .	DWord	 00000487 _DATA	
+dIndex3  . . . . . . . . . . . .	DWord	 000004C8 _DATA	
+dLastIndex1  . . . . . . . . . .	DWord	 00000509 _DATA	
+dLastIndex2  . . . . . . . . . .	DWord	 0000054A _DATA	
+dLastIndex3  . . . . . . . . . .	DWord	 0000058B _DATA	
+dLowerPtr  . . . . . . . . . . .	DWord	 0000064E _DATA	
+dPtrCharAt . . . . . . . . . . .	DWord	 00000342 _DATA	
+dReplacePtr  . . . . . . . . . .	DWord	 0000060D _DATA	
+dStarts1Ptr  . . . . . . . . . .	DWord	 00000383 _DATA	
+dStarts2Ptr  . . . . . . . . . .	DWord	 000003C4 _DATA	
 dStr1Ptr . . . . . . . . . . . .	DWord	 0000012B _DATA	
 dStr2Ptr . . . . . . . . . . . .	DWord	 0000016C _DATA	
-dStr6Ptr . . . . . . . . . . . .	DWord	 00000762 _DATA	
-dStr7Ptr . . . . . . . . . . . .	DWord	 00000766 _DATA	
-dStr8Ptr . . . . . . . . . . . .	DWord	 0000076A _DATA	
-dlength  . . . . . . . . . . . .	DWord	 000006E0 _DATA	
+dStr6Ptr . . . . . . . . . . . .	DWord	 00000275 _DATA	
+dStr7Ptr . . . . . . . . . . . .	DWord	 000002BA _DATA	
+dStr8Ptr . . . . . . . . . . . .	DWord	 000002FF _DATA	
+dUpperPtr  . . . . . . . . . . .	DWord	 0000068F _DATA	
+dlength  . . . . . . . . . . . .	DWord	 00000724 _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
-intCharInd . . . . . . . . . . .	DWord	 00000834 _DATA	
-intEndInd  . . . . . . . . . . .	DWord	 000007E4 _DATA	
-intStartInd  . . . . . . . . . .	DWord	 000007E0 _DATA	
+intCharInd . . . . . . . . . . .	DWord	 0000085E _DATA	
+intEndInd  . . . . . . . . . . .	DWord	 0000080E _DATA	
+intStartInd  . . . . . . . . . .	DWord	 0000080A _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
@@ -1475,34 +1547,34 @@ lightMagenta . . . . . . . . . .	Number	 0000000Dh
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
 magenta  . . . . . . . . . . . .	Number	 00000005h   
 red  . . . . . . . . . . . . . .	Number	 00000004h   
-setString@4  . . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
-strCharAtPrompt  . . . . . . . .	Byte	 0000077E _DATA	
-strCharAt  . . . . . . . . . . .	Byte	 00000334 _DATA	
-strCharInd . . . . . . . . . . .	Byte	 0000082F _DATA	
-strChoice  . . . . . . . . . . .	Byte	 000006C7 _DATA	
-strEndInd  . . . . . . . . . . .	Byte	 000007DB _DATA	
-strErrChoice . . . . . . . . . .	Byte	 000006EF _DATA	
-strFalse . . . . . . . . . . . .	Byte	 000006E4 _DATA	
-strInput . . . . . . . . . . . .	Byte	 000006D8 _DATA	
-strMenu10a . . . . . . . . . . .	Byte	 000002EA _DATA	
-strMenu10  . . . . . . . . . . .	Byte	 000002B6 _DATA	
-strMenu11  . . . . . . . . . . .	Byte	 000002F7 _DATA	
-strMenu12  . . . . . . . . . . .	Byte	 00000336 _DATA	
-strMenu13  . . . . . . . . . . .	Byte	 00000373 _DATA	
-strMenu14  . . . . . . . . . . .	Byte	 000003B0 _DATA	
-strMenu15  . . . . . . . . . . .	Byte	 000003ED _DATA	
-strMenu16  . . . . . . . . . . .	Byte	 0000042A _DATA	
-strMenu17  . . . . . . . . . . .	Byte	 00000467 _DATA	
-strMenu18  . . . . . . . . . . .	Byte	 000004A4 _DATA	
-strMenu19  . . . . . . . . . . .	Byte	 000004E1 _DATA	
+setString@0  . . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+strCharAtPrompt  . . . . . . . .	Byte	 000007A8 _DATA	
+strCharAt  . . . . . . . . . . .	Byte	 00000340 _DATA	
+strCharInd . . . . . . . . . . .	Byte	 00000859 _DATA	
+strChoice  . . . . . . . . . . .	Byte	 0000070B _DATA	
+strEndInd  . . . . . . . . . . .	Byte	 00000805 _DATA	
+strErrChoice . . . . . . . . . .	Byte	 00000733 _DATA	
+strFalse . . . . . . . . . . . .	Byte	 00000728 _DATA	
+strInput . . . . . . . . . . . .	Byte	 0000071C _DATA	
+strMenu10a . . . . . . . . . . .	Byte	 000002F2 _DATA	
+strMenu10  . . . . . . . . . . .	Byte	 000002BE _DATA	
+strMenu11  . . . . . . . . . . .	Byte	 00000303 _DATA	
+strMenu12  . . . . . . . . . . .	Byte	 00000346 _DATA	
+strMenu13  . . . . . . . . . . .	Byte	 00000387 _DATA	
+strMenu14  . . . . . . . . . . .	Byte	 000003C8 _DATA	
+strMenu15  . . . . . . . . . . .	Byte	 00000409 _DATA	
+strMenu16  . . . . . . . . . . .	Byte	 0000044A _DATA	
+strMenu17  . . . . . . . . . . .	Byte	 0000048B _DATA	
+strMenu18  . . . . . . . . . . .	Byte	 000004CC _DATA	
+strMenu19  . . . . . . . . . . .	Byte	 0000050D _DATA	
 strMenu1 . . . . . . . . . . . .	Byte	 0000007A _DATA	
-strMenu20  . . . . . . . . . . .	Byte	 0000051E _DATA	
-strMenu21  . . . . . . . . . . .	Byte	 0000055B _DATA	
-strMenu22  . . . . . . . . . . .	Byte	 00000598 _DATA	
-strMenu23  . . . . . . . . . . .	Byte	 000005D5 _DATA	
-strMenu24  . . . . . . . . . . .	Byte	 00000612 _DATA	
-strMenu25  . . . . . . . . . . .	Byte	 0000064F _DATA	
-strMenu26  . . . . . . . . . . .	Byte	 0000068C _DATA	
+strMenu20  . . . . . . . . . . .	Byte	 0000054E _DATA	
+strMenu21  . . . . . . . . . . .	Byte	 0000058F _DATA	
+strMenu22  . . . . . . . . . . .	Byte	 000005D0 _DATA	
+strMenu23  . . . . . . . . . . .	Byte	 00000611 _DATA	
+strMenu24  . . . . . . . . . . .	Byte	 00000652 _DATA	
+strMenu25  . . . . . . . . . . .	Byte	 00000693 _DATA	
+strMenu26  . . . . . . . . . . .	Byte	 000006D0 _DATA	
 strMenu2 . . . . . . . . . . . .	Byte	 000000B4 _DATA	
 strMenu3 . . . . . . . . . . . .	Byte	 000000EF _DATA	
 strMenu4 . . . . . . . . . . . .	Byte	 0000012F _DATA	
@@ -1511,20 +1583,20 @@ strMenu6 . . . . . . . . . . . .	Byte	 000001B2 _DATA
 strMenu7 . . . . . . . . . . . .	Byte	 000001F3 _DATA	
 strMenu8a  . . . . . . . . . . .	Byte	 00000268 _DATA	
 strMenu8 . . . . . . . . . . . .	Byte	 00000234 _DATA	
-strMenu9a  . . . . . . . . . . .	Byte	 000002A9 _DATA	
-strMenu9 . . . . . . . . . . . .	Byte	 00000275 _DATA	
+strMenu9a  . . . . . . . . . . .	Byte	 000002AD _DATA	
+strMenu9 . . . . . . . . . . . .	Byte	 00000279 _DATA	
 strMenu  . . . . . . . . . . . .	Byte	 00000040 _DATA	
-strNewLn . . . . . . . . . . . .	Byte	 00000838 _DATA	
-strNull  . . . . . . . . . . . .	Byte	 00000729 _DATA	
-strOutOBounds  . . . . . . . . .	Byte	 000007E8 _DATA	
-strSelection . . . . . . . . . .	Byte	 00000760 _DATA	
-strStartInd  . . . . . . . . . .	Byte	 000007D6 _DATA	
+strNewLn . . . . . . . . . . . .	Byte	 00000862 _DATA	
+strNull  . . . . . . . . . . . .	Byte	 0000076F _DATA	
+strOutOBounds  . . . . . . . . .	Byte	 00000812 _DATA	
+strSelection . . . . . . . . . .	Byte	 000007A6 _DATA	
+strStartInd  . . . . . . . . . .	Byte	 00000800 _DATA	
 strString1 . . . . . . . . . . .	Byte	 00000000 _DATA	
 strString2 . . . . . . . . . . .	Byte	 00000020 _DATA	
-strStringSelect  . . . . . . . .	Byte	 0000072E _DATA	
-strSubStringPrompt2  . . . . . .	Byte	 000007B6 _DATA	
-strSubStringPrompt . . . . . . .	Byte	 00000796 _DATA	
-strTrue  . . . . . . . . . . . .	Byte	 000006EA _DATA	
+strStringSelect  . . . . . . . .	Byte	 00000774 _DATA	
+strSubStringPrompt2  . . . . . .	Byte	 000007E0 _DATA	
+strSubStringPrompt . . . . . . .	Byte	 000007C0 _DATA	
+strTrue  . . . . . . . . . . . .	Byte	 0000072E _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   

@@ -7,8 +7,9 @@
 ;		Class			:	CS 3B || Asm Lang
 ;		Date			:	4/02/2018
 ;		Purpose			:
-;		This program will
-;
+;		This program will display a menu list of String-class-like operations that will be executed.
+;	After a menu choice is input and executed the menu will be updated to reflect the result of the 
+;	operation.
 ;----------------------------------------------------------------------------------------------------
 
 	.486
@@ -16,6 +17,7 @@
 	;Includes
 	include ..\..\Irvine\Irvine32.inc
 	include string1.inc
+	include string2.inc
 	
 	;Prototypes
 	getstring	PROTO Near32 stdcall, lpStringToGet:dword, dlength:dword
@@ -25,17 +27,27 @@
 	ExitProcess PROTO, dwExitCode:dword
 	
 	;External Prototypes
-	EXTERN setString@4:PROC
-	EXTERN String_equals@8:PROC
-	EXTERN String_equalsIgnoreCase@8:PROC
-	EXTERN String_copy@4:PROC
-	EXTERN String_substring_1@12:PROC
-	EXTERN String_substring_2@8:PROC
-	EXTERN String_charat@8:PROC
-	EXTERN String_startsWith_1@12:PROC
-	EXTERN String_startsWith_2@8:PROC
-	EXTERN String_endsWith@8:PROC
-
+	EXTERN setString@0:PROC
+	EXTERN String_equals@0:PROC
+	EXTERN String_equalsIgnoreCase@0:PROC
+	EXTERN String_copy@0:PROC
+	EXTERN String_substring_1@0:PROC
+	EXTERN String_substring_2@0:PROC
+	EXTERN String_charat@0:PROC
+	EXTERN String_startsWith_1@0:PROC
+	EXTERN String_startsWith_2@0:PROC
+	EXTERN String_endsWith@0:PROC
+	EXTERN String_indexOf_1@0:PROC
+	EXTERN String_indexOf_2@0:PROC
+	EXTERN String_indexOf_3@0:PROC
+	EXTERN String_lastIndexOf_1@0:PROC
+	EXTERN String_lastIndexOf_2@0:PROC
+	EXTERN String_lastIndexOf_3@0:PROC
+	EXTERN String_replace@0:PROC
+	EXTERN String_concat@0:PROC
+	EXTERN String_toLowerCase@0:PROC
+	EXTERN String_toUpperCase@0:PROC
+	
 	;Constants
 
 
@@ -59,25 +71,42 @@ strMenu7		BYTE 0Ah,   "* <5> String_equalsIgnoreCase(string1, string2)  currentl
 dCaseEqualsPtr	DWORD OFFSET strFalse
 strMenu8		BYTE 0Ah,   "* <6> String_copy(string1)                       &", 0
 strMenu8a		BYTE "  currently:", 0
+dStr6Ptr		DWORD OFFSET strNull
 strMenu9		BYTE 0Ah,   "* <7> String_substring_1                         &", 0
 strMenu9a		BYTE "  currently:", 0
+dStr7Ptr		DWORD OFFSET strNull
 strMenu10		BYTE 0Ah,   "* <8> String_substring_2                         &", 0
 strMenu10a		BYTE "  currently:", 0
+dStr8Ptr		DWORD OFFSET strNull
 strMenu11		BYTE 0Ah,   "* <9> String_charAt                              currently:", 0
 strCharAt 		BYTE 2 DUP(0)
+dPtrCharAt		DWORD OFFSET strNull
 strMenu12		BYTE 0Ah,   "* <10> String_startsWith_1                       currently:", 0
+dStarts1Ptr		DWORD OFFSET strFalse
 strMenu13		BYTE 0Ah,   "* <11> String_startsWith_2                       currently:", 0
+dStarts2Ptr		DWORD OFFSET strFalse
 strMenu14		BYTE 0Ah,   "* <12> String_endsWith                           currently:", 0
+dEndsPtr		DWORD OFFSET strFalse
 strMenu15		BYTE 0Ah,   "* <13> String_indexOf_1                          currently:", 0
+dIndex1			DWORD -1
 strMenu16		BYTE 0Ah,   "* <14> String_indexOf_2                          currently:", 0
+dIndex2			DWORD -1
 strMenu17		BYTE 0Ah,   "* <15> String_indexOf_3                          currently:", 0
+dIndex3			DWORD -1
 strMenu18		BYTE 0Ah,   "* <16> String_lastIndexOf_1                      currently:", 0
+dLastIndex1		DWORD -1
 strMenu19		BYTE 0Ah,   "* <17> String_lastIndexOf_2                      currently:", 0
+dLastIndex2		DWORD -1
 strMenu20		BYTE 0Ah,   "* <18> String_lastIndexOf_3                      currently:", 0
+dLastIndex3		DWORD -1
 strMenu21		BYTE 0Ah,   "* <19> String_concat                             currently:", 0
+dConcatPtr		DWORD OFFSET strNull
 strMenu22		BYTE 0Ah,   "* <20> String_replace                            currently:", 0
+dReplacePtr		DWORD OFFSET strNull
 strMenu23		BYTE 0Ah,   "* <21> String_toLowerCase                        currently:", 0
+dLowerPtr		DWORD OFFSET strNull
 strMenu24		BYTE 0Ah,   "* <22> String_toUpperCase                        currently:", 0
+dUpperPtr		DWORD OFFSET strNull
 strMenu25		BYTE 0Ah,   "* <23> Quit                                               *", 0Ah
 strMenu26		BYTE        "***********************************************************"
 strChoice		BYTE 0Ah, "Choice (1-23): ", 0
@@ -87,18 +116,10 @@ dChoice			DWORD ?
 dlength			DWORD 0
 strFalse		BYTE "FALSE", 0
 strTrue			BYTE "TRUE", 0 
-strErrChoice	BYTE "The desired choice does not exist, re-enter your choice.", 0Ah, 0
+strErrChoice	BYTE 0Ah, 0Ah, "The desired choice does not exist, re-enter your choice.", 0Ah, 0
 strNull			BYTE "NULL", 0
 strStringSelect BYTE "Which string do you want the length of( 1 or 2): ", 0
 strSelection    BYTE 2 DUP(0)
-
-dStr6Ptr		DWORD OFFSET strNull
-dStr7Ptr		DWORD OFFSET strNull
-dStr8Ptr		DWORD OFFSET strNull
-dPtrCharAt		DWORD OFFSET strNull
-dStarts1Ptr		DWORD OFFSET strFalse
-dStarts2Ptr		DWORD OFFSET strFalse
-dEndsPtr		DWORD OFFSET strFalse
 
 strCharAtPrompt				BYTE 	"Please input an index: ", 0	
 strSubStringPrompt			BYTE 	"Please input a starting index: ", 0
@@ -191,17 +212,35 @@ menuOut proc
 	INVOKE putstring, addr strMenu7
 	INVOKE putstring, dCaseEqualsPtr
 	INVOKE putstring, addr strMenu8
+	CMP dStr6Ptr, OFFSET strNull
+	JNE LSIXA
+	MOV EAX, 0h
+	JMP LSIXB
+LSIXA:
 	MOV EAX, dStr6Ptr
+LSIXB:	
 	CALL WriteHex
 	INVOKE putstring, addr strMenu8a
 	INVOKE putstring, dStr6Ptr
 	INVOKE putstring, addr strMenu9
+	CMP dStr7Ptr, OFFSET strNull
+	JNE LSEVA
+	MOV EAX, 0h
+	JMP LSEVB
+LSEVA:
 	MOV EAX, dStr7Ptr
+LSEVB:	
 	CALL WriteHex
 	INVOKE putstring, addr strMenu9a
 	INVOKE putstring, dStr7Ptr
 	INVOKE putstring, addr strMenu10
+	CMP dStr8Ptr, OFFSET strNull
+	JNE LEIGHTA
+	MOV EAX, 0h
+	JMP LEIGHTB
+LEIGHTA:
 	MOV EAX, dStr8Ptr
+LEIGHTB:	
 	CALL WriteHex
 	INVOKE putstring, addr strMenu10a
 	INVOKE putstring, dStr8Ptr
@@ -214,15 +253,31 @@ menuOut proc
 	INVOKE putstring, addr strMenu14
 	INVOKE putString, dEndsPtr
 	INVOKE putstring, addr strMenu15
+	MOV EAX, dIndex1
+	CALL WriteInt
 	INVOKE putstring, addr strMenu16
+	MOV EAX, dIndex2
+	CALL WriteInt
 	INVOKE putstring, addr strMenu17
+	MOV EAX, dIndex3
+	CALL WriteInt	
 	INVOKE putstring, addr strMenu18
+	MOV EAX, dLastIndex1
+	CALL WriteInt
 	INVOKE putstring, addr strMenu19
+	MOV EAX, dLastIndex2
+	CALL WriteInt
 	INVOKE putstring, addr strMenu20
+	MOV EAX, dLastIndex3
+	CALL WriteInt
 	INVOKE putstring, addr strMenu21
+	INVOKE putstring, dConcatPtr
 	INVOKE putstring, addr strMenu22
+	INVOKE putstring, dReplacePtr
 	INVOKE putstring, addr strMenu23
+	INVOKE putstring, dLowerPtr
 	INVOKE putstring, addr strMenu24
+	INVOKE putstring, dUpperPtr
 	INVOKE putstring, addr strMenu25
 	
 	RET
@@ -246,15 +301,15 @@ getSubRoutine proc
 	
 	.if EDX == 1;---------------------------	
 	PUSH EBX								;push EBX
-	CALL setString@4						;call setString@4
-	;ADD ESP, 4								;add 4 bytes to ESP
+	CALL setString@0						;call setString@4
+	ADD ESP, 4								;add 4 bytes to ESP
 	
 	JMP RETURN
 	
 	.elseif EDX == 2;-----------------------
 	PUSH EAX								;push EAX
-	CALL setString@4						;call setString@4
-	;ADD ESP, 4								;add 4 bytes to ESP
+	CALL setString@0						;call setString@4
+	ADD ESP, 4								;add 4 bytes to ESP
 	
 	JMP RETURN
 	
@@ -285,7 +340,8 @@ LENGTHCALL:
 	
 	PUSH EAX								;push EAX
 	PUSH EBX								;push EBX
-	CALL String_equals@8					;call String_equals@8
+	CALL String_equals@0					;call String_equals@8
+	ADD ESP, 8
 	
 	CMP AL, 0								;compare AL to zero
 	JE J4									;jump to J4 if AL == 0
@@ -300,7 +356,8 @@ J4:
 	
 	PUSH EAX								;push EAX
 	PUSH EBX								;push EBX
-	CALL String_equalsIgnoreCase@8			;call String_equalsIgnoreCase
+	CALL String_equalsIgnoreCase@0			;call String_equalsIgnoreCase
+	ADD ESP, 8
 	
 	CMP AL, 0								;compare AL to zero
 	JE J5									;jump to J5 if AL == 0
@@ -311,7 +368,8 @@ J5:
 	
 	.elseif EDX == 6;-----------------------
 	PUSH EBX								;push EBX to the stack
-	CALL String_copy@4						;call String_copy@4
+	CALL String_copy@0						;call String_copy@4
+	ADD ESP, 4
 	MOV dStr6Ptr, EAX						;move new address into memory
 	
 	JMP RETURN
@@ -334,14 +392,14 @@ J5:
 	CMP ECX, EAX									;compare result to stringLrngth
 	JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
 	
-PROMPT7b:	
-	MOV EBX, 1										;move 1 into EBX
+PROMPT7b:										;move 1 into EBX
 	INVOKE putString, addr strSubStringPrompt2		;write prompt to the console							;call WriteString
 	INVOKE getString, addr strEndInd, 3				;get the input from the console
 	INVOKE ascint32, addr strEndInd					;convert ascii values to real integer values
 	MOV intEndInd, EAX								;move result of conversion into intEndInd
 	MOV EDX, EAX									;move result into EDX
 
+	MOV EBX, 1	
 	CMP EDX, 1										;compare result to 1
 	JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
 	PUSH ESI										;push ESI
@@ -352,7 +410,8 @@ PROMPT7b:
 	PUSH EDX										;push EDX
 	PUSH ECX										;push ECX
 	PUSH ESI										;PUSH ESI
-	CALL String_substring_1@12						;call String_substring_1@8
+	CALL String_substring_1@0						;call String_substring_1@8
+	ADD ESP, 12
 	MOV dStr7Ptr, EAX								;move resulting address to dStr7Ptr
 	
 	JMP RETURN
@@ -384,7 +443,8 @@ OUTOFBOUNDS7:
 
 	PUSH ECX										;push ECX
 	PUSH ESI										;push ESI
-	CALL String_substring_2@8						;call String_substring_1@8
+	CALL String_substring_2@0						;call String_substring_1@8
+	ADD ESP, 8
 	MOV dStr8Ptr, EAX								;move new address into memory
 	
 	JMP RETURN
@@ -402,11 +462,12 @@ OUTOFBOUNDS8:
 	
 	PUSH EAX										;push EAX
 	PUSH EBX										;push ESI
-	CALL String_charat@8							;call String_charat
+	CALL String_charat@0							;call String_charat
+	ADD ESP, 8										
 	
 	CMP AL, 0
 	JE RETURN
-	MOV dPtrCharAt, OFFSET strCharAt
+	MOV dPtrCharAt, OFFSET strCharAt				;move char address into memory
 	MOV strCharAt, AL
 	
 	JMP RETURN
@@ -424,7 +485,8 @@ OUTOFBOUNDS8:
 	MOV EAX, OFFSET strString2						;move the offset address of strString2 into EAX
 	PUSH EAX										;push EAX
 	PUSH EBX										;push ESI
-	CALL String_startsWith_1@12						;call String_startsWith_1
+	CALL String_startsWith_1@0						;call String_startsWith_1
+	ADD ESP, 12
 	
 	CMP AL, 0										;compare AL to zero
 	JE J10											;jump to J4 if AL == 0
@@ -440,7 +502,8 @@ J10:
 	
 	PUSH EAX										;push EAX
 	PUSH EBX										;push ESI
-	CALL String_startsWith_2@8						;call String_startsWith_1
+	CALL String_startsWith_2@0						;call String_startsWith_1
+	ADD ESP, 8
 	
 	CMP AL, 0										;compare AL to zero
 	JE J11											;jump to J4 if AL == 0
@@ -456,7 +519,8 @@ J11:
 	
 	PUSH EAX										;push EAX
 	PUSH EBX										;push ESI
-	CALL String_endsWith@8							;call String_startsWith_1
+	CALL String_endsWith@0							;call String_startsWith_1
+	ADD EBP, 8
 	
 	CMP AL, 0										;compare AL to zero
 	JE J12											;jump to J4 if AL == 0
@@ -466,33 +530,85 @@ J12:
 	JMP RETURN
 	
 	.elseif EDX == 13;-----------------------
+	Call CLrscr
+	push EBX
+	call String_indexOf_1
+	add esp, 4
+	mov dIndex1, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 14;-----------------------
+	Call CLrscr
+	push offset strString1
+	call String_indexOf_2
+	add esp, 4
+	mov dIndex2, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 15;-----------------------
+	Call CLrscr
+	push offset strString2
+	push offset strString1
+	call String_indexOf_3
+	add esp, 8
+	mov dIndex3, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 16;-----------------------
+	Call CLrscr
+	push offset strString1
+	call String_lastIndexOf_1
+	add esp, 4
+	mov dLastIndex1, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 17;-----------------------
+	Call CLrscr
+	push offset strString1
+	call String_lastIndexOf_2
+	add esp, 4
+	mov dLastIndex2, DWORD PTR [AL]
+	
 	JMP RETURN
 	
 	.elseif EDX == 18;-----------------------
+	call CLrscr
+	push offset strString2
+	push offset strString1
+	call String_lastIndexOf_3
+	add esp, 8
+	mov dLastIndex3, DWORD PTR [AL]
 	JMP RETURN
 	
 	.elseif EDX == 19;-----------------------
+	call CLrscr
+	push offset strString2
+	push offset strString1
+	call String_replace
+	add esp, 8
+	mov dReplacePtr, EAX
 	JMP RETURN
 	
 	.elseif EDX == 20;-----------------------
+	
 	JMP RETURN
 	
 	.elseif EDX == 21;-----------------------
+	call CLrscr
+	push EAX
+	push EBX
+	call String_toLowerCase@0
+	add esp, 8
+	mov dLowerPtr, EAX
 	JMP RETURN
 	
 	.elseif EDX == 22;-----------------------
+	call CLrscr
+	push EAX
+	push EBX
+	call String_toUpperCase@0
+	add esp, 8
+	mov dUpperPtr, EAX
 	JMP RETURN
 	
 	.endif

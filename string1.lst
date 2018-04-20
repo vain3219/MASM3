@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/17/18 16:12:24
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 17:11:34
 string1.asm						     Page 1 - 1
 
 
@@ -6,13 +6,13 @@ string1.asm						     Page 1 - 1
 				;	FILE NAME : string1.asm
 				;----------------------------------------------------------------------------------------------------
 				;
-				;		Program Name	:
+				;		Program Name	:	MASM3
 				;		Programmer		:	Cody Thompson 
 				;		Class			:	CS 3B || Asm Lang
-				;		Date			:	
+				;		Date			:	4/02/2018
 				;		Purpose			:
-				;
-				;
+				;		This file contains the definitions for the external sub routines that will be called by the driver
+				;	MASM3.asm
 				;----------------------------------------------------------------------------------------------------
 
 					.486
@@ -61,23 +61,28 @@ string1.asm						     Page 1 - 1
  00000000				.code						
 
 				;----------------------------------------------------------------------------------------------------
- 00000000			setString proc PUBLIC, intStrAddr:DWORD
+ 00000000			setString proc PUBLIC
 				;
 				;		Sets the value of String1.
 				;
 				;	Receives the offset address of strString1 from masm3.asm.
 				;	Returns nothing
 				;----------------------------------------------------------------------------------------------------
+ = [EBP + 8]			intStrAddr EQU [EBP + 8]
+ 00000000  55				PUSH EBP
+ 00000001  8B EC			MOV EBP, ESP
+					
  00000003  E8 00000000 E		CALL Clrscr										;clear the screen
 					
 					INVOKE putString, addr strSetString				;output strSetString to the console
 					INVOKE getString, intStrAddr, 32				;get input from the console and store it in memory labeled intStr1Addr
 					
-					RET												;return
- 00000020			setString ENDP									;end of setString1
+ 0000001C  5D				POP EBP
+ 0000001D  C3				RET												;return
+ 0000001E			setString ENDP									;end of setString1
 
 				;----------------------------------------------------------------------------------------------------
- 00000020			String_equals proc PUBLIC, intStr1Addr:DWORD, intStr2Addr:DWORD
+ 0000001E			String_equals proc PUBLIC
 				;
 				;		This sub routine will compare strString1 and strString2 for an exact match.  This is a case
 				;	and length sensitive comparison.  If a match is found 01 will be returned to the AL register,
@@ -86,40 +91,47 @@ string1.asm						     Page 1 - 1
 				;	Receives the offset address of strString1, strString2, and lengths of both strString1 & 2 from the stack 
 				;	Returns results to the AL register
 				;----------------------------------------------------------------------------------------------------
- 00000023  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
- 00000026  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
+ = [EBP+8]			intStr1Addr EQU [EBP+8]
+ = [EBP+12]			intStr2Addr EQU [EBP+12]
+
+ 0000001E  55				PUSH EBP
+ 0000001F  8B EC			MOV EBP, ESP
+					
+ 00000021  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
+ 00000024  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
 					INVOKE String_length, EDI						;get length of intStr1Addr
- 0000002F  8B C8			MOV ECX, EAX									;set ECX equal to EAX
+ 0000002D  8B C8			MOV ECX, EAX									;set ECX equal to EAX
 					
 					INVOKE String_length, EDX						;get length of intStr2Addr
 					
- 00000037  3B C8			CMP ECX, EAX									;compare lengths of string1 and string2
- 00000039  75 14			JNE NOTEQL										;if the lengths aren't equal jump to NOTEQL
+ 00000035  3B C8			CMP ECX, EAX									;compare lengths of string1 and string2
+ 00000037  75 14			JNE NOTEQL										;if the lengths aren't equal jump to NOTEQL
 					
- 0000003B  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
- 0000003E  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
+ 00000039  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
+ 0000003C  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
 					
- 00000041			L1:
- 00000041  8A 1F			MOV BL, [EDI]									;move the element at the address in EDI into BL
- 00000043  3A 1A			CMP BL, [EDX]									;compare BL to the element at the address in EDX
- 00000045  75 08			JNE NOTEQL										;if BL and [EDX] are not equal then jump to NOTEQL
- 00000047  47				INC EDI											;go to the next element in EDI
- 00000048  42				INC EDX											;go to the next element in EDX
- 00000049  E2 F6			LOOP L1											;loop to L1
+ 0000003F			L1:
+ 0000003F  8A 1F			MOV BL, [EDI]									;move the element at the address in EDI into BL
+ 00000041  3A 1A			CMP BL, [EDX]									;compare BL to the element at the address in EDX
+ 00000043  75 08			JNE NOTEQL										;if BL and [EDX] are not equal then jump to NOTEQL
+ 00000045  47				INC EDI											;go to the next element in EDI
+ 00000046  42				INC EDX											;go to the next element in EDX
+ 00000047  E2 F6			LOOP L1											;loop to L1
 					
- 0000004B  B0 01			MOV AL, 1										;TRUE CONDITION -- move 1 into AL
- 0000004D  EB 02			JMP RETURN										;jump to RETURN
+ 00000049  B0 01			MOV AL, 1										;TRUE CONDITION -- move 1 into AL
+ 0000004B  EB 02			JMP RETURN										;jump to RETURN
 					
- 0000004F			NOTEQL:
- 0000004F  B0 00			MOV AL, 0										;FALSE CONDITION -- move 0 into AL
+ 0000004D			NOTEQL:
+ 0000004D  B0 00			MOV AL, 0										;FALSE CONDITION -- move 0 into AL
 					
- 00000051			RETURN:
-					RET
- 00000055			String_equals ENDP
+ 0000004F			RETURN:
+ 0000004F  5D				POP EBP
+ 00000050  C3				RET
+ 00000051			String_equals ENDP
 
 
 				;----------------------------------------------------------------------------------------------------
- 00000055			String_equalsIgnoreCase proc PUBLIC, intStr1Addr:DWORD, intStr2Addr:DWORD
+ 00000051			String_equalsIgnoreCase proc PUBLIC
 				;
 				;		This sub routine will compare strString1 and strString2 for an exact match.  This is not case
 				;	sensitive but is length sensitive.  If a match is found 01 will be returned to the AL register,
@@ -128,69 +140,76 @@ string1.asm						     Page 1 - 1
 				;	Receives the offset address of strString1, strString2, and lengths of both strString1 & 2 from the stack 
 				;	Returns results to the AL register
 				;----------------------------------------------------------------------------------------------------
- 00000058  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
+ = [EBP+8]			intStr1Addr EQU [EBP+8]
+ = [EBP+12]			intStr2Addr EQU [EBP+12]
+
+ 00000051  55				PUSH EBP										;save EBP
+ 00000052  8B EC			MOV EBP, ESP									;set EBP=ESP
+					
+ 00000054  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
 					INVOKE String_length, EDI
 
- 00000061  8B C8			MOV ECX, EAX        							;move intStr1Length into ECX for LOOP instruction
- 00000063  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
+ 0000005D  8B C8			MOV ECX, EAX        							;move intStr1Length into ECX for LOOP instruction
+ 0000005F  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
 					
 					INVOKE String_length, EDX
 					
- 0000006C  3B C8			CMP ECX, EAX									;compare lengths of string1 and string2
- 0000006E  75 40			JNE NOTEQL										;if the lengths aren't equal jump to NOTEQL
+ 00000068  3B C8			CMP ECX, EAX									;compare lengths of string1 and string2
+ 0000006A  75 40			JNE NOTEQL										;if the lengths aren't equal jump to NOTEQL
 					
- 00000070  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
- 00000073  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
+ 0000006C  8B 7D 08			MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
+ 0000006F  8B 55 0C			MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
 					
- 00000076			L1:
- 00000076  B8 00000001			MOV EAX, 1										;move 1 into EAX to keep track of how many times each index if compared (2 max)
- 0000007B  8A 1F			MOV BL, [EDI]									;move the element at the address in EDI into BL
- 0000007D			L2:	
- 0000007D  3A 1A			CMP BL, [EDX]									;compare BL to the element at the address in EDX
- 0000007F  74 1B			JE MATCH										;jump to MATCH if BL == [EDX]
+ 00000072			L1:
+ 00000072  B8 00000001			MOV EAX, 1										;move 1 into EAX to keep track of how many times each index if compared (2 max)
+ 00000077  8A 1F			MOV BL, [EDI]									;move the element at the address in EDI into BL
+ 00000079			L2:	
+ 00000079  3A 1A			CMP BL, [EDX]									;compare BL to the element at the address in EDX
+ 0000007B  74 1B			JE MATCH										;jump to MATCH if BL == [EDX]
 					
- 00000081  83 F8 00			CMP EAX, 0										;compare EAX to zero, checking if the index has been compared once already
- 00000084  74 2A			JE NOTEQL										;jump to NOTEQL if EAX == 0
+ 0000007D  83 F8 00			CMP EAX, 0										;compare EAX to zero, checking if the index has been compared once already
+ 00000080  74 2A			JE NOTEQL										;jump to NOTEQL if EAX == 0
 					
- 00000086  80 FB 41			CMP BL, 41h										;ensure that BL isn't less than 41h (special character)
- 00000089  7C 25			JL NOTEQL										;jump to NOTEQL if bl is less than 41h
- 0000008B  80 FB 5A			CMP BL, 5Ah										;ensure that BL is in the range of 41h - 5Ah
- 0000008E  7C 14			JL UPPER										;if BL is less than 5A then it is within the range, jump to UPPER
+ 00000082  80 FB 41			CMP BL, 41h										;ensure that BL isn't less than 41h (special character)
+ 00000085  7C 25			JL NOTEQL										;jump to NOTEQL if bl is less than 41h
+ 00000087  80 FB 5A			CMP BL, 5Ah										;ensure that BL is in the range of 41h - 5Ah
+ 0000008A  7C 14			JL UPPER										;if BL is less than 5A then it is within the range, jump to UPPER
 
- 00000090  80 FB 61			CMP BL, 61h										;ensure that BL isn't less than 61h (special character)
- 00000093  7C 1B			JL NOTEQL										;jump to NOTEQL if BL is less than 61h
- 00000095  80 FB 7A			CMP BL, 7Ah										;ensure that BL is in the range of 61h - 7Ah
- 00000098  7C 10			JL LOWER										;if BL is less than 7A then it is within the range, jump to LOWER
+ 0000008C  80 FB 61			CMP BL, 61h										;ensure that BL isn't less than 61h (special character)
+ 0000008F  7C 1B			JL NOTEQL										;jump to NOTEQL if BL is less than 61h
+ 00000091  80 FB 7A			CMP BL, 7Ah										;ensure that BL is in the range of 61h - 7Ah
+ 00000094  7C 10			JL LOWER										;if BL is less than 7A then it is within the range, jump to LOWER
 					
- 0000009A  75 14			JNE NOTEQL										;if BL and [EDX] are not equal then jump to NOTEQL
- 0000009C			MATCH:
- 0000009C  47				INC EDI											;go to the next element in EDI
- 0000009D  42				INC EDX											;go to the next element in EDX
- 0000009E  E2 D6			LOOP L1											;loop to L1
+ 00000096  75 14			JNE NOTEQL										;if BL and [EDX] are not equal then jump to NOTEQL
+ 00000098			MATCH:
+ 00000098  47				INC EDI											;go to the next element in EDI
+ 00000099  42				INC EDX											;go to the next element in EDX
+ 0000009A  E2 D6			LOOP L1											;loop to L1
 					
- 000000A0  B0 01			MOV AL, 1										;TRUE CONDITION -- move 1 into AL
- 000000A2  EB 0E			JMP RETURN										;jump to RETURN
+ 0000009C  B0 01			MOV AL, 1										;TRUE CONDITION -- move 1 into AL
+ 0000009E  EB 0E			JMP RETURN										;jump to RETURN
 					
- 000000A4			UPPER:
- 000000A4  48				DEC EAX											;decrement EAX
- 000000A5  80 C3 20			ADD BL, 20h										;add 20h to BL making it the lowercase complement
- 000000A8  EB D3			JMP L2											;jump to L2
+ 000000A0			UPPER:
+ 000000A0  48				DEC EAX											;decrement EAX
+ 000000A1  80 C3 20			ADD BL, 20h										;add 20h to BL making it the lowercase complement
+ 000000A4  EB D3			JMP L2											;jump to L2
 					
- 000000AA			LOWER:
- 000000AA  48				DEC EAX											;decrement EAX 
- 000000AB  80 EB 20			SUB BL, 20h										;subtract 20h from BL making it the uppercase complement
- 000000AE  EB CD			JMP L2											;jump to L2
+ 000000A6			LOWER:
+ 000000A6  48				DEC EAX											;decrement EAX 
+ 000000A7  80 EB 20			SUB BL, 20h										;subtract 20h from BL making it the uppercase complement
+ 000000AA  EB CD			JMP L2											;jump to L2
 					
- 000000B0			NOTEQL:
- 000000B0  B0 00			MOV AL, 0										;FALSE CONDITION -- move 0 into AL
+ 000000AC			NOTEQL:
+ 000000AC  B0 00			MOV AL, 0										;FALSE CONDITION -- move 0 into AL
 					
- 000000B2			RETURN:
-					RET
- 000000B6			String_equalsIgnoreCase ENDP
+ 000000AE			RETURN:
+ 000000AE  5D				POP EBP
+ 000000AF  C3				RET
+ 000000B0			String_equalsIgnoreCase ENDP
 
 
 				;----------------------------------------------------------------------------------------------------
- 000000B6			String_copy proc PUBLIC, intStr1Addr:DWORD
+ 000000B0			String_copy proc PUBLIC
 				;
 				;		This sub routine will copy the contents of strString1 into newly allocated memory.  Memory will
 				;	be allocated using Dr. Baileys memoryallocBailey procedure.  The address of the newly allocated 
@@ -199,31 +218,37 @@ string1.asm						     Page 1 - 1
 				;	Receives the address of strString1 and its length from the stack
 				;	Returns the address of the new string to the EAX register
 				;----------------------------------------------------------------------------------------------------
- 000000B9  8B 75 08			MOV ESI, intStr1Addr							;move the offset address of string1 into ESI
+ = [EBP+8]			intStr1Addr EQU [EBP+8]	
+
+ 000000B0  55				PUSH EBP										;save EBP
+ 000000B1  8B EC			MOV EBP, ESP									;set EBP=ESP
+					
+ 000000B3  8B 75 08			MOV ESI, intStr1Addr							;move the offset address of string1 into ESI
 					INVOKE String_length, ESI						;get the length of ESI
- 000000C2  8B C8			MOV ECX, EAX		 							;move the length of string1 into ECX
- 000000C4  41				INC ECX											;increment ECX to account for the null terminator
+ 000000BC  8B C8			MOV ECX, EAX		 							;move the length of string1 into ECX
+ 000000BE  41				INC ECX											;increment ECX to account for the null terminator
 					
 					INVOKE memoryallocBailey, ECX					;allocate a memory of size string1Length +1
- 000000CB  8B F8			MOV EDI, EAX									;move the newly allocated address into EDI
- 000000CD  49				DEC ECX											;decrement ECX by one
+ 000000C5  8B F8			MOV EDI, EAX									;move the newly allocated address into EDI
+ 000000C7  49				DEC ECX											;decrement ECX by one
 					
- 000000CE			L1:
- 000000CE  8A 1E			MOV BL, [ESI]									;move the nth index of [ESI] into BL
- 000000D0  88 1F			MOV [EDI], BL									;move BL into nth index of [EDI]
- 000000D2  47				INC EDI											;increment EDI by one
- 000000D3  46				INC ESI											;increment ESI by one 
- 000000D4  E2 F8			LOOP L1											;LOOP to L1
+ 000000C8			L1:
+ 000000C8  8A 1E			MOV BL, [ESI]									;move the nth index of [ESI] into BL
+ 000000CA  88 1F			MOV [EDI], BL									;move BL into nth index of [EDI]
+ 000000CC  47				INC EDI											;increment EDI by one
+ 000000CD  46				INC ESI											;increment ESI by one 
+ 000000CE  E2 F8			LOOP L1											;LOOP to L1
 					
- 000000D6  8A 5E 01			MOV BL, [ESI + 1]								;move the null terminator into BL
- 000000D9  88 5F 01			MOV [EDI + 1], BL								;move the null terminator into the last index of [EDI]
+ 000000D0  8A 5E 01			MOV BL, [ESI + 1]								;move the null terminator into BL
+ 000000D3  88 5F 01			MOV [EDI + 1], BL								;move the null terminator into the last index of [EDI]
 					
-					RET			
- 000000E0			String_copy ENDP
+ 000000D6  5D				POP EBP
+ 000000D7  C3				RET			
+ 000000D8			String_copy ENDP
 
 
 				;----------------------------------------------------------------------------------------------------
- 000000E0			String_substring_1 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD, intEndInd:DWORD
+ 000000D8			String_substring_1 proc PUBLIC
 				;
 				;		This sub routine will create a newly allocated comprised of a sub string from the string of the 
 				;	address provided on the stack.  A prompt will be displayed to the console asking the user for a 
@@ -233,33 +258,42 @@ string1.asm						     Page 1 - 1
 				;	Receives the address of a string and its length
 				;	Returns the address of the new string to the EAX register
 				;----------------------------------------------------------------------------------------------------
- 000000E3  8B 75 08			MOV ESI, intStrAddr								;move the offset address of intStrAddr into ESI
- 000000E6  03 75 0C			ADD ESI, intStartInd							;move the to specified starting address
- 000000E9  8B 4D 10			MOV ECX, intEndInd								;move the ending index number into ECX
- 000000EC  2B 4D 0C			SUB ECX, intStartInd							;subtract tarting index from ending index to get 
- 000000EF  41				INC ECX
+ = [EBP+8]			intStrAddr  EQU [EBP+8]
+ = [EBP+12]			intStartInd  EQU [EBP+12]
+ = [EBP+16]			intEndInd  EQU [EBP+16]
+					
+ 000000D8  55				PUSH EBP
+					
+ 000000D9  8B EC			MOV EBP, ESP
+					
+ 000000DB  8B 75 08			MOV ESI, intStrAddr								;move the offset address of intStrAddr into ESI
+ 000000DE  03 75 0C			ADD ESI, intStartInd							;move the to specified starting address
+ 000000E1  8B 4D 10			MOV ECX, intEndInd								;move the ending index number into ECX
+ 000000E4  2B 4D 0C			SUB ECX, intStartInd							;subtract tarting index from ending index to get 
+ 000000E7  41				INC ECX
 					
 					INVOKE memoryallocBailey, ECX					;allocate memory of size (end - start) + 1
- 000000F6  8B F8			MOV EDI, EAX									;move the address of the newly allocated string into the ESI register
+ 000000EE  8B F8			MOV EDI, EAX									;move the address of the newly allocated string into the ESI register
 					
- 000000F8			L1:
- 000000F8  8A 1E			MOV BL, [ESI]									;move the nth element of [ESI] into BL
- 000000FA  88 1F			MOV [EDI], BL									;move BL into the nth element of [EDI]
- 000000FC  47				INC EDI											;increment EDI by one
- 000000FD  46				INC ESI											;increment ESI by one
- 000000FE  E2 F8			LOOP L1											;LOOP to L1
+ 000000F0			L1:
+ 000000F0  8A 1E			MOV BL, [ESI]									;move the nth element of [ESI] into BL
+ 000000F2  88 1F			MOV [EDI], BL									;move BL into the nth element of [EDI]
+ 000000F4  47				INC EDI											;increment EDI by one
+ 000000F5  46				INC ESI											;increment ESI by one
+ 000000F6  E2 F8			LOOP L1											;LOOP to L1
 					
- 00000100  8A 5E 01			MOV BL, [ESI + 1]								;move the null terminator into BL
- 00000103  88 5F 01			MOV [EDI + 1], BL								;move BL into [EDI + 1]
- 00000106  EB 00			JMP RETURN										;jump to RETURN
+ 000000F8  8A 5E 01			MOV BL, [ESI + 1]								;move the null terminator into BL
+ 000000FB  88 5F 01			MOV [EDI + 1], BL								;move BL into [EDI + 1]
+ 000000FE  EB 00			JMP RETURN										;jump to RETURN
 					
- 00000108			RETURN:
-					RET
- 0000010C			String_substring_1 ENDP
+ 00000100			RETURN:
+ 00000100  5D				POP EBP
+ 00000101  C3				RET
+ 00000102			String_substring_1 ENDP
 
 
 				;----------------------------------------------------------------------------------------------------
- 0000010C			String_substring_2 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD
+ 00000102			String_substring_2 proc PUBLIC
 				;
 				;		This sub routine will create a newly allocated comprised of a sub string from the string of the 
 				;	address provided on the stack.  A prompt will be displayed to the console asking the user for a 
@@ -269,33 +303,40 @@ string1.asm						     Page 1 - 1
 				;	Receives the address of a string and its length
 				;	Returns the address of the new string to the EAX register
 				;----------------------------------------------------------------------------------------------------
- 0000010F  8B 75 08			MOV ESI, intStrAddr								;move the offset address of intStrAddr into ESI
- 00000112  03 75 0C			ADD ESI, intStartInd							;move the to specified starting address
+ = [EBP+8]			intStrAddr EQU [EBP+8]
+ = [EBP+12]			intStartInd EQU [EBP+12]
+
+ 00000102  55				PUSH EBP										;save EBP on the stack	
+ 00000103  8B EC			MOV EBP, ESP									;set EBP = ESP
+					
+ 00000105  8B 75 08			MOV ESI, intStrAddr								;move the offset address of intStrAddr into ESI
+ 00000108  03 75 0C			ADD ESI, intStartInd							;move the to specified starting address
 					
 					INVOKE String_length, intStrAddr				;get length of [intStrAddr]
- 0000011D  8B C8			MOV ECX, EAX									;move the length into ECX for LOOP
+ 00000113  8B C8			MOV ECX, EAX									;move the length into ECX for LOOP
 					
 					INVOKE memoryallocBailey, ECX					;allocate memory of size (end - start) + 1
- 00000125  8B F8			MOV EDI, EAX									;move the address of the newly allocated string into the ESI register
+ 0000011B  8B F8			MOV EDI, EAX									;move the address of the newly allocated string into the ESI register
 					
- 00000127			L1:
- 00000127  8A 1E			MOV BL, [ESI]									;move the nth element of [ESI] into BL
- 00000129  88 1F			MOV [EDI], BL									;move BL into the nth element of [EDI]
- 0000012B  47				INC EDI											;increment EDI by one
- 0000012C  46				INC ESI											;increment ESI by one
- 0000012D  E2 F8			LOOP L1											;LOOP to L1
+ 0000011D			L1:
+ 0000011D  8A 1E			MOV BL, [ESI]									;move the nth element of [ESI] into BL
+ 0000011F  88 1F			MOV [EDI], BL									;move BL into the nth element of [EDI]
+ 00000121  47				INC EDI											;increment EDI by one
+ 00000122  46				INC ESI											;increment ESI by one
+ 00000123  E2 F8			LOOP L1											;LOOP to L1
 					
- 0000012F  8A 5E 01			MOV BL, [ESI + 1]								;move the null terminator into BL
- 00000132  88 5F 01			MOV [EDI + 1], BL								;move BL into [EDI + 1]
- 00000135  EB 00			JMP RETURN										;jump to RETURN
+ 00000125  8A 5E 01			MOV BL, [ESI + 1]								;move the null terminator into BL
+ 00000128  88 5F 01			MOV [EDI + 1], BL								;move BL into [EDI + 1]
+ 0000012B  EB 00			JMP RETURN										;jump to RETURN
 					
- 00000137			RETURN:
-					RET
- 0000013B			String_substring_2 ENDP
+ 0000012D			RETURN:
+ 0000012D  5D				POP EBP
+ 0000012E  C3				RET
+ 0000012F			String_substring_2 ENDP
 
 
 				;----------------------------------------------------------------------------------------------------
- 0000013B			String_charat proc PUBLIC, intStrAddr:DWORD, intIndex:DWORD
+ 0000012F			String_charat proc PUBLIC
 				;
 				;		This sub routine will return the character at the specified index to the AL register.  if the 
 				;	index is an impossible location a 0 will be returned to the AL register.
@@ -303,30 +344,37 @@ string1.asm						     Page 1 - 1
 				;	Receives a string address and the length of that string from the stack
 				;	Returns a character to the AL register
 				;----------------------------------------------------------------------------------------------------
- 0000013E  8B 45 0C			MOV EAX, intIndex								;move index into EAX
- 00000141  83 F8 01			CMP EAX, 1										;compare result to 1
- 00000144  7C 1A			JL OUTOFBOUNDS									;jump to OUTOFBOUNDS if the input value is >1
-					INVOKE String_length, intStrAddr				;get length of [intStrAddr]	
- 0000014E  39 45 0C			CMP intIndex, EAX								;compare result to stringLrngth
- 00000151  7F 0D			JG OUTOFBOUNDS									;jump to OUTOFBOUNDS if the input value > length
+ = [EBP+8]			intStrAddr EQU [EBP+8]
+ = [EBP+12]			intIndex EQU [EBP+12]
 
- 00000153  8B 45 0C			MOV EAX, intIndex
- 00000156  48				DEC EAX											;decrement EAX
- 00000157  8B 7D 08			MOV EDI, intStrAddr								;move the offset address of the string into EDI
- 0000015A  03 F8			ADD EDI, EAX									;move to the address of the specified index
- 0000015C  8A 07			MOV AL, [EDI]									;move the contents at the index into AL
- 0000015E  EB 02			JMP RETURN
+ 0000012F  55				PUSH EBP
+ 00000130  8B EC			MOV EBP, ESP
 					
- 00000160			OUTOFBOUNDS:
- 00000160  B0 00			MOV AL, 0										;move 0 into AL
+ 00000132  8B 45 0C			MOV EAX, intIndex								;move index into EAX
+ 00000135  83 F8 01			CMP EAX, 1										;compare result to 1
+ 00000138  7C 1A			JL OUTOFBOUNDS									;jump to OUTOFBOUNDS if the input value is >1
+					INVOKE String_length, intStrAddr				;get length of [intStrAddr]	
+ 00000142  39 45 0C			CMP intIndex, EAX								;compare result to stringLrngth
+ 00000145  7F 0D			JG OUTOFBOUNDS									;jump to OUTOFBOUNDS if the input value > length
+
+ 00000147  8B 45 0C			MOV EAX, intIndex
+ 0000014A  48				DEC EAX											;decrement EAX
+ 0000014B  8B 7D 08			MOV EDI, intStrAddr								;move the offset address of the string into EDI
+ 0000014E  03 F8			ADD EDI, EAX									;move to the address of the specified index
+ 00000150  8A 07			MOV AL, [EDI]									;move the contents at the index into AL
+ 00000152  EB 02			JMP RETURN
 					
- 00000162			RETURN:	
-					RET
- 00000166			String_charat ENDP
+ 00000154			OUTOFBOUNDS:
+ 00000154  B0 00			MOV AL, 0										;move 0 into AL
+					
+ 00000156			RETURN:	
+ 00000156  5D				POP EBP
+ 00000157  C3				RET
+ 00000158			String_charat ENDP
 
 
 				;-----------------------------------------------------------------------------------------------------------
- 00000166			String_startsWith_1 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD, intPos:DWORD
+ 00000158			String_startsWith_1 proc PUBLIC
 				;
 				;		This sub routine checks if string1 starts with string2 at the specified starting position.
 				;	If the comparison is true a 1 will be returned into the AL register, otherwise a zero will be returned.
@@ -334,37 +382,45 @@ string1.asm						     Page 1 - 1
 				;	Receives the addresses of string1, string2, and an integer
 				;	Returns a 1 or 0 to the AL register
 				;-----------------------------------------------------------------------------------------------------------
- 00000169  8B 7D 08			MOV EDI, intStrAddr								;move string1 address into EDI
- 0000016C  8B 75 0C			MOV ESI, intStr2Addr							;move string2 address into ESI
- 0000016F  8B 5D 10			MOV EBX, intPos 								;move intPos into EBX
- 00000172  03 FB			ADD EDI, ebx									;add the offset of the position to string1
- 00000174  57				PUSH EDI										;push EDI because the next routine uses edi
+ = [EBP+8]			intStrAddr EQU [EBP+8]
+ = [EBP+12]			intStr2Addr EQU [EBP+12]
+ = [EBP+16]			intPos EQU [EBP+16]
+
+ 00000158  55				PUSH EBP										;save EBP
+ 00000159  8B EC			MOV EBP, ESP									;set ebp = esp
+					
+ 0000015B  8B 7D 08			MOV EDI, intStrAddr								;move string1 address into EDI
+ 0000015E  8B 75 0C			MOV ESI, intStr2Addr							;move string2 address into ESI
+ 00000161  8B 5D 10			MOV EBX, intPos 								;move intPos into EBX
+ 00000164  03 FB			ADD EDI, ebx									;add the offset of the position to string1
+ 00000166  57				PUSH EDI										;push EDI because the next routine uses edi
 					
 					INVOKE String_length, ESI						;get the length of string2
- 0000017B  8B C8			MOV ECX, EAX									;move the length of string2 into ECX
- 0000017D  5F				POP EDI											;restore EDI
+ 0000016D  8B C8			MOV ECX, EAX									;move the length of string2 into ECX
+ 0000016F  5F				POP EDI											;restore EDI
 					
- 0000017E			L1:
- 0000017E  8A 1E			MOV BL, [ESI]									;move the nth element of string2 into BL
- 00000180  3A 1F			CMP BL, [EDI]									;compare nth element to the n+pos'th element
- 00000182  75 08			JNE NOTEQL										;jump if not equal
- 00000184  46				INC ESI											;increment ESI
- 00000185  47				INC EDI											;increment EDI
- 00000186  E2 F6			LOOP L1											;loop to L1
+ 00000170			L1:
+ 00000170  8A 1E			MOV BL, [ESI]									;move the nth element of string2 into BL
+ 00000172  3A 1F			CMP BL, [EDI]									;compare nth element to the n+pos'th element
+ 00000174  75 08			JNE NOTEQL										;jump if not equal
+ 00000176  46				INC ESI											;increment ESI
+ 00000177  47				INC EDI											;increment EDI
+ 00000178  E2 F6			LOOP L1											;loop to L1
 					
- 00000188  B0 01			MOV AL, 1										;move 1 into AL (true condition)
- 0000018A  EB 02			JMP RETURN										;jump to return
+ 0000017A  B0 01			MOV AL, 1										;move 1 into AL (true condition)
+ 0000017C  EB 02			JMP RETURN										;jump to return
 					
- 0000018C			NOTEQL:
- 0000018C  B0 00			MOV AL, 0										;move 0 into AL (false condition)
+ 0000017E			NOTEQL:
+ 0000017E  B0 00			MOV AL, 0										;move 0 into AL (false condition)
 					
- 0000018E			RETURN:	
-					RET
- 00000192			String_startsWith_1 ENDP
+ 00000180			RETURN:	
+ 00000180  5D				POP EBP
+ 00000181  C3				RET
+ 00000182			String_startsWith_1 ENDP
 
 
 				;----------------------------------------------------------------------------------------------------------
- 00000192			String_startsWith_2 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
+ 00000182			String_startsWith_2 proc PUBLIC
 				;
 				;		This sub routine checks if string1 starts with string2 If the comparison is true a 1 will be 
 				;	returned into the AL register, otherwise a zero will be returned.
@@ -372,78 +428,93 @@ string1.asm						     Page 1 - 1
 				;	Receives the addresses of string1, string2, and an integer
 				;	Returns a 1 or 0 to the AL register
 				;-----------------------------------------------------------------------------------------------------------
- 00000195  8B 7D 08			MOV EDI, intStrAddr								;move string1 address into EDI
- 00000198  8B 75 0C			MOV ESI, intStr2Addr							;move string2 address into ESI
- 0000019B  57				PUSH EDI										;push EDI because the next routine uses edi
+ = [EBP+8]			intStrAddr EQU [EBP+8]	
+ = [EBP+12]			intStr2Addr EQU [EBP+12]
+
+ 00000182  55				PUSH EBP										;save EBP
+ 00000183  8B EC			MOV EBP, ESP									;set EBP=ESP
+					
+ 00000185  8B 7D 08			MOV EDI, intStrAddr								;move string1 address into EDI
+ 00000188  8B 75 0C			MOV ESI, intStr2Addr							;move string2 address into ESI
+ 0000018B  57				PUSH EDI										;push EDI because the next routine uses edi
 					
 					INVOKE String_length, ESI						;get the length of string2
- 000001A2  8B C8			MOV ECX, EAX									;move the length of string2 into ECX
- 000001A4  5F				POP EDI											;restore EDI
+ 00000192  8B C8			MOV ECX, EAX									;move the length of string2 into ECX
+ 00000194  5F				POP EDI											;restore EDI
 					
- 000001A5			L1:
- 000001A5  8A 1E			MOV BL, [ESI]									;move the nth element of string2 into BL
- 000001A7  3A 1F			CMP BL, [EDI]									;compare nth element to the nth element
- 000001A9  75 08			JNE NOTEQL										;jump if not equal
- 000001AB  46				INC ESI											;increment ESI
- 000001AC  47				INC EDI											;increment EDI
- 000001AD  E2 F6			LOOP L1											;loop to L1
+ 00000195			L1:
+ 00000195  8A 1E			MOV BL, [ESI]									;move the nth element of string2 into BL
+ 00000197  3A 1F			CMP BL, [EDI]									;compare nth element to the nth element
+ 00000199  75 08			JNE NOTEQL										;jump if not equal
+ 0000019B  46				INC ESI											;increment ESI
+ 0000019C  47				INC EDI											;increment EDI
+ 0000019D  E2 F6			LOOP L1											;loop to L1
 					
- 000001AF  B0 01			MOV AL, 1										;move 1 into AL (true condition)
- 000001B1  EB 02			JMP RETURN										;jump to return
+ 0000019F  B0 01			MOV AL, 1										;move 1 into AL (true condition)
+ 000001A1  EB 02			JMP RETURN										;jump to return
+	
+ 000001A3			NOTEQL:
+ 000001A3  B0 00			MOV AL, 0										;move 0 into AL (false condition)
 					
- 000001B3			NOTEQL:
- 000001B3  B0 00			MOV AL, 0										;move 0 into AL (false condition)
-					
- 000001B5			RETURN:	
-					RET
- 000001B9			String_startsWith_2 ENDP
+ 000001A5			RETURN:	
+ 000001A5  5D				POP EBP
+ 000001A6  C3				RET
+ 000001A7			String_startsWith_2 ENDP
 
 
 				;--------------------------------------------------------------------------------------------------------------
- 000001B9			String_endsWith proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
+ 000001A7			String_endsWith proc PUBLIC
 				;
+				;		This sub routine will check if string2 is equal to the suffix of string1.  If a match if is found 
+				;	a 1 will be returned in the AL register.
 				;
-				;
-				;
-				;
+				;	Receives the address of two strings from the stack
+				;	Returns a 1(true condition) or 0(false condition) to the AL register
 				;--------------------------------------------------------------------------------------------------------------
- 000001BC  8B 7D 08			MOV EDI, intStrAddr								;move string1 address into EDI
- 000001BF  8B 75 0C			MOV ESI, intStr2Addr							;move string2 address into ESI
- 000001C2  57				PUSH EDI										;push EDI because the next routine uses edi
+ = [EBP+8]			intStrAddr EQU [EBP+8]
+ = [EBP+12]			intStr2Addr EQU [EBP+12]
+
+ 000001A7  55				PUSH EBP										;save EBP
+ 000001A8  8B EC			MOV EBP, ESP									;set EBP=ESP
+					
+ 000001AA  8B 7D 08			MOV EDI, intStrAddr								;move string1 address into EDI
+ 000001AD  8B 75 0C			MOV ESI, intStr2Addr							;move string2 address into ESI
+ 000001B0  57				PUSH EDI										;push EDI because the next routine uses edi
 					
 					INVOKE String_length, intStr2Addr				;get length of intStr2Addr
- 000001CB  8B D8			MOV EBX, EAX									;move the length into EBX
- 000001CD  53				PUSH EBX										;push EBX
+ 000001B9  8B D8			MOV EBX, EAX									;move the length into EBX
+ 000001BB  53				PUSH EBX										;push EBX
 					
 					INVOKE String_length, intStrAddr				;get the length of int Str2Addr
- 000001D6  5B	POP EBX											;pop EBX
+ 000001C4  5B				POP EBX											;pop EBX
 					
- 000001D7  2B C3			SUB EAX, EBX									;EAX - EBX
- 000001D9  50				PUSH EAX										;push EAX
+ 000001C5  2B C3			SUB EAX, EBX									;EAX - EBX
+ 000001C7  50				PUSH EAX										;push EAX
 					
 					INVOKE String_length, ESI						;get the length of string2
- 000001E0  8B C8			MOV ECX, EAX									;move the length of string2 into ECX
- 000001E2  58				POP EAX
- 000001E3  5F				POP EDI											;restore EDI
+ 000001CE  8B C8			MOV ECX, EAX									;move the length of string2 into ECX
+ 000001D0  58				POP EAX
+ 000001D1  5F				POP EDI											;restore EDI
 					
- 000001E4  03 F8			ADD EDI, EAX									;go to the beginning of the suffix
- 000001E6			L1:
- 000001E6  8A 1E			MOV BL, [ESI]									;move the nth element of string2 into BL
- 000001E8  3A 1F			CMP BL, [EDI]									;compare nth element to the nth element
- 000001EA  75 08			JNE NOTEQL										;jump if not equal
- 000001EC  46				INC ESI											;increment ESI
- 000001ED  47				INC EDI											;increment EDI
- 000001EE  E2 F6			LOOP L1											;loop to L1
+ 000001D2  03 F8			ADD EDI, EAX									;go to the beginning of the suffix
+ 000001D4			L1:
+ 000001D4  8A 1E			MOV BL, [ESI]									;move the nth element of string2 into BL
+ 000001D6  3A 1F			CMP BL, [EDI]									;compare nth element to the nth element
+ 000001D8  75 08			JNE NOTEQL										;jump if not equal
+ 000001DA  46				INC ESI											;increment ESI
+ 000001DB  47				INC EDI											;increment EDI
+ 000001DC  E2 F6			LOOP L1											;loop to L1
 					
- 000001F0  B0 01			MOV AL, 1										;move 1 into AL (true condition)
- 000001F2  EB 02			JMP RETURN										;jump to return
+ 000001DE  B0 01			MOV AL, 1										;move 1 into AL (true condition)
+ 000001E0  EB 02			JMP RETURN										;jump to return
 					
- 000001F4			NOTEQL:
- 000001F4  B0 00			MOV AL, 0										;move 0 into AL (false condition)
+ 000001E2			NOTEQL:
+ 000001E2  B0 00			MOV AL, 0										;move 0 into AL (false condition)
 					
- 000001F6			RETURN:
-					RET
- 000001FA			String_endsWith ENDP
+ 000001E4			RETURN:
+ 000001E4  5D				POP EBP
+ 000001E5  C3				RET
+ 000001E6			String_endsWith ENDP
 				END
 
 
@@ -453,7 +524,7 @@ string1.asm						     Page 1 - 1
 
 
 
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/17/18 16:12:24
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 17:11:34
 string1.asm						     Symbols 2 - 1
 
 
@@ -548,7 +619,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 0000001A Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000001FA Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000001E6 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -636,61 +707,42 @@ Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-String_charat  . . . . . . . . .	P Near	 0000013B _TEXT	Length= 0000002B Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  intIndex . . . . . . . . . . .	DWord	 bp + 0000000C
-  OUTOFBOUNDS  . . . . . . . . .	L Near	 00000160 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 00000162 _TEXT	
-String_copy  . . . . . . . . . .	P Near	 000000B6 _TEXT	Length= 0000002A Public STDCALL
-  intStr1Addr  . . . . . . . . .	DWord	 bp + 00000008
-  L1 . . . . . . . . . . . . . .	L Near	 000000CE _TEXT	
-String_endsWith  . . . . . . . .	P Near	 000001B9 _TEXT	Length= 00000041 Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  intStr2Addr  . . . . . . . . .	DWord	 bp + 0000000C
-  L1 . . . . . . . . . . . . . .	L Near	 000001E6 _TEXT	
-  NOTEQL . . . . . . . . . . . .	L Near	 000001F4 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 000001F6 _TEXT	
-String_equalsIgnoreCase  . . . .	P Near	 00000055 _TEXT	Length= 00000061 Public STDCALL
-  intStr1Addr  . . . . . . . . .	DWord	 bp + 00000008
-  intStr2Addr  . . . . . . . . .	DWord	 bp + 0000000C
-  L1 . . . . . . . . . . . . . .	L Near	 00000076 _TEXT	
-  L2 . . . . . . . . . . . . . .	L Near	 0000007D _TEXT	
-  MATCH  . . . . . . . . . . . .	L Near	 0000009C _TEXT	
-  UPPER  . . . . . . . . . . . .	L Near	 000000A4 _TEXT	
-  LOWER  . . . . . . . . . . . .	L Near	 000000AA _TEXT	
-  NOTEQL . . . . . . . . . . . .	L Near	 000000B0 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 000000B2 _TEXT	
-String_equals  . . . . . . . . .	P Near	 00000020 _TEXT	Length= 00000035 Public STDCALL
-  intStr1Addr  . . . . . . . . .	DWord	 bp + 00000008
-  intStr2Addr  . . . . . . . . .	DWord	 bp + 0000000C
-  L1 . . . . . . . . . . . . . .	L Near	 00000041 _TEXT	
-  NOTEQL . . . . . . . . . . . .	L Near	 0000004F _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 00000051 _TEXT	
+String_charat  . . . . . . . . .	P Near	 0000012F _TEXT	Length= 00000029 Public STDCALL
+  OUTOFBOUNDS  . . . . . . . . .	L Near	 00000154 _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 00000156 _TEXT	
+String_copy  . . . . . . . . . .	P Near	 000000B0 _TEXT	Length= 00000028 Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 000000C8 _TEXT	
+String_endsWith  . . . . . . . .	P Near	 000001A7 _TEXT	Length= 0000003F Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 000001D4 _TEXT	
+  NOTEQL . . . . . . . . . . . .	L Near	 000001E2 _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 000001E4 _TEXT	
+String_equalsIgnoreCase  . . . .	P Near	 00000051 _TEXT	Length= 0000005F Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 00000072 _TEXT	
+  L2 . . . . . . . . . . . . . .	L Near	 00000079 _TEXT	
+  MATCH  . . . . . . . . . . . .	L Near	 00000098 _TEXT	
+  UPPER  . . . . . . . . . . . .	L Near	 000000A0 _TEXT	
+  LOWER  . . . . . . . . . . . .	L Near	 000000A6 _TEXT	
+  NOTEQL . . . . . . . . . . . .	L Near	 000000AC _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 000000AE _TEXT	
+String_equals  . . . . . . . . .	P Near	 0000001E _TEXT	Length= 00000033 Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 0000003F _TEXT	
+  NOTEQL . . . . . . . . . . . .	L Near	 0000004D _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 0000004F _TEXT	
 String_length  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-String_startsWith_1  . . . . . .	P Near	 00000166 _TEXT	Length= 0000002C Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  intStr2Addr  . . . . . . . . .	DWord	 bp + 0000000C
-  intPos . . . . . . . . . . . .	DWord	 bp + 00000010
-  L1 . . . . . . . . . . . . . .	L Near	 0000017E _TEXT	
-  NOTEQL . . . . . . . . . . . .	L Near	 0000018C _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 0000018E _TEXT	
-String_startsWith_2  . . . . . .	P Near	 00000192 _TEXT	Length= 00000027 Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  intStr2Addr  . . . . . . . . .	DWord	 bp + 0000000C
-  L1 . . . . . . . . . . . . . .	L Near	 000001A5 _TEXT	
-  NOTEQL . . . . . . . . . . . .	L Near	 000001B3 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 000001B5 _TEXT	
-String_substring_1 . . . . . . .	P Near	 000000E0 _TEXT	Length= 0000002C Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  intStartInd  . . . . . . . . .	DWord	 bp + 0000000C
-  intEndInd  . . . . . . . . . .	DWord	 bp + 00000010
-  L1 . . . . . . . . . . . . . .	L Near	 000000F8 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 00000108 _TEXT	
-String_substring_2 . . . . . . .	P Near	 0000010C _TEXT	Length= 0000002F Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  intStartInd  . . . . . . . . .	DWord	 bp + 0000000C
-  L1 . . . . . . . . . . . . . .	L Near	 00000127 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 00000137 _TEXT	
+String_startsWith_1  . . . . . .	P Near	 00000158 _TEXT	Length= 0000002A Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 00000170 _TEXT	
+  NOTEQL . . . . . . . . . . . .	L Near	 0000017E _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 00000180 _TEXT	
+String_startsWith_2  . . . . . .	P Near	 00000182 _TEXT	Length= 00000025 Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 00000195 _TEXT	
+  NOTEQL . . . . . . . . . . . .	L Near	 000001A3 _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 000001A5 _TEXT	
+String_substring_1 . . . . . . .	P Near	 000000D8 _TEXT	Length= 0000002A Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 000000F0 _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 00000100 _TEXT	
+String_substring_2 . . . . . . .	P Near	 00000102 _TEXT	Length= 0000002D Public STDCALL
+  L1 . . . . . . . . . . . . . .	L Near	 0000011D _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 0000012D _TEXT	
 SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteBinB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -716,8 +768,7 @@ memoryallocBailey  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 putstring  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
-setString  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000020 Public STDCALL
-  intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
+setString  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000001E Public STDCALL
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 
 
@@ -941,6 +992,13 @@ cyan . . . . . . . . . . . . . .	Number	 00000003h
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
+intEndInd  . . . . . . . . . . .	Text   	 [EBP+16]
+intIndex . . . . . . . . . . . .	Text   	 [EBP+12]
+intPos . . . . . . . . . . . . .	Text   	 [EBP+16]
+intStartInd  . . . . . . . . . .	Text   	 [EBP+12]
+intStr1Addr  . . . . . . . . . .	Text   	 [EBP+8]
+intStr2Addr  . . . . . . . . . .	Text   	 [EBP+12]
+intStrAddr . . . . . . . . . . .	Text   	 [EBP+8]
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   

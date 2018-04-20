@@ -2,13 +2,13 @@
 ;	FILE NAME : string1.asm
 ;----------------------------------------------------------------------------------------------------
 ;
-;		Program Name	:
+;		Program Name	:	MASM3
 ;		Programmer		:	Cody Thompson 
 ;		Class			:	CS 3B || Asm Lang
-;		Date			:	
+;		Date			:	4/02/2018
 ;		Purpose			:
-;
-;
+;		This file contains the definitions for the external sub routines that will be called by the driver
+;	MASM3.asm
 ;----------------------------------------------------------------------------------------------------
 
 	.486
@@ -36,23 +36,28 @@ strNwLn						BYTE 	0Ah, 0
 	.code						
 
 ;----------------------------------------------------------------------------------------------------
-setString proc PUBLIC, intStrAddr:DWORD
+setString proc PUBLIC
 ;
 ;		Sets the value of String1.
 ;
 ;	Receives the offset address of strString1 from masm3.asm.
 ;	Returns nothing
 ;----------------------------------------------------------------------------------------------------
+intStrAddr EQU [EBP + 8]
+	PUSH EBP
+	MOV EBP, ESP
+	
 	CALL Clrscr										;clear the screen
 	
 	INVOKE putString, addr strSetString				;output strSetString to the console
 	INVOKE getString, intStrAddr, 32				;get input from the console and store it in memory labeled intStr1Addr
 	
+	POP EBP
 	RET												;return
 setString ENDP									;end of setString1
 
 ;----------------------------------------------------------------------------------------------------
-String_equals proc PUBLIC, intStr1Addr:DWORD, intStr2Addr:DWORD
+String_equals proc PUBLIC
 ;
 ;		This sub routine will compare strString1 and strString2 for an exact match.  This is a case
 ;	and length sensitive comparison.  If a match is found 01 will be returned to the AL register,
@@ -61,6 +66,12 @@ String_equals proc PUBLIC, intStr1Addr:DWORD, intStr2Addr:DWORD
 ;	Receives the offset address of strString1, strString2, and lengths of both strString1 & 2 from the stack 
 ;	Returns results to the AL register
 ;----------------------------------------------------------------------------------------------------
+intStr1Addr EQU [EBP+8]
+intStr2Addr EQU [EBP+12]
+
+	PUSH EBP
+	MOV EBP, ESP
+	
 	MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
 	MOV EDX, intStr2Addr							;move intStr2Addr into EDX for indirect addressing 
 	INVOKE String_length, EDI						;get length of intStr1Addr
@@ -89,12 +100,13 @@ NOTEQL:
 	MOV AL, 0										;FALSE CONDITION -- move 0 into AL
 	
 RETURN:
+	POP EBP
 	RET
 String_equals ENDP
 
 
 ;----------------------------------------------------------------------------------------------------
-String_equalsIgnoreCase proc PUBLIC, intStr1Addr:DWORD, intStr2Addr:DWORD
+String_equalsIgnoreCase proc PUBLIC
 ;
 ;		This sub routine will compare strString1 and strString2 for an exact match.  This is not case
 ;	sensitive but is length sensitive.  If a match is found 01 will be returned to the AL register,
@@ -103,6 +115,12 @@ String_equalsIgnoreCase proc PUBLIC, intStr1Addr:DWORD, intStr2Addr:DWORD
 ;	Receives the offset address of strString1, strString2, and lengths of both strString1 & 2 from the stack 
 ;	Returns results to the AL register
 ;----------------------------------------------------------------------------------------------------
+intStr1Addr EQU [EBP+8]
+intStr2Addr EQU [EBP+12]
+
+	PUSH EBP										;save EBP
+	MOV EBP, ESP									;set EBP=ESP
+	
 	MOV EDI, intStr1Addr							;move intStr1Addr into EDI for indirect addressing
 	INVOKE String_length, EDI
 
@@ -160,12 +178,13 @@ NOTEQL:
 	MOV AL, 0										;FALSE CONDITION -- move 0 into AL
 	
 RETURN:
+	POP EBP
 	RET
 String_equalsIgnoreCase ENDP
 
 
 ;----------------------------------------------------------------------------------------------------
-String_copy proc PUBLIC, intStr1Addr:DWORD
+String_copy proc PUBLIC
 ;
 ;		This sub routine will copy the contents of strString1 into newly allocated memory.  Memory will
 ;	be allocated using Dr. Baileys memoryallocBailey procedure.  The address of the newly allocated 
@@ -174,6 +193,11 @@ String_copy proc PUBLIC, intStr1Addr:DWORD
 ;	Receives the address of strString1 and its length from the stack
 ;	Returns the address of the new string to the EAX register
 ;----------------------------------------------------------------------------------------------------
+intStr1Addr EQU [EBP+8]	
+
+	PUSH EBP										;save EBP
+	MOV EBP, ESP									;set EBP=ESP
+	
 	MOV ESI, intStr1Addr							;move the offset address of string1 into ESI
 	INVOKE String_length, ESI						;get the length of ESI
 	MOV ECX, EAX		 							;move the length of string1 into ECX
@@ -193,12 +217,13 @@ L1:
 	MOV BL, [ESI + 1]								;move the null terminator into BL
 	MOV [EDI + 1], BL								;move the null terminator into the last index of [EDI]
 	
+	POP EBP
 	RET			
 String_copy ENDP
 
 
 ;----------------------------------------------------------------------------------------------------
-String_substring_1 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD, intEndInd:DWORD
+String_substring_1 proc PUBLIC
 ;
 ;		This sub routine will create a newly allocated comprised of a sub string from the string of the 
 ;	address provided on the stack.  A prompt will be displayed to the console asking the user for a 
@@ -208,6 +233,14 @@ String_substring_1 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD, intEndInd:D
 ;	Receives the address of a string and its length
 ;	Returns the address of the new string to the EAX register
 ;----------------------------------------------------------------------------------------------------
+intStrAddr  EQU [EBP+8]
+intStartInd  EQU [EBP+12]
+intEndInd  EQU [EBP+16]
+	
+	PUSH EBP
+	
+	MOV EBP, ESP
+	
 	MOV ESI, intStrAddr								;move the offset address of intStrAddr into ESI
 	ADD ESI, intStartInd							;move the to specified starting address
 	MOV ECX, intEndInd								;move the ending index number into ECX
@@ -229,12 +262,13 @@ L1:
 	JMP RETURN										;jump to RETURN
 	
 RETURN:
+	POP EBP
 	RET
 String_substring_1 ENDP
 
 
 ;----------------------------------------------------------------------------------------------------
-String_substring_2 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD
+String_substring_2 proc PUBLIC
 ;
 ;		This sub routine will create a newly allocated comprised of a sub string from the string of the 
 ;	address provided on the stack.  A prompt will be displayed to the console asking the user for a 
@@ -244,6 +278,12 @@ String_substring_2 proc PUBLIC, intStrAddr:DWORD, intStartInd:DWORD
 ;	Receives the address of a string and its length
 ;	Returns the address of the new string to the EAX register
 ;----------------------------------------------------------------------------------------------------
+intStrAddr EQU [EBP+8]
+intStartInd EQU [EBP+12]
+
+	PUSH EBP										;save EBP on the stack	
+	MOV EBP, ESP									;set EBP = ESP
+	
 	MOV ESI, intStrAddr								;move the offset address of intStrAddr into ESI
 	ADD ESI, intStartInd							;move the to specified starting address
 	
@@ -265,12 +305,13 @@ L1:
 	JMP RETURN										;jump to RETURN
 	
 RETURN:
+	POP EBP
 	RET
 String_substring_2 ENDP
 
 
 ;----------------------------------------------------------------------------------------------------
-String_charat proc PUBLIC, intStrAddr:DWORD, intIndex:DWORD
+String_charat proc PUBLIC
 ;
 ;		This sub routine will return the character at the specified index to the AL register.  if the 
 ;	index is an impossible location a 0 will be returned to the AL register.
@@ -278,6 +319,12 @@ String_charat proc PUBLIC, intStrAddr:DWORD, intIndex:DWORD
 ;	Receives a string address and the length of that string from the stack
 ;	Returns a character to the AL register
 ;----------------------------------------------------------------------------------------------------
+intStrAddr EQU [EBP+8]
+intIndex EQU [EBP+12]
+
+	PUSH EBP
+	MOV EBP, ESP
+	
 	MOV EAX, intIndex								;move index into EAX
 	CMP EAX, 1										;compare result to 1
 	JL OUTOFBOUNDS									;jump to OUTOFBOUNDS if the input value is >1
@@ -296,12 +343,13 @@ OUTOFBOUNDS:
 	MOV AL, 0										;move 0 into AL
 	
 RETURN:	
+	POP EBP
 	RET
 String_charat ENDP
 
 
 ;-----------------------------------------------------------------------------------------------------------
-String_startsWith_1 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD, intPos:DWORD
+String_startsWith_1 proc PUBLIC
 ;
 ;		This sub routine checks if string1 starts with string2 at the specified starting position.
 ;	If the comparison is true a 1 will be returned into the AL register, otherwise a zero will be returned.
@@ -309,6 +357,13 @@ String_startsWith_1 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD, intPos:DWO
 ;	Receives the addresses of string1, string2, and an integer
 ;	Returns a 1 or 0 to the AL register
 ;-----------------------------------------------------------------------------------------------------------
+intStrAddr EQU [EBP+8]
+intStr2Addr EQU [EBP+12]
+intPos EQU [EBP+16]
+
+	PUSH EBP										;save EBP
+	MOV EBP, ESP									;set ebp = esp
+	
 	MOV EDI, intStrAddr								;move string1 address into EDI
 	MOV ESI, intStr2Addr							;move string2 address into ESI
 	MOV EBX, intPos 								;move intPos into EBX
@@ -334,12 +389,13 @@ NOTEQL:
 	MOV AL, 0										;move 0 into AL (false condition)
 	
 RETURN:	
+	POP EBP
 	RET
 String_startsWith_1 ENDP
 
 
 ;----------------------------------------------------------------------------------------------------------
-String_startsWith_2 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
+String_startsWith_2 proc PUBLIC
 ;
 ;		This sub routine checks if string1 starts with string2 If the comparison is true a 1 will be 
 ;	returned into the AL register, otherwise a zero will be returned.
@@ -347,6 +403,12 @@ String_startsWith_2 proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
 ;	Receives the addresses of string1, string2, and an integer
 ;	Returns a 1 or 0 to the AL register
 ;-----------------------------------------------------------------------------------------------------------
+intStrAddr EQU [EBP+8]	
+intStr2Addr EQU [EBP+12]
+
+	PUSH EBP										;save EBP
+	MOV EBP, ESP									;set EBP=ESP
+	
 	MOV EDI, intStrAddr								;move string1 address into EDI
 	MOV ESI, intStr2Addr							;move string2 address into ESI
 	PUSH EDI										;push EDI because the next routine uses edi
@@ -370,18 +432,26 @@ NOTEQL:
 	MOV AL, 0										;move 0 into AL (false condition)
 	
 RETURN:	
+	POP EBP
 	RET
 String_startsWith_2 ENDP
 
 
 ;--------------------------------------------------------------------------------------------------------------
-String_endsWith proc PUBLIC, intStrAddr:DWORD, intStr2Addr:DWORD
+String_endsWith proc PUBLIC
 ;
+;		This sub routine will check if string2 is equal to the suffix of string1.  If a match if is found 
+;	a 1 will be returned in the AL register.
 ;
-;
-;
-;
+;	Receives the address of two strings from the stack
+;	Returns a 1(true condition) or 0(false condition) to the AL register
 ;--------------------------------------------------------------------------------------------------------------
+intStrAddr EQU [EBP+8]
+intStr2Addr EQU [EBP+12]
+
+	PUSH EBP										;save EBP
+	MOV EBP, ESP									;set EBP=ESP
+	
 	MOV EDI, intStrAddr								;move string1 address into EDI
 	MOV ESI, intStr2Addr							;move string2 address into ESI
 	PUSH EDI										;push EDI because the next routine uses edi
@@ -417,6 +487,7 @@ NOTEQL:
 	MOV AL, 0										;move 0 into AL (false condition)
 	
 RETURN:
+	POP EBP
 	RET
 String_endsWith ENDP
 END
