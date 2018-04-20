@@ -1,0 +1,1251 @@
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
+string2.asm						     Page 1 - 1
+
+
+
+					.486
+
+					;Includes
+					include ..\..\Irvine\Irvine32.inc
+			      C ; Include file for Irvine32.lib             (Irvine32.inc)
+			      C 
+			      C ;OPTION CASEMAP:NONE		; optional: make identifiers case-sensitive
+			      C 
+			      C INCLUDE SmallWin.inc		; MS-Windows prototypes, structures, and constants
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C INCLUDE VirtualKeys.inc
+			      C ; VirtualKeys.inc
+			      C .NOLIST
+			      C .LIST
+			      C 
+			      C 
+			      C .NOLIST
+			      C .LIST
+			      C 
+
+
+				getstring	PROTO Near32 stdcall, lpStringToGet:dword, dlength:dword
+				putstring	PROTO Near32 stdcall, lpStringToPrint:dword
+				ascint32 	PROTO Near32 stdcall, lpStringOfNumericChars:dword
+				intasc32	PROTO Near32 stdcall, lpStringToHold:dword, dVal:dword
+				memoryallocBailey  PROTO Near32 stdcall, dNumBytes:dword 
+				ExitProcess PROTO, dwExitCode:dword
+
+ 00000000			.data
+ 00000000 0A 09 65 6E 74		strEnter1 byte 10,9,"enter a string: ",0
+	   65 72 20 61 20
+	   73 74 72 69 6E
+	   67 3A 20 00
+ 00000013 0A 09 65 6E 74		strEnter2 byte 10,9,"enter a string: ",0
+	   65 72 20 61 20
+	   73 74 72 69 6E
+	   67 3A 20 00
+ 00000026				strString1 byte 32 dup(0)
+ 00000046				strString2 byte 32 dup(0)
+ 00000066 0A 09 45 6E 74		lowerPrompt byte 10,9,"Enter the number of the string you wish to convert: ",0
+	   65 72 20 74 68
+	   65 20 6E 75 6D
+	   62 65 72 20 6F
+	   66 20 74 68 65
+	   20 73 74 72 69
+	   6E 67 20 79 6F
+	   75 20 77 69 73
+	   68 20 74 6F 20
+	   63 6F 6E 76 65
+	   72 74 3A 20 00
+ 0000009D 0A 09 45 6E 74		strIndexPrompt byte 10,9,"Enter the character you are looking for: ",0
+	   65 72 20 74 68
+	   65 20 63 68 61
+	   72 61 63 74 65
+	   72 20 79 6F 75
+	   20 61 72 65 20
+	   6C 6F 6F 6B 69
+	   6E 67 20 66 6F
+	   72 3A 20 00
+ 000000C9 0A 09 53 6F 72		strIndexError byte 10,9,"Sorry, that character does not exist in String 1",0
+	   72 79 2C 20 74
+	   68 61 74 20 63
+	   68 61 72 61 63
+	   74 65 72 20 64
+	   6F 65 73 20 6E
+	   6F 74 20 65 78
+	   69 73 74 20 69
+	   6E 20 53 74 72
+	   69 6E 67 20 31
+	   00
+ 000000FC 0A 09 53 6F 72		invalidPrompt1 byte 10,9,"Sorry, string ",0
+	   72 79 2C 20 73
+	   74 72 69 6E 67
+	   20 00
+ 0000010D 20 64 6F 65 73		invalidPrompt2 byte " does not exist. Please try again.",0
+	   20 6E 6F 74 20
+	   65 78 69 73 74
+	   2E 20 50 6C 65
+	   61 73 65 20 74
+	   72 79 20 61 67
+	   61 69 6E 2E 00
+ 00000130  00000002 [			userInput byte 2 dup(?)
+	    00
+	   ]
+ 00000132  00000003 [			indexOF2input byte 3 dup(0)
+	    00
+	   ]
+ 00000135 0A 09 45 6E 74		indexOf2Prompt byte 10,9,"Enter the index you wish to start the search from (0 to 31): ",0
+	   65 72 20 74 68
+	   65 20 69 6E 64
+	   65 78 20 79 6F
+	   75 20 77 69 73
+	   68 20 74 6F 20
+	   73 74 61 72 74
+	   20 74 68 65 20
+	   73 65 61 72 63
+	   68 20 66 72 6F
+	   6D 20 28 30 20
+	   74 6F 20 33 31
+	   29 3A 20 00
+ 00000175 0A 09 53 6F 72		strIndexError2 byte 10,9,"Sorry, the character you have chosen is not present after the specified index",0
+	   72 79 2C 20 74
+	   68 65 20 63 68
+	   61 72 61 63 74
+	   65 72 20 79 6F
+	   75 20 68 61 76
+	   65 20 63 68 6F
+	   73 65 6E 20 69
+	   73 20 6E 6F 74
+	   20 70 72 65 73
+	   65 6E 74 20 61
+	   66 74 65 72 20
+	   74 68 65 20 73
+	   70 65 63 69 66
+	   69 65 64 20 69
+	   6E 64 65 78 00
+ 000001C5 0A 09 50 6C 65		toReplacePrompt byte 10,9,"Please pick a character to replace: ",0
+	   61 73 65 20 70
+	   69 63 6B 20 61
+	   20 63 68 61 72
+	   61 63 74 65 72
+	   20 74 6F 20 72
+	   65 70 6C 61 63
+	   65 3A 20 00
+ 000001EC 0A 09 50 6C 65		ReplaceWith byte 10,9,"Please pick a replacement: ",0
+	   61 73 65 20 70
+	   69 63 6B 20 61
+	   20 72 65 70 6C
+	   61 63 65 6D 65
+	   6E 74 3A 20 00
+ 0000020A  00000002 [			strChartoReplace byte 2 dup(0)
+	    00
+	   ]
+ 0000020C  00000002 [			strReplace byte 2 dup (0)
+	    00
+	   ]
+ 0000020E 0A 09 73 6F 72		memError byte 10,9,"sorry, there is not enough memory available.",0
+	   72 79 2C 20 74
+	   68 65 72 65 20
+	   69 73 20 6E 6F
+	   74 20 65 6E 6F
+	   75 67 68 20 6D
+	   65 6D 6F 72 79
+	   20 61 76 61 69
+	   6C 61 62 6C 65
+	   2E 00
+ 00000000			.code
+
+				;-------------------------------------------------------------------------------------------------
+ 00000000			String_toLowerCase PROC
+				;
+				;		prompts user for a string choice, and then changes their choice to lowercase
+				;----------------------------------------------------------------------------------------------------
+
+ 00000000  55				push EBP											;save ebp
+ 00000001  57				push EDI
+ 00000002  56				push esi											;save esi
+ 00000003  53				push ebx											;save ebx
+ 00000004  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 00000006  BE 00000000			mov ESI,0											;clear esi for indexing into strings
+ 0000000B  B8 00000000			mov eax,0
+ 00000010			_begin:
+
+					invoke putstring, ADDR lowerPrompt					;displays input prompt
+					invoke getstring, ADDR userInput,1					;gets user input prompt
+ 00000026  A0 00000130 R		mov AL, userInput
+					.IF AL == 31h	
+ 0000002F  8B 5D 14				mov EBX, [EBP + 20]								;move offset address of string1 into EBX
+ 00000032  8B 7D 14				mov EDI, [EBP + 20]
+ 00000035  EB 30				jmp _lowerconvert								;jump to the conversion
+					.ELSEIF AL == 32h
+ 0000003D  8B 5D 18				mov EBX, [EBP + 24]								;move offset address of string2 into EBX
+ 00000040  8B 7D 18				mov EDI, [EBP + 24]
+ 00000043  EB 22				jmp _lowerconvert								;jump to the conversion
+					.ELSE
+						invoke putstring, ADDR invalidPrompt1			;first half of error message
+						invoke putstring, ADDR userInput				;display the invalid entry
+						invoke putstring, ADDR invalidPrompt2			;second half of error message
+ 00000065  EB A9				jmp _begin
+					.ENDIF
+					
+ 00000067			_lowerconvert:
+
+ 00000067  80 3C 1E 00			cmp byte ptr[EBX+ESI],0 							;reached the end of he string if character == null
+ 0000006B  74 13			JE _end												;jump to the end once the end of the string is reached
+ 0000006D  80 3C 1E 5A			cmp byte ptr[EBX+ESI],5Ah 							;don't convert characters that aren't letters
+ 00000071  7F 0A			JG _next											;jump to next
+ 00000073  80 3C 1E 41			cmp byte ptr[EBX+ESI],41h							;don't convert anything that isn't a uppercase letter
+ 00000077  7C 04			JL _next											;jump if less to next
+ 00000079  80 04 1E 20			add byte ptr[EBX+ESI],20h							;converts uppercase to lowercase
+ 0000007D			_next:
+
+ 0000007D  46				inc ESI												;moves to next byte location 
+ 0000007E  EB E7			jmp _lowerconvert									;jump to beginning of loop
+					
+ 00000080			_end:
+ 00000080  8B C7			mov EAX, EDI
+ 00000082  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 00000084  5B				pop EBX												;restore ebx
+ 00000085  5E				pop ESI												;restore esi
+ 00000086  5F				pop EDI
+ 00000087  5D				pop EBP												;restore ebp
+ 00000088  C3				ret													;return 
+					
+ 00000089			String_toLowerCase ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 00000089			String_toUpperCase PROC
+				;
+				;		prompts user for a string choice, and then converts that string to all uppercase
+				;----------------------------------------------------------------------------------------------------
+ 00000089  55				push EBP											;save ebp
+ 0000008A  57				push EDI											;save eax
+ 0000008B  56				push ESI											;save esi
+ 0000008C  53				push EBX											;save ebx
+ 0000008D  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000008F  BE 00000000			mov ESI,0											;clear esi for indexing into strings
+ 00000094  B8 00000000			mov eax,0
+ 00000099			_begin:
+
+					invoke putstring, ADDR lowerPrompt					;displays input prompt
+					invoke getstring, ADDR userInput,1					;gets user input prompt
+ 000000AF  A0 00000130 R		mov AL, userInput
+					.IF AL == 31h	
+ 000000B8  8B 5D 14				mov EBX, [EBP + 20]								;move offset address of string1 into EBX
+ 000000BB  8B 7D 14				mov EDI, [EBP + 20]
+ 000000BE  EB 30				jmp _upperconvert								;jump to the conversion
+					.ELSEIF AL == 32h
+ 000000C6  8B 5D 18				mov EBX, [EBP + 24]								;move offset address of string2 into EBX
+ 000000C9  8B 7D 18				mov EDI, [EBP + 24]
+ 000000CC  EB 22				jmp _upperconvert								;jump to the conversion
+					.ELSE
+						invoke putstring, ADDR invalidPrompt1			;first half of error message
+						invoke putstring, ADDR userInput				;display the invalid entry
+						invoke putstring, ADDR invalidPrompt2			;second half of error message
+ 000000EE  EB A9				jmp _begin
+					.ENDIF
+					
+ 000000F0			_upperconvert:
+
+ 000000F0  80 3C 1E 00			cmp byte ptr[EBX+ESI],0 							;reached the end of he string if character == null
+ 000000F4  74 13			JE _end												;jump to the end once the end of the string is reached
+ 000000F6  80 3C 1E 7A			cmp byte ptr[EBX+ESI],7Ah 							;don't convert characters that aren't letters
+ 000000FA  7F 0A			JG _next											;jump to next
+ 000000FC  80 3C 1E 61			cmp byte ptr[EBX+ESI],61h							;don't convert anything that isn't a uppercase letter
+ 00000100  7C 04			JL _next											;jump if less to next
+ 00000102  80 24 1E DF			AND byte ptr[EBX+ESI], 0DFh							;converts lowercase to uppercase
+					
+ 00000106			_next:
+
+ 00000106  46				inc ESI												;moves to next byte location 
+ 00000107  EB E7			jmp _upperconvert									;jump to beginning of loop
+					
+ 00000109			_end:
+ 00000109  8B C7			mov EAX, EDI
+ 0000010B  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000010D  5B				pop EBX												;restore ebx
+ 0000010E  5E				pop ESI												;restore esi
+ 0000010F  5F				pop EDI												;restore edi
+ 00000110  5D				pop EBP												;restore ebp
+ 00000111  C3				ret													;return 
+					
+ 00000112			String_toUpperCase ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 00000112			String_indexOf_1 PROC
+				;
+				;		prompts user to choose a character, finds first instance of said character and 
+				;		returns the index of the first instance.
+				;----------------------------------------------------------------------------------------------------
+ 00000112  55				push EBP											;save ebp
+ 00000113  56				push ESI											;save esi
+ 00000114  53				push EBX											;save ebx
+ 00000115  51				push ECX											;save ecx
+ 00000116  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 00000118  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 0000011D  B9 00000000			mov ECX,0											;clears ECX
+ 00000122  B8 00000000			mov EAX, 0											;clears eax
+					invoke putstring, ADDR strIndexPrompt				;displays input prompt
+					invoke getstring, ADDR userInput,1					;gets user input
+ 0000013D  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
+ 00000143  8B 5D 14			mov EBX, [EBP + 20]									;move offset address of string1 into EBX
+
+ 00000146			_search:
+
+																		
+																		
+ 00000146  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+					.IF AL == 0											;reached the end of he string if character == null
+ 0000014D  EB 0B				jmp _endstring									;jump to _endstring once the end of the string is reached
+					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
+ 00000155  EB 0F				Jmp _next										;if byte contains character, jump to _next
+					.ENDIF
+ 00000157  46				inc ESI												;increment ESI to move to next byte
+ 00000158  EB EC			jmp _search											;loop _search
+					
+ 0000015A			_endstring:
+
+					invoke putstring, addr strIndexError				;display error if character not in string
+ 00000164  EB 02			jmp _end											;jump to the end
+
+ 00000166			_next:
+					
+ 00000166  8B C6			mov EAX, ESI										;stores index in EAX
+					
+ 00000168			_end:
+
+ 00000168  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000016A  59				pop ECX												;restore ecx
+ 0000016B  5B				pop EBX												;restore ebx
+ 0000016C  5E				pop ESI												;restore esi
+ 0000016D  5D				pop EBP												;restore ebp
+ 0000016E  C3				ret													;return 
+
+ 0000016F			String_indexOf_1 ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 0000016F			String_indexOf_2 PROC
+				;
+				;		prompts user to choose a character, then an index. finds first instance of said character 
+				;		after the chose index and returns the index of the first occurrence afterwards
+				;----------------------------------------------------------------------------------------------------
+ 0000016F  55				push EBP											;save ebp
+ 00000170  56				push ESI											;save esi
+ 00000171  53				push EBX											;save ebx
+ 00000172  51				push ECX											;save ecx
+ 00000173  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 00000175  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 0000017A  B9 00000000			mov ECX,0											;clear ECX
+ 0000017F  B8 00000000			mov EAX, 0											;clear EAX
+					invoke putstring, ADDR strIndexPrompt				;displays input prompt for character
+					invoke getstring, ADDR userInput,1					;gets user input
+ 0000019A  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
+					invoke putstring, ADDR indexOf2Prompt				;displays input prompt for the index
+					invoke getstring, ADDR indexOF2input,2				;gets user input
+					invoke ascint32, ADDR indexOF2input					;converts user input to an integer for indexing
+ 000001C0  8B 5D 14			mov EBX, [EBP + 20]									;move offset address of string1 into EBX
+ 000001C3  8B F0			mov ESI, EAX										;move specified index into ESI 
+ 000001C5  B8 00000000			mov EAX, 0											;clear EAX
+					
+ 000001CA			_search:
+
+ 000001CA  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+					.IF AL == 0											;reached the end of he string if character == null
+ 000001D1  EB 0B				jmp _endstring									;jump to _endstring once the end of the string is reached
+					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
+ 000001D9  EB 0F				Jmp _next										;if byte contains character, jump to _next
+					.ENDIF
+ 000001DB  46				inc ESI												;increment ESI to move to next byte
+ 000001DC  EB EC			jmp _search											;loop _search
+					
+ 000001DE			_endstring:
+
+					invoke putstring, addr strIndexError2				;display error if character not in string after specified index
+ 000001E8  EB 02			jmp _end											;jump to the end
+					
+ 000001EA			_next:
+
+ 000001EA  8B C6			mov EAX, ESI
+
+ 000001EC			_end:
+
+ 000001EC  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 000001EE  59				pop ECX												;restore ecx
+ 000001EF  5B				pop EBX												;restore ebx
+ 000001F0  5E				pop ESI												;restore esi
+ 000001F1  5D				pop EBP												;restore ebp
+ 000001F2  C3				ret													;return
+					
+ 000001F3			String_indexOf_2 ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 000001F3			String_indexOf_3 PROC
+				;
+				;		finds the first instance of string 2 within string 1 and returns the index
+				;		
+				;----------------------------------------------------------------------------------------------------	
+ 000001F3  55				push EBP											;save ebp
+ 000001F4  52				push EDX											;save EDX
+ 000001F5  57				push EDI											;save EDI
+ 000001F6  56				push ESI											;save esi
+ 000001F7  53				push EBX											;save ebx
+ 000001F8  51				push ECX											;save ecx
+ 000001F9  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 000001FB  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 00000200  BF 00000000			mov EDI,0											;clears EDI for indexing into string
+ 00000205  B9 00000000			mov ECX,0											;clears ECX
+ 0000020A  B8 00000000			mov EAX,0											;clears eax
+ 0000020F  8B 5D 1C			mov EBX, [EBP + 28]									;move offset address of string1 into EBX
+ 00000212  8B 4D 20			mov ECX, [EBP + 32]									;move offset address of string2 into ECX
+					
+
+ 00000215			_search:
+					
+ 00000215  8A 04 0F			mov AL, byte ptr[ECX+EDI]							;moves each byte into AL for comparison
+ 00000218  8A 24 1E			mov AH, byte ptr[EBX+ESI]							;moves each byte into AH for comparison
+					.IF AL == 0											;reached the end of string2 if character == null
+ 0000021F  EB 20				jmp _endstring2									;jump to _endstring once the end of the string is reached
+					.ELSEIF AH == 0										;checks to see if end of string 1
+ 00000227  EB 0C				Jmp _endstring1
+					.ELSEIF AL == AH
+ 0000022F  8B D6				mov EDX, ESI
+ 00000231  47					inc EDI
+					.ENDIF
+ 00000232  46				inc ESI												;increment ESI to move to next byte
+ 00000233  EB E0			jmp _search											;loop _search
+					
+ 00000235			_endstring1:
+
+					invoke putstring, addr strIndexError
+ 0000023F  EB 0A			jmp _end											;jump to the end
+
+ 00000241			_endstring2:
+
+ 00000241  B8 00000000			mov EAX, 0
+ 00000246  42				inc EDX
+ 00000247  2B D7			sub EDX, EDI
+ 00000249  8A C2			mov AL, DL
+					
+ 0000024B			_end:
+ 0000024B  8B C6			mov eax, esi
+ 0000024D  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000024F  59				pop ECX												;restore ecx
+ 00000250  5B				pop EBX												;restore ebx
+ 00000251  5E				pop ESI												;restore esi
+ 00000252  5F				pop EDI												;restore EDI
+ 00000253  5A				pop EDX												;restore EDX
+ 00000254  5D				pop EBP												;restore ebp
+ 00000255  C3				ret													;return 
+
+ 00000256			String_indexOf_3 ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 00000256			String_lastIndexOf_1 PROC
+				;
+				;	prompts user to enter a character, and then finds the last occurrence of the chosen character
+				;   and returns the index.
+				;		
+				;----------------------------------------------------------------------------------------------------
+ 00000256  55				push EBP											;save ebp
+ 00000257  57				push EDI
+ 00000258  56				push ESI											;save esi
+ 00000259  53				push EBX											;save ebx
+ 0000025A  51				push ECX											;save ecx
+ 0000025B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000025D  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 00000262  B9 00000000			mov ECX,0											;clears ECX
+ 00000267  B8 00000000			mov EAX, 0											;clears eax
+					invoke putstring, ADDR strIndexPrompt				;displays input prompt
+					invoke getstring, ADDR userInput,1					;gets user input
+ 00000282  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
+ 00000288  8B 5D 18			mov EBX, [EBP + 24]									;move offset address of string1 into EBX
+
+ 0000028B			_search:
+
+ 0000028B  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+					.IF AL == 0											;reached the end of he string if character == null
+ 00000292  EB 0B				jmp _next									    ;jump to _endstring once the end of the string is reached
+					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
+ 0000029A  8B FE				mov EDI, ESI
+					.ENDIF
+ 0000029C  46				inc ESI												;increment ESI to move to next byte
+ 0000029D  EB EC			jmp _search											;loop _search
+					
+
+ 0000029F			_next:
+					
+ 0000029F  8B C7			mov EAX, EDI										;stores index in EAX
+ 000002A1  EB 00			jmp _end
+					
+ 000002A3			_end:
+
+ 000002A3  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 000002A5  59				pop ECX												;restore ecx
+ 000002A6  5B				pop EBX												;restore ebx
+ 000002A7  5E				pop ESI												;restore esi
+ 000002A8  5F				Pop EDI
+ 000002A9  5D				pop EBP												;restore ebp
+ 000002AA  C3				ret			
+
+ 000002AB			String_lastIndexOf_1 ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 000002AB			String_lastIndexOf_2 PROC
+				;
+				;	prompts user to enter a character, then an index to start the search from, and then finds the 
+				;   last occurrence of the  chosen character and returns the index.
+				;		
+				;----------------------------------------------------------------------------------------------------
+ 000002AB  55				push EBP											;save ebp
+ 000002AC  57				push EDI
+ 000002AD  56				push ESI											;save esi
+ 000002AE  53				push EBX											;save ebx
+ 000002AF  51				push ECX											;save ecx
+ 000002B0  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 000002B2  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 000002B7  B9 00000000			mov ECX,0											;clear ECX
+ 000002BC  B8 00000000			mov EAX, 0											;clear EAX
+					invoke putstring, ADDR strIndexPrompt				;displays input prompt for character
+					invoke getstring, ADDR userInput,1					;gets user input
+ 000002D7  8A 0D 00000130 R		mov CL, userInput									;stores userInput in CL for comparison
+					invoke putstring, ADDR indexOf2Prompt				;displays input prompt for the index
+					invoke getstring, ADDR indexOF2input,2				;gets user input
+					invoke ascint32, ADDR indexOF2input					;converts user input to an integer for indexing
+ 000002FD  8B 5D 18			mov EBX, [EBP + 24]									;move offset address of string1 into EBX
+ 00000300  8B F0			mov ESI, EAX										;move specified index into ESI 
+ 00000302  B8 00000000			mov EAX, 0											;clear EAX
+					
+ 00000307			_search:
+
+ 00000307  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+					.IF AL == 0											;reached the end of he string if character == null
+ 0000030E  EB 0B				jmp _next									    ;jump to _endstring once the end of the string is reached
+					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
+ 00000316  8B FE				mov EDI, ESI
+					.ENDIF
+ 00000318  46				inc ESI												;increment ESI to move to next byte
+ 00000319  EB EC			jmp _search											;loop _search
+					
+
+ 0000031B			_next:
+					
+ 0000031B  8B C7			mov EAX, EDI										;stores index in EAX
+ 0000031D  EB 00			jmp _end
+
+ 0000031F			_end:
+
+ 0000031F  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 00000321  59				pop ECX												;restore ecx
+ 00000322  5B				pop EBX												;restore ebx
+ 00000323  5E				pop ESI												;restore esi
+ 00000324  5F				pop EDI
+ 00000325  5D				pop EBP												;restore ebp
+ 00000326  C3				ret													;return
+
+ 00000327			String_lastIndexOf_2 ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 00000327			String_lastIndexOf_3 PROC
+				;
+				;	finds the last occurrence of string 2 within string 1 and returns the index
+				;		
+				;----------------------------------------------------------------------------------------------------
+
+ 00000327  55				push EBP											;save ebp
+ 00000328  52				push EDX											;save EDX
+ 00000329  57				push EDI											;save EDI
+ 0000032A  56				push ESI											;save esi
+ 0000032B  53				push EBX											;save ebx
+ 0000032C  51				push ECX											;save ecx
+ 0000032D  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000032F  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 00000334  BF 00000000			mov EDI,0											;clears EDI for indexing into string
+ 00000339  B9 00000000			mov ECX,0											;clears ECX
+ 0000033E  B8 00000000			mov EAX,0											;clears eax
+ 00000343  8B 5D 1C			mov EBX, [EBP + 28]									;move offset address of string1 into EBX
+ 00000346  8B 4D 20			mov ECX, [EBP + 32]									;move offset address of string2 into ECX
+					
+
+ 00000349			_search:
+					
+ 00000349  8A 04 0F			mov AL, byte ptr[ECX+EDI]							;moves each byte into AL for comparison
+ 0000034C  8A 24 1E			mov AH, byte ptr[EBX+ESI]							;moves each byte into AH for comparison
+					.IF AL == 0											;reached the end of string2 if character == null
+ 00000353  EB 14				jmp _endstring2									;jump to _endstring once the end of the string is reached
+					.ELSEIF AH == 0										;checks to see if end of string 1
+ 0000035B  EB 14				Jmp _endstring1
+					.ELSEIF AL == AH
+ 00000363  8B D6				mov EDX, ESI
+ 00000365  47					inc EDI
+					.ENDIF
+ 00000366  46				inc ESI												;increment ESI to move to next byte
+ 00000367  EB E0			jmp _search											;loop _search
+					
+ 00000369			_endstring2:
+ 00000369  BF 00000000			mov EDI, 0
+ 0000036E  46				inc ESI
+ 0000036F  EB D8			jmp _search
+
+ 00000371			_endstring1:
+
+ 00000371  B8 00000000			mov EAX, 0
+ 00000376  4A				dec EDX
+ 00000377  2B D7			sub EDX, EDI
+ 00000379  8A C2			mov AL, DL
+					
+ 0000037B			_end:
+ 0000037B  8B C6			mov eax, esi
+ 0000037D  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 0000037F  59				pop ECX												;restore ecx
+ 00000380  5B				pop EBX												;restore ebx
+ 00000381  5E				pop ESI												;restore esi
+ 00000382  5F				pop EDI												;restore EDI
+ 00000383  5A				pop EDX												;restore EDX
+ 00000384  5D				pop EBP												;restore ebp
+ 00000385  C3				ret													;return 
+
+ 00000386			String_lastIndexOf_3 ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 00000386			String_replace PROC
+				;
+				;	prompts user to choose a string, then choose a character they wish to replace, and then choose
+				;	the character they would like to replace it with.
+				;		
+				;----------------------------------------------------------------------------------------------------
+ 00000386  55				push EBP											;save ebp
+ 00000387  57				push EDI											;save EDI
+ 00000388  56				push ESI											;save esi
+ 00000389  53				push EBX											;save ebx
+ 0000038A  51				push ECX											;save ecx
+ 0000038B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000038D  BE 00000000			mov ESI,0											;clear esi for indexing into string
+ 00000392  B9 00000000			mov ECX,0											;clears ECX
+ 00000397  B8 00000000			mov EAX, 0											;clears eax
+					
+ 0000039C			_begin:
+
+					invoke putstring, ADDR lowerPrompt					;displays input prompt
+					invoke getstring, ADDR userInput,1					;gets user input
+ 000003B2  A0 00000130 R		mov AL, userInput									;stores userInput in AL for comparison
+					.IF AL == 31h	
+ 000003BB  8B 5D 18				mov EBX, [EBP + 24]								;move offset address of string1 into EBX
+ 000003BE  8B 7D 18				mov EDI, [EBP + 24]
+					.ELSEIF AL == 32h
+ 000003C7  8B 5D 1C				mov EBX, [EBP + 28]								;move offset address of string2 into EBX
+ 000003CA  8B 7D 1C				mov EDI, [EBP + 28]
+					.ELSE
+						invoke putstring, ADDR invalidPrompt1			;first half of error message
+						invoke putstring, ADDR userInput				;display the invalid entry
+						invoke putstring, ADDR invalidPrompt2			;second half of error message
+ 000003ED  EB AD				jmp _begin
+					.ENDIF
+
+					invoke putstring, ADDR toReplacePrompt
+					invoke getstring, ADDR strChartoReplace,1
+					invoke putstring, ADDR ReplaceWith
+					invoke getstring, ADDR strReplace,1
+ 0000041B  8A 0D 0000020A R		mov CL, strChartoReplace
+ 00000421  8A 2D 0000020C R		mov CH, strReplace
+					
+ 00000427			_search:
+
+ 00000427  8A 04 1E			mov AL, byte ptr[EBX+ESI]							;moves each byte into AL for comparison
+					.IF AL == 0											;reached the end of he string if character == null
+ 0000042E  EB 0C				jmp _end										;jump to _endstring once the end of the string is reached
+					.ELSEIF AL == CL									;checks to see if each byte contains corresponding character
+ 00000436  88 2C 1E				mov byte ptr[EBX+ESI],CH						;if byte contains character, jump to _next
+					.ENDIF
+ 00000439  46				inc ESI												;increment ESI to move to next byte
+ 0000043A  EB EB			jmp _search											;loop _search
+					
+ 0000043C			_end:
+ 0000043C  8B C7			mov EAX, EDI
+ 0000043E  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 00000440  59				pop ECX												;restore ecx
+ 00000441  5B				pop EBX												;restore ebx
+ 00000442  5E				pop ESI												;restore esi
+ 00000443  5F				pop EDI
+ 00000444  5D				pop EBP												;restore ebp
+ 00000445  C3				ret													;return 
+
+ 00000446			String_replace ENDP
+
+				;----------------------------------------------------------------------------------------------------
+ 00000446			String_concat PROC
+				;
+				;	concatenates string 2 to the end of string 1
+				;		
+				;----------------------------------------------------------------------------------------------------
+ 00000446  55				push EBP											;save ebp
+ 00000447  57				push EDI											;save EDI
+ 00000448  52				push EDX											;save EDX
+ 00000449  56				push esi											;save esi
+ 0000044A  53				push ebx											;save ebx
+ 0000044B  8B EC			mov EBP, ESP										;set ebp as the reference for the stackframe
+ 0000044D  BE 00000000			mov ESI,0											;clear esi for indexing into strings
+ 00000452  B8 00000000			mov EAX,0											;Clear EAX
+ 00000457  BF 00000000			mov edi,0											;clear EDI
+					invoke memoryallocBailey, 64						;allocate memory for new string
+					.IF EAX == 0										
+ 00000467  EB 3C				jmp _error
+					.ELSE
+ 0000046B  8B D0				mov EDX, EAX
+					.ENDIF
+ 0000046D  8B 5D 18			mov ebx, [EBP+24]									;move offset of string 1 into ebx
+ 00000470  B8 00000000			mov EAX,0
+					
+ 00000475			_start:
+ 00000475  8A 24 17			mov AH, byte ptr [EDX+EDI]							;index into new memory
+ 00000478  8A 04 1E			mov AL, byte ptr [EBX+ESI]							;index into string1
+					.IF AL != 0											;keep going if not at end of the string
+ 0000047F  8A E0				mov AH, AL										;copy byte from str1 into new location
+ 00000481  46					inc esi											;increment index
+ 00000482  47					inc edi											;increment index
+					.ELSE
+ 00000485  EB 02				jmp _next
+					.ENDIF
+ 00000487  EB EC			jmp _start
+					
+ 00000489			_next:
+ 00000489  BE 00000000			mov esi,0
+ 0000048E  8B 5D 1C			mov ebx, [EBP+28]									;offset string 2
+					
+ 00000491			_loop:
+ 00000491  8A 24 17			mov AH, byte ptr [EDX+EDI]							;index into new memory
+ 00000494  8A 04 1E			mov AL, byte ptr [EBX+ESI]							;index into string2
+					.IF AL != 0											;this loop is the same for string 2
+ 0000049B  8A E0				mov AH, AL
+ 0000049D  46					inc esi
+ 0000049E  47					inc edi
+ 0000049F  EB F0				jmp _loop
+					.ENDIF
+					
+ 000004A1  8B C2			mov EAX, EDX
+ 000004A3  EB 0A			jmp _end
+ 000004A5			_error:
+					invoke putstring, addr memError 
+ 000004AF			_end:
+ 000004AF  8B E5			mov ESP, EBP										;restore stackpointer to original location
+ 000004B1  5B				pop EBX												;restore ebx
+ 000004B2  5E				pop ESI												;restore esi
+ 000004B3  5A				pop EDX
+ 000004B4  5F				pop EDI
+ 000004B5  5D				pop EBP												;restore ebp
+ 000004B6  C3				ret													;return 
+
+ 000004B7			String_concat ENDP
+
+
+
+				END
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
+string2.asm						     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+CONSOLE_CURSOR_INFO  . . . . . .	 00000008
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  bVisible . . . . . . . . . . .	 00000004	 DWord
+CONSOLE_SCREEN_BUFFER_INFO . . .	 00000016
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCursorPosition . . . . . . .	 00000004	 DWord
+  wAttributes  . . . . . . . . .	 00000008	 Word
+  srWindow . . . . . . . . . . .	 0000000A	 QWord
+  dwMaximumWindowSize  . . . . .	 00000012	 DWord
+COORD  . . . . . . . . . . . . .	 00000004
+  X  . . . . . . . . . . . . . .	 00000000	 Word
+  Y  . . . . . . . . . . . . . .	 00000002	 Word
+FILETIME . . . . . . . . . . . .	 00000008
+  loDateTime . . . . . . . . . .	 00000000	 DWord
+  hiDateTime . . . . . . . . . .	 00000004	 DWord
+FOCUS_EVENT_RECORD . . . . . . .	 00000004
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+FPU_ENVIRON  . . . . . . . . . .	 0000001C
+  controlWord  . . . . . . . . .	 00000000	 Word
+  statusWord . . . . . . . . . .	 00000004	 Word
+  tagWord  . . . . . . . . . . .	 00000008	 Word
+  instrPointerOffset . . . . . .	 0000000C	 DWord
+  instrPointerSelector . . . . .	 00000010	 DWord
+  operandPointerOffset . . . . .	 00000014	 DWord
+  operandPointerSelector . . . .	 00000018	 Word
+INPUT_RECORD . . . . . . . . . .	 00000014
+  EventType  . . . . . . . . . .	 00000000	 Word
+  Event  . . . . . . . . . . . .	 00000004	 XmmWord
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+  bSetFocus  . . . . . . . . . .	 00000000	 DWord
+KEY_EVENT_RECORD . . . . . . . .	 00000010
+  bKeyDown . . . . . . . . . . .	 00000000	 DWord
+  wRepeatCount . . . . . . . . .	 00000004	 Word
+  wVirtualKeyCode  . . . . . . .	 00000006	 Word
+  wVirtualScanCode . . . . . . .	 00000008	 Word
+  uChar  . . . . . . . . . . . .	 0000000A	 Word
+  UnicodeChar  . . . . . . . . .	 00000000	 Word
+  AsciiChar  . . . . . . . . . .	 00000000	 Byte
+  dwControlKeyState  . . . . . .	 0000000C	 DWord
+MENU_EVENT_RECORD  . . . . . . .	 00000004
+  dwCommandId  . . . . . . . . .	 00000000	 DWord
+MOUSE_EVENT_RECORD . . . . . . .	 00000010
+  dwMousePosition  . . . . . . .	 00000000	 DWord
+  dwButtonState  . . . . . . . .	 00000004	 DWord
+  dwMouseControlKeyState . . . .	 00000008	 DWord
+  dwEventFlags . . . . . . . . .	 0000000C	 DWord
+SMALL_RECT . . . . . . . . . . .	 00000008
+  Left . . . . . . . . . . . . .	 00000000	 Word
+  Top  . . . . . . . . . . . . .	 00000002	 Word
+  Right  . . . . . . . . . . . .	 00000004	 Word
+  Bottom . . . . . . . . . . . .	 00000006	 Word
+SYSTEMTIME . . . . . . . . . . .	 00000010
+  wYear  . . . . . . . . . . . .	 00000000	 Word
+  wMonth . . . . . . . . . . . .	 00000002	 Word
+  wDayOfWeek . . . . . . . . . .	 00000004	 Word
+  wDay . . . . . . . . . . . . .	 00000006	 Word
+  wHour  . . . . . . . . . . . .	 00000008	 Word
+  wMinute  . . . . . . . . . . .	 0000000A	 Word
+  wSecond  . . . . . . . . . . .	 0000000C	 Word
+  wMilliseconds  . . . . . . . .	 0000000E	 Word
+WINDOW_BUFFER_SIZE_RECORD  . . .	 00000004
+  dwSize . . . . . . . . . . . .	 00000000	 DWord
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000023D Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000004B7 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+CloseFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Clrscr . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+CreateOutputFile . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Crlf . . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Delay  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpMem  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DumpRegs . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToDosDateTime  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FileTimeToSystemTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FlushConsoleInputBuffer  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+FormatMessageA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandLineA  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetCommandTail . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCP . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetConsoleScreenBufferInfo . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetDateTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetFileTime  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetKeyState  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLastError . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMaxXY . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMseconds  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetNumberOfConsoleInputEvents  .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetStdHandle . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetSystemTime  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetTickCount . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Gotoxy . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapAlloc  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapCreate . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapDestroy  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+HeapSize . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+IsDigit  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LocalFree  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBoxAsk  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MsgBox . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OpenInputFile  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseDecimal32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ParseInteger32 . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PeekConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Random32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RandomRange  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Randomize  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadChar . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadConsoleInputA  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadDec  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFloat  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadFromFile . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadHex  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleScreenBufferSize . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTextAttribute  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleTitleA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetConsoleWindowInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetFilePointer . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetLocalTime . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+SetTextColor . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ShowFPUStack . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Sleep  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+StrLength  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_compare  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_copy . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_length . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_trim . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+Str_ucase  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+String_concat  . . . . . . . . .	P Near	 00000446 _TEXT	Length= 00000071 Public STDCALL
+  _start . . . . . . . . . . . .	L Near	 00000475 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 00000489 _TEXT	
+  _loop  . . . . . . . . . . . .	L Near	 00000491 _TEXT	
+  _error . . . . . . . . . . . .	L Near	 000004A5 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 000004AF _TEXT	
+String_indexOf_1 . . . . . . . .	P Near	 00000112 _TEXT	Length= 0000005D Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000146 _TEXT	
+  _endstring . . . . . . . . . .	L Near	 0000015A _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 00000166 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 00000168 _TEXT	
+String_indexOf_2 . . . . . . . .	P Near	 0000016F _TEXT	Length= 00000084 Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 000001CA _TEXT	
+  _endstring . . . . . . . . . .	L Near	 000001DE _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 000001EA _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 000001EC _TEXT	
+String_indexOf_3 . . . . . . . .	P Near	 000001F3 _TEXT	Length= 00000063 Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000215 _TEXT	
+  _endstring1  . . . . . . . . .	L Near	 00000235 _TEXT	
+  _endstring2  . . . . . . . . .	L Near	 00000241 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 0000024B _TEXT	
+String_lastIndexOf_1 . . . . . .	P Near	 00000256 _TEXT	Length= 00000055 Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 0000028B _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 0000029F _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 000002A3 _TEXT	
+String_lastIndexOf_2 . . . . . .	P Near	 000002AB _TEXT	Length= 0000007C Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000307 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 0000031B _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 0000031F _TEXT	
+String_lastIndexOf_3 . . . . . .	P Near	 00000327 _TEXT	Length= 0000005F Public STDCALL
+  _search  . . . . . . . . . . .	L Near	 00000349 _TEXT	
+  _endstring2  . . . . . . . . .	L Near	 00000369 _TEXT	
+  _endstring1  . . . . . . . . .	L Near	 00000371 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 0000037B _TEXT	
+String_replace . . . . . . . . .	P Near	 00000386 _TEXT	Length= 000000C0 Public STDCALL
+  _begin . . . . . . . . . . . .	L Near	 0000039C _TEXT	
+  _search  . . . . . . . . . . .	L Near	 00000427 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 0000043C _TEXT	
+String_toLowerCase . . . . . . .	P Near	 00000000 _TEXT	Length= 00000089 Public STDCALL
+  _begin . . . . . . . . . . . .	L Near	 00000010 _TEXT	
+  _lowerconvert  . . . . . . . .	L Near	 00000067 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 0000007D _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 00000080 _TEXT	
+String_toUpperCase . . . . . . .	P Near	 00000089 _TEXT	Length= 00000089 Public STDCALL
+  _begin . . . . . . . . . . . .	L Near	 00000099 _TEXT	
+  _upperconvert  . . . . . . . .	L Near	 000000F0 _TEXT	
+  _next  . . . . . . . . . . . .	L Near	 00000106 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 00000109 _TEXT	
+SystemTimeToFileTime . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WaitMsg  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBinB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteBin . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteChar  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleA  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputAttribute  . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteConsoleOutputCharacterA . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteDec . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFile  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteFloat . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHexB  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteHex . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrameName  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ascint32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+getstring  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+intasc32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+memoryallocBailey  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+putstring  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ALT_MASK . . . . . . . . . . . .	Number	 00000003h   
+CAPSLOCK_ON  . . . . . . . . . .	Number	 00000080h   
+CREATE_ALWAYS  . . . . . . . . .	Number	 00000002h   
+CREATE_NEW . . . . . . . . . . .	Number	 00000001h   
+CTRL_MASK  . . . . . . . . . . .	Number	 0000000Ch   
+CreateFile . . . . . . . . . . .	Text   	 CreateFileA
+DO_NOT_SHARE . . . . . . . . . .	Number	 00000000h   
+ENABLE_ECHO_INPUT  . . . . . . .	Number	 00000004h   
+ENABLE_LINE_INPUT  . . . . . . .	Number	 00000002h   
+ENABLE_MOUSE_INPUT . . . . . . .	Number	 00000010h   
+ENABLE_PROCESSED_INPUT . . . . .	Number	 00000001h   
+ENABLE_PROCESSED_OUTPUT  . . . .	Number	 00000001h   
+ENABLE_WINDOW_INPUT  . . . . . .	Number	 00000008h   
+ENABLE_WRAP_AT_EOL_OUTPUT  . . .	Number	 00000002h   
+ENHANCED_KEY . . . . . . . . . .	Number	 00000100h   
+FALSE  . . . . . . . . . . . . .	Number	 00000000h   
+FILE_APPEND_DATA . . . . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_ARCHIVE . . . . .	Number	 00000020h   
+FILE_ATTRIBUTE_COMPRESSED  . . .	Number	 00000800h   
+FILE_ATTRIBUTE_DEVICE  . . . . .	Number	 00000040h   
+FILE_ATTRIBUTE_DIRECTORY . . . .	Number	 00000010h   
+FILE_ATTRIBUTE_ENCRYPTED . . . .	Number	 00004000h   
+FILE_ATTRIBUTE_HIDDEN  . . . . .	Number	 00000002h   
+FILE_ATTRIBUTE_NORMAL  . . . . .	Number	 00000080h   
+FILE_ATTRIBUTE_NOT_CONTENT_INDEXED .	Number	 00002000h   
+FILE_ATTRIBUTE_OFFLINE . . . . .	Number	 00001000h   
+FILE_ATTRIBUTE_READONLY  . . . .	Number	 00000001h   
+FILE_ATTRIBUTE_REPARSE_POINT . .	Number	 00000400h   
+FILE_ATTRIBUTE_SPARSE_FILE . . .	Number	 00000200h   
+FILE_ATTRIBUTE_SYSTEM  . . . . .	Number	 00000004h   
+FILE_ATTRIBUTE_TEMPORARY . . . .	Number	 00000100h   
+FILE_BEGIN . . . . . . . . . . .	Number	 00000000h   
+FILE_CURRENT . . . . . . . . . .	Number	 00000001h   
+FILE_DELETE_CHILD  . . . . . . .	Number	 00000040h   
+FILE_END . . . . . . . . . . . .	Number	 00000002h   
+FILE_READ_DATA . . . . . . . . .	Number	 00000001h   
+FILE_SHARE_DELETE  . . . . . . .	Number	 00000004h   
+FILE_SHARE_READ  . . . . . . . .	Number	 00000001h   
+FILE_SHARE_WRITE . . . . . . . .	Number	 00000002h   
+FILE_WRITE_DATA  . . . . . . . .	Number	 00000002h   
+FOCUS_EVENT  . . . . . . . . . .	Number	 00000010h   
+FORMAT_MESSAGE_ALLOCATE_BUFFER .	Number	 00000100h   
+FORMAT_MESSAGE_FROM_SYSTEM . . .	Number	 00001000h   
+FormatMessage  . . . . . . . . .	Text   	 FormatMessageA
+GENERIC_ALL  . . . . . . . . . .	Number	 10000000h   
+GENERIC_EXECUTE  . . . . . . . .	Number	 20000000h   
+GENERIC_READ . . . . . . . . . .	Number	 -80000000h   
+GENERIC_WRITE  . . . . . . . . .	Number	 40000000h   
+GetCommandLine . . . . . . . . .	Text   	 GetCommandLineA
+HANDLE . . . . . . . . . . . . .	Text   	 DWORD
+HEAP_GENERATE_EXCEPTIONS . . . .	Number	 00000004h   
+HEAP_GROWABLE  . . . . . . . . .	Number	 00000002h   
+HEAP_NO_SERIALIZE  . . . . . . .	Number	 00000001h   
+HEAP_REALLOC_IN_PLACE_ONLY . . .	Number	 00000010h   
+HEAP_ZERO_MEMORY . . . . . . . .	Number	 00000008h   
+IDABORT  . . . . . . . . . . . .	Number	 00000003h   
+IDCANCEL . . . . . . . . . . . .	Number	 00000002h   
+IDCLOSE  . . . . . . . . . . . .	Number	 00000008h   
+IDCONTINUE . . . . . . . . . . .	Number	 0000000Bh   
+IDHELP . . . . . . . . . . . . .	Number	 00000009h   
+IDIGNORE . . . . . . . . . . . .	Number	 00000005h   
+IDNO . . . . . . . . . . . . . .	Number	 00000007h   
+IDOK . . . . . . . . . . . . . .	Number	 00000001h   
+IDRETRY  . . . . . . . . . . . .	Number	 00000004h   
+IDTIMEOUT  . . . . . . . . . . .	Number	 00007D00h   
+IDTRYAGAIN . . . . . . . . . . .	Number	 0000000Ah   
+IDYES  . . . . . . . . . . . . .	Number	 00000006h   
+INVALID_HANDLE_VALUE . . . . . .	Number	 -00000001h   
+KBDOWN_FLAG  . . . . . . . . . .	Number	 00000001h   
+KEY_EVENT  . . . . . . . . . . .	Number	 00000001h   
+KEY_MASKS  . . . . . . . . . . .	Number	 0000001Fh   
+LEFT_ALT_PRESSED . . . . . . . .	Number	 00000002h   
+LEFT_CTRL_PRESSED  . . . . . . .	Number	 00000008h   
+MB_ABORTRETRYIGNORE  . . . . . .	Number	 00000002h   
+MB_APPLMODAL . . . . . . . . . .	Number	 00000000h   
+MB_CANCELTRYCONTINUE . . . . . .	Number	 00000006h   
+MB_DEFBUTTON1  . . . . . . . . .	Number	 00000000h   
+MB_DEFBUTTON2  . . . . . . . . .	Number	 00000100h   
+MB_DEFBUTTON3  . . . . . . . . .	Number	 00000200h   
+MB_DEFBUTTON4  . . . . . . . . .	Number	 00000300h   
+MB_HELP  . . . . . . . . . . . .	Number	 00004000h   
+MB_ICONASTERISK  . . . . . . . .	Number	 00000040h   
+MB_ICONERROR . . . . . . . . . .	Number	 00000010h   
+MB_ICONEXCLAMATION . . . . . . .	Number	 00000030h   
+MB_ICONHAND  . . . . . . . . . .	Number	 00000010h   
+MB_ICONINFORMATION . . . . . . .	Number	 00000040h   
+MB_ICONQUESTION  . . . . . . . .	Number	 00000020h   
+MB_ICONSTOP  . . . . . . . . . .	Number	 00000010h   
+MB_ICONWARNING . . . . . . . . .	Number	 00000030h   
+MB_OKCANCEL  . . . . . . . . . .	Number	 00000001h   
+MB_OK  . . . . . . . . . . . . .	Number	 00000000h   
+MB_RETRYCANCEL . . . . . . . . .	Number	 00000005h   
+MB_SYSTEMMODAL . . . . . . . . .	Number	 00001000h   
+MB_TASKMODAL . . . . . . . . . .	Number	 00002000h   
+MB_USERICON  . . . . . . . . . .	Number	 00000080h   
+MB_YESNOCANCEL . . . . . . . . .	Number	 00000003h   
+MB_YESNO . . . . . . . . . . . .	Number	 00000004h   
+MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
+MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
+MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+NULL . . . . . . . . . . . . . .	Number	 00000000h   
+NUMLOCK_ON . . . . . . . . . . .	Number	 00000020h   
+OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
+OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
+RIGHT_ALT_PRESSED  . . . . . . .	Number	 00000001h   
+RIGHT_CTRL_PRESSED . . . . . . .	Number	 00000004h   
+ReadConsoleInput . . . . . . . .	Text   	 ReadConsoleInputA
+ReadConsole  . . . . . . . . . .	Text   	 ReadConsoleA
+ReplaceWith  . . . . . . . . . .	Byte	 000001EC _DATA	
+SCROLLLOCK_ON  . . . . . . . . .	Number	 00000040h   
+SHIFT_MASK . . . . . . . . . . .	Number	 00000010h   
+SHIFT_PRESSED  . . . . . . . . .	Number	 00000010h   
+STD_ERROR_HANDLE . . . . . . . .	Number	 -0000000Ch   
+STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah   
+STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
+SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
+TAB  . . . . . . . . . . . . . .	Number	 00000009h   
+TRUE . . . . . . . . . . . . . .	Number	 00000001h   
+TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   
+VK_11  . . . . . . . . . . . . .	Number	 000000BDh   
+VK_12  . . . . . . . . . . . . .	Number	 000000BBh   
+VK_ADD . . . . . . . . . . . . .	Number	 0000006Bh   
+VK_BACK  . . . . . . . . . . . .	Number	 00000008h   
+VK_CANCEL  . . . . . . . . . . .	Number	 00000003h   
+VK_CAPITAL . . . . . . . . . . .	Number	 00000014h   
+VK_CLEAR . . . . . . . . . . . .	Number	 0000000Ch   
+VK_CONTROL . . . . . . . . . . .	Number	 00000011h   
+VK_DECIMAL . . . . . . . . . . .	Number	 0000006Eh   
+VK_DELETE  . . . . . . . . . . .	Number	 0000002Eh   
+VK_DIVIDE  . . . . . . . . . . .	Number	 0000006Fh   
+VK_DOWN  . . . . . . . . . . . .	Number	 00000028h   
+VK_END . . . . . . . . . . . . .	Number	 00000023h   
+VK_ESCAPE  . . . . . . . . . . .	Number	 0000001Bh   
+VK_EXECUTE . . . . . . . . . . .	Number	 0000002Bh   
+VK_F10 . . . . . . . . . . . . .	Number	 00000079h   
+VK_F11 . . . . . . . . . . . . .	Number	 0000007Ah   
+VK_F12 . . . . . . . . . . . . .	Number	 0000007Bh   
+VK_F13 . . . . . . . . . . . . .	Number	 0000007Ch   
+VK_F14 . . . . . . . . . . . . .	Number	 0000007Dh   
+VK_F15 . . . . . . . . . . . . .	Number	 0000007Eh   
+VK_F16 . . . . . . . . . . . . .	Number	 0000007Fh   
+VK_F17 . . . . . . . . . . . . .	Number	 00000080h   
+VK_F18 . . . . . . . . . . . . .	Number	 00000081h   
+VK_F19 . . . . . . . . . . . . .	Number	 00000082h   
+VK_F1  . . . . . . . . . . . . .	Number	 00000070h   
+VK_F20 . . . . . . . . . . . . .	Number	 00000083h   
+VK_F21 . . . . . . . . . . . . .	Number	 00000084h   
+VK_F22 . . . . . . . . . . . . .	Number	 00000085h   
+VK_F23 . . . . . . . . . . . . .	Number	 00000086h   
+VK_F24 . . . . . . . . . . . . .	Number	 00000087h   
+VK_F2  . . . . . . . . . . . . .	Number	 00000071h   
+VK_F3  . . . . . . . . . . . . .	Number	 00000072h   
+VK_F4  . . . . . . . . . . . . .	Number	 00000073h   
+VK_F5  . . . . . . . . . . . . .	Number	 00000074h   
+VK_F6  . . . . . . . . . . . . .	Number	 00000075h   
+VK_F7  . . . . . . . . . . . . .	Number	 00000076h   
+VK_F8  . . . . . . . . . . . . .	Number	 00000077h   
+VK_F9  . . . . . . . . . . . . .	Number	 00000078h   
+VK_HELP  . . . . . . . . . . . .	Number	 0000002Fh   
+VK_HOME  . . . . . . . . . . . .	Number	 00000024h   
+VK_INSERT  . . . . . . . . . . .	Number	 0000002Dh   
+VK_LBUTTON . . . . . . . . . . .	Number	 00000001h   
+VK_LCONTROL  . . . . . . . . . .	Number	 000000A2h   
+VK_LEFT  . . . . . . . . . . . .	Number	 00000025h   
+VK_LMENU . . . . . . . . . . . .	Number	 000000A4h   
+VK_LSHIFT  . . . . . . . . . . .	Number	 000000A0h   
+VK_MENU  . . . . . . . . . . . .	Number	 00000012h   
+VK_MULTIPLY  . . . . . . . . . .	Number	 0000006Ah   
+VK_NEXT  . . . . . . . . . . . .	Number	 00000022h   
+VK_NUMLOCK . . . . . . . . . . .	Number	 00000090h   
+VK_NUMPAD0 . . . . . . . . . . .	Number	 00000060h   
+VK_NUMPAD1 . . . . . . . . . . .	Number	 00000061h   
+VK_NUMPAD2 . . . . . . . . . . .	Number	 00000062h   
+VK_NUMPAD3 . . . . . . . . . . .	Number	 00000063h   
+VK_NUMPAD4 . . . . . . . . . . .	Number	 00000064h   
+VK_NUMPAD5 . . . . . . . . . . .	Number	 00000065h   
+VK_NUMPAD6 . . . . . . . . . . .	Number	 00000066h   
+VK_NUMPAD7 . . . . . . . . . . .	Number	 00000067h   
+VK_NUMPAD8 . . . . . . . . . . .	Number	 00000068h   
+VK_NUMPAD9 . . . . . . . . . . .	Number	 00000069h   
+VK_PAUSE . . . . . . . . . . . .	Number	 00000013h   
+VK_PRINT . . . . . . . . . . . .	Number	 0000002Ah   
+VK_PRIOR . . . . . . . . . . . .	Number	 00000021h   
+VK_RBUTTON . . . . . . . . . . .	Number	 00000002h   
+VK_RCONTROL  . . . . . . . . . .	Number	 000000A3h   
+VK_RETURN  . . . . . . . . . . .	Number	 0000000Dh   
+VK_RIGHT . . . . . . . . . . . .	Number	 00000027h   
+VK_RMENU . . . . . . . . . . . .	Number	 000000A5h   
+VK_RSHIFT  . . . . . . . . . . .	Number	 000000A1h   
+VK_SCROLL  . . . . . . . . . . .	Number	 00000091h   
+VK_SEPARATER . . . . . . . . . .	Number	 0000006Ch   
+VK_SHIFT . . . . . . . . . . . .	Number	 00000010h   
+VK_SNAPSHOT  . . . . . . . . . .	Number	 0000002Ch   
+VK_SPACE . . . . . . . . . . . .	Number	 00000020h   
+VK_SUBTRACT  . . . . . . . . . .	Number	 0000006Dh   
+VK_TAB . . . . . . . . . . . . .	Number	 00000009h   
+VK_UP  . . . . . . . . . . . . .	Number	 00000026h   
+WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
+WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
+WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+black  . . . . . . . . . . . . .	Number	 00000000h   
+blue . . . . . . . . . . . . . .	Number	 00000001h   
+brown  . . . . . . . . . . . . .	Number	 00000006h   
+cyan . . . . . . . . . . . . . .	Number	 00000003h   
+exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
+gray . . . . . . . . . . . . . .	Number	 00000008h   
+green  . . . . . . . . . . . . .	Number	 00000002h   
+indexOF2input  . . . . . . . . .	Byte	 00000132 _DATA	
+indexOf2Prompt . . . . . . . . .	Byte	 00000135 _DATA	
+invalidPrompt1 . . . . . . . . .	Byte	 000000FC _DATA	
+invalidPrompt2 . . . . . . . . .	Byte	 0000010D _DATA	
+lightBlue  . . . . . . . . . . .	Number	 00000009h   
+lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
+lightGray  . . . . . . . . . . .	Number	 00000007h   
+lightGreen . . . . . . . . . . .	Number	 0000000Ah   
+lightMagenta . . . . . . . . . .	Number	 0000000Dh   
+lightRed . . . . . . . . . . . .	Number	 0000000Ch   
+lowerPrompt  . . . . . . . . . .	Byte	 00000066 _DATA	
+magenta  . . . . . . . . . . . .	Number	 00000005h   
+memError . . . . . . . . . . . .	Byte	 0000020E _DATA	
+red  . . . . . . . . . . . . . .	Number	 00000004h   
+strChartoReplace . . . . . . . .	Byte	 0000020A _DATA	
+strEnter1  . . . . . . . . . . .	Byte	 00000000 _DATA	
+strEnter2  . . . . . . . . . . .	Byte	 00000013 _DATA	
+strIndexError2 . . . . . . . . .	Byte	 00000175 _DATA	
+strIndexError  . . . . . . . . .	Byte	 000000C9 _DATA	
+strIndexPrompt . . . . . . . . .	Byte	 0000009D _DATA	
+strReplace . . . . . . . . . . .	Byte	 0000020C _DATA	
+strString1 . . . . . . . . . . .	Byte	 00000026 _DATA	
+strString2 . . . . . . . . . . .	Byte	 00000046 _DATA	
+toReplacePrompt  . . . . . . . .	Byte	 000001C5 _DATA	
+userInput  . . . . . . . . . . .	Byte	 00000130 _DATA	
+white  . . . . . . . . . . . . .	Number	 0000000Fh   
+wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
+yellow . . . . . . . . . . . . .	Number	 0000000Eh   
+
+	   0 Warnings
+	   0 Errors

@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 19:01:43
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
 masm3.asm						     Page 1 - 1
 
 
@@ -91,16 +91,16 @@ masm3.asm						     Page 1 - 1
 					EXTERN String_startsWith_1@0:PROC
 					EXTERN String_startsWith_2@0:PROC
 					EXTERN String_endsWith@0:PROC
-				;	EXTERN String_indexOf_1@0:PROC
-				;	EXTERN String_indexOf_2@0:PROC
-				;	EXTERN String_indexOf_3@0:PROC
-				;	EXTERN String_lastIndexOf_1@0:PROC
-				;	EXTERN String_lastIndexOf_2@0:PROC
-				;	EXTERN String_lastIndexOf_3@0:PROC
-				;	EXTERN String_replace@0:PROC
-				;	EXTERN String_concat@0:PROC
-				;	EXTERN String_toLowerCase@0:PROC
-				;	EXTERN String_toUpperCase@0:PROC
+					EXTERN String_indexOf_1@0:PROC
+					EXTERN String_indexOf_2@0:PROC
+					EXTERN String_indexOf_3@0:PROC
+					EXTERN String_lastIndexOf_1@0:PROC
+					EXTERN String_lastIndexOf_2@0:PROC
+					EXTERN String_lastIndexOf_3@0:PROC
+					EXTERN String_replace@0:PROC
+					EXTERN String_concat@0:PROC
+					EXTERN String_toLowerCase@0:PROC
+					EXTERN String_toUpperCase@0:PROC
 					
 					;Constants
 
@@ -764,14 +764,14 @@ masm3.asm						     Page 1 - 1
  000002D0  E8 00000000 E		CALL setString@0						;call setString@4
  000002D5  83 C4 04			ADD ESP, 4								;add 4 bytes to ESP
 					
- 000002D8  E9 00000425			JMP RETURN
+ 000002D8  E9 00000498			JMP RETURN
 					
 					.elseif EDX == 2;-----------------------
  000002E7  50				PUSH EAX								;push EAX
  000002E8  E8 00000000 E		CALL setString@0						;call setString@4
  000002ED  83 C4 04			ADD ESP, 4								;add 4 bytes to ESP
 					
- 000002F0  E9 0000040D			JMP RETURN
+ 000002F0  E9 00000480			JMP RETURN
 					
 					.elseif EDX == 3;-----------------------
  000002FF  E8 00000000 E		CALL Clrscr
@@ -790,10 +790,10 @@ masm3.asm						     Page 1 - 1
  0000032B  50				PUSH EAX								;push EAX
 					
  0000032C			LENGTHCALL:
- 0000032C  E8 000003D2			CALL String_length						;call String_length
+ 0000032C  E8 00000445			CALL String_length						;call String_length
 					INVOKE intasc32, addr bLength, EAX		;convert integer into ascii characters
 					
- 0000033C  E9 000003C1			JMP RETURN
+ 0000033C  E9 00000434			JMP RETURN
 					
 					.elseif EDX == 4;-----------------------
  0000034B  BA 00000728 R		MOV EDX, OFFSET strFalse				;move the offset address of strFalse into EDX
@@ -809,7 +809,7 @@ masm3.asm						     Page 1 - 1
  00000364  BA 0000072E R		MOV EDX, OFFSET strTrue					;move the offset address of strTrue into EDX
  00000369  89 15 000001EF R		MOV dEqualsPtr, EDX						;set dEqualsPtr equal to EDX
  0000036F			J4:
- 0000036F  E9 0000038E			JMP RETURN
+ 0000036F  E9 00000401			JMP RETURN
 					
 					.elseif EDX == 5;-----------------------
  0000037E  BA 00000728 R		MOV EDX, OFFSET strFalse				;move the offset address of strFalse into EDX
@@ -825,7 +825,7 @@ masm3.asm						     Page 1 - 1
  00000397  BA 0000072E R		MOV EDX, OFFSET strTrue					;move the offset address of strTrue into EDX
  0000039C  89 15 00000230 R		MOV dCaseEqualsPtr, EDX					;set dCaseEqualsPtr equal to EDX
  000003A2			J5:
- 000003A2  E9 0000035B			JMP RETURN
+ 000003A2  E9 000003CE			JMP RETURN
 					
 					.elseif EDX == 6;-----------------------
  000003B1  53				PUSH EBX								;push EBX to the stack
@@ -833,7 +833,7 @@ masm3.asm						     Page 1 - 1
  000003B7  83 C4 04			ADD ESP, 4
  000003BA  A3 00000275 R		MOV dStr6Ptr, EAX						;move new address into memory
 					
- 000003BF  E9 0000033E			JMP RETURN
+ 000003BF  E9 000003B1			JMP RETURN
 					
 					.elseif EDX == 7;-----------------------
  000003D2  E8 00000000 E		CALL Clrscr										;clear the screen
@@ -845,11 +845,11 @@ masm3.asm						     Page 1 - 1
 					INVOKE ascint32, addr strStartInd				;convert ascii values to real integer values
  000003FC  8B C8			MOV ECX, EAX									;move result into ECX
 					
- 000003FE  83 F9 01			CMP ECX, 1										;compare result to 1
+ 000003FE  83 F9 00			CMP ECX, 0										;compare result to 1
  00000401  7C 5F			JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
  00000403  BE 00000000 R		MOV ESI, OFFSET strString1						;move the offset address of strString1 into ESI
  00000408  56				PUSH ESI										;push ESI
- 00000409  E8 000002F5			CALL String_length								;get length of [intStrAddr]	
+ 00000409  E8 00000368			CALL String_length								;get length of [intStrAddr]	
  0000040E  3B C8			CMP ECX, EAX									;compare result to stringLrngth
  00000410  7F 50			JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
 					
@@ -861,10 +861,10 @@ masm3.asm						     Page 1 - 1
  00000437  8B D0			MOV EDX, EAX									;move result into EDX
 
  00000439  BB 00000001			MOV EBX, 1	
- 0000043E  83 FA 01			CMP EDX, 1										;compare result to 1
+ 0000043E  83 FA 00			CMP EDX, 0										;compare result to 1
  00000441  7C 1F			JL OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value is >1
  00000443  56				PUSH ESI										;push ESI
- 00000444  E8 000002BA			CALL String_length								;get length of [intStrAddr]	
+ 00000444  E8 0000032D			CALL String_length								;get length of [intStrAddr]	
  00000449  3B D0			CMP EDX, EAX									;compare result to stringLrngth
  0000044B  7F 15			JG OUTOFBOUNDS7									;jump to OUTOFBOUNDS if the input value > length
 					
@@ -875,7 +875,7 @@ masm3.asm						     Page 1 - 1
  00000455  83 C4 0C			ADD ESP, 12
  00000458  A3 000002BA R		MOV dStr7Ptr, EAX								;move resulting address to dStr7Ptr
 					
- 0000045D  E9 000002A0			JMP RETURN
+ 0000045D  E9 00000313			JMP RETURN
 					
  00000462			OUTOFBOUNDS7:
 					INVOKE putString, addr strOutOBounds			;output out of bounds message to the console
@@ -893,11 +893,11 @@ masm3.asm						     Page 1 - 1
 					INVOKE ascint32, addr strStartInd				;convert ascii values to real integer values
  000004AB  8B C8			MOV ECX, EAX									;move result into ECX
 					
- 000004AD  83 F9 01			CMP ECX, 1										;compare result to 1
+ 000004AD  83 F9 00			CMP ECX, 0										;compare result to 1
  000004B0  7C 23			JL OUTOFBOUNDS8									;jump to OUTOFBOUNDS if the input value is >1
  000004B2  BE 00000000 R		MOV ESI, OFFSET strString1						;move the offset address of strString1 into ESI
  000004B7  56				PUSH ESI										;push ESI
- 000004B8  E8 00000246			CALL String_length								;get length of [intStrAddr]	
+ 000004B8  E8 000002B9			CALL String_length								;get length of [intStrAddr]	
  000004BD  3B C8			CMP ECX, EAX									;compare result to stringLrngth
  000004BF  7F 14			JG OUTOFBOUNDS8									;jump to OUTOFBOUNDS if the input value > length
 					
@@ -908,7 +908,7 @@ masm3.asm						     Page 1 - 1
  000004C8  83 C4 08			ADD ESP, 8
  000004CB  A3 000002FF R		MOV dStr8Ptr, EAX								;move new address into memory
 					
- 000004D0  E9 0000022D			JMP RETURN
+ 000004D0  E9 000002A0			JMP RETURN
 					
  000004D5			OUTOFBOUNDS8:
 					INVOKE putString, addr strOutOBounds			;output the out of bounds message to the console
@@ -927,12 +927,12 @@ masm3.asm						     Page 1 - 1
  00000517  83 C4 08			ADD ESP, 8										
 					
  0000051A  3C 00			CMP AL, 0
- 0000051C  0F 84 000001E0		JE RETURN
+ 0000051C  0F 84 00000253		JE RETURN
  00000522  C7 05 00000342 R		MOV dPtrCharAt, OFFSET strCharAt				;move char address into memory
 	   00000340 R
  0000052C  A2 00000340 R		MOV strCharAt, AL
 					
- 00000531  E9 000001CC			JMP RETURN
+ 00000531  E9 0000023F			JMP RETURN
 					
 					.elseif EDX == 10;-----------------------
  00000540  E8 00000000 E		CALL Clrscr
@@ -955,7 +955,7 @@ masm3.asm						     Page 1 - 1
  00000584  BA 0000072E R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
  00000589  89 15 00000383 R		MOV dStarts1Ptr, EDX							;set dEqualsPtr equal to EDX
  0000058F			J10:
- 0000058F  E9 0000016E			JMP RETURN
+ 0000058F  E9 000001E1			JMP RETURN
 					
 					.elseif EDX == 11;-----------------------
  0000059E  E8 00000000 E		CALL Clrscr
@@ -972,7 +972,7 @@ masm3.asm						     Page 1 - 1
  000005BC  BA 0000072E R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
  000005C1  89 15 000003C4 R		MOV dStarts2Ptr, EDX							;set dEqualsPtr equal to EDX
  000005C7			J11:
- 000005C7  E9 00000136			JMP RETURN
+ 000005C7  E9 000001A9			JMP RETURN
 					
 					.elseif EDX == 12;-----------------------
  000005D6  E8 00000000 E		CALL Clrscr
@@ -989,123 +989,128 @@ masm3.asm						     Page 1 - 1
  000005F4  BA 0000072E R		MOV EDX, OFFSET strTrue							;move the offset address of strTrue into EDX
  000005F9  89 15 00000405 R		MOV dEndsPtr, EDX								;set dEqualsPtr equal to EDX
  000005FF			J12:
- 000005FF  E9 000000FE			JMP RETURN
+ 000005FF  E9 00000171			JMP RETURN
 					
 					.elseif EDX == 13;-----------------------
  0000060E  E8 00000000 E		Call CLrscr
  00000613  53				push EBX
-					;call String_indexOf_1
- 00000614  83 C4 04			add esp, 4
-					;mov dIndex1, DWORD PTR [AL]
- 00000617  E9 000000E6			JMP RETURN
+ 00000614  E8 00000000 E		call String_indexOf_1
+ 00000619  83 C4 04			add esp, 4
+ 0000061C  A3 00000446 R		mov dIndex1, EAX
+ 00000621  E9 0000014F			JMP RETURN
 					
 					.elseif EDX == 14;-----------------------
- 00000626  E8 00000000 E		Call CLrscr
- 0000062B  68 00000000 R		push offset strString1
-				;	call String_indexOf_2
- 00000630  83 C4 04			add esp, 4
-					;mov dIndex2, DWORD PTR [AL]
- 00000633  E9 000000CA			JMP RETURN
+ 00000630  E8 00000000 E		Call CLrscr
+ 00000635  68 00000000 R		push offset strString1
+ 0000063A  E8 00000000 E		call String_indexOf_2
+ 0000063F  83 C4 04			add esp, 4
+ 00000642  A3 00000487 R		mov dIndex2, eax
+ 00000647  E9 00000129			JMP RETURN
 					
 					.elseif EDX == 15;-----------------------
- 00000642  E8 00000000 E		Call CLrscr
- 00000647  68 00000020 R		push offset strString2
- 0000064C  68 00000000 R		push offset strString1
-				;	call String_indexOf_3
- 00000651  83 C4 08			add esp, 8
-					;mov dIndex3, DWORD PTR [AL]
- 00000654  E9 000000A9			JMP RETURN
+ 00000656  E8 00000000 E		Call CLrscr
+ 0000065B  68 00000020 R		push offset strString2
+ 00000660  68 00000000 R		push offset strString1
+ 00000665  E8 00000000 E		call String_indexOf_3
+ 0000066A  83 C4 08			add esp, 8
+ 0000066D  A3 000004C8 R		mov dIndex3, eax
+ 00000672  E9 000000FE			JMP RETURN
 					
 					.elseif EDX == 16;-----------------------
- 00000663  E8 00000000 E		Call CLrscr
- 00000668  68 00000000 R		push offset strString1
-				;	call String_lastIndexOf_1
- 0000066D  83 C4 04			add esp, 4
-				;	mov dLastIndex1, DWORD PTR [AL]
- 00000670  E9 0000008D			JMP RETURN
+ 00000681  E8 00000000 E		Call CLrscr
+ 00000686  68 00000000 R		push offset strString1
+ 0000068B  E8 00000000 E		call String_lastIndexOf_1
+ 00000690  83 C4 04			add esp, 4
+ 00000693  A3 00000509 R		mov dLastIndex1, EAX
+ 00000698  E9 000000D8			JMP RETURN
 					
 					.elseif EDX == 17;-----------------------
- 0000067F  E8 00000000 E		Call CLrscr
- 00000684  68 00000000 R		push offset strString1
-				;	call String_lastIndexOf_2
- 00000689  83 C4 04			add esp, 4
-				;	mov dLastIndex2, DWORD PTR [AL]
+ 000006A7  E8 00000000 E		Call CLrscr
+ 000006AC  68 00000000 R		push offset strString1
+ 000006B1  E8 00000000 E		call String_lastIndexOf_2
+ 000006B6  83 C4 04			add esp, 4
+ 000006B9  A3 0000054A R		mov dLastIndex2, EAX
 					
- 0000068C  EB 74			JMP RETURN
+ 000006BE  E9 000000B2			JMP RETURN
 					
 					.elseif EDX == 18;-----------------------
- 00000695  E8 00000000 E		call CLrscr
- 0000069A  68 00000020 R		push offset strString2
- 0000069F  68 00000000 R		push offset strString1
-				;	call String_lastIndexOf_3
- 000006A4  83 C4 08			add esp, 8
-				;	mov dLastIndex3, DWORD PTR [AL]
- 000006A7  EB 59			JMP RETURN
+ 000006CD  E8 00000000 E		call CLrscr
+ 000006D2  68 00000020 R		push offset strString2
+ 000006D7  68 00000000 R		push offset strString1
+ 000006DC  E8 00000000 E		call String_lastIndexOf_3
+ 000006E1  83 C4 08			add esp, 8
+ 000006E4  A3 0000058B R		mov dLastIndex3, eax
+ 000006E9  E9 00000087			JMP RETURN
 					
 					.elseif EDX == 19;-----------------------
- 000006B0  E8 00000000 E		call CLrscr
- 000006B5  68 00000020 R		push offset strString2
- 000006BA  68 00000000 R		push offset strString1
-				;	call String_replace
- 000006BF  83 C4 08			add esp, 8
- 000006C2  A3 0000060D R		mov dReplacePtr, EAX
- 000006C7  EB 39			JMP RETURN
+ 000006F8  E8 00000000 E		call CLrscr
+ 000006FD  68 00000020 R		push offset strString2
+ 00000702  68 00000000 R		push offset strString1
+ 00000707  E8 00000000 E		call String_concat
+ 0000070C  83 C4 08			add esp, 8
+ 0000070F  A3 000005CC R		mov dConcatPtr, EAX
+ 00000714  EB 5F			JMP RETURN
 					
 					.elseif EDX == 20;-----------------------
-					
- 000006D0  EB 30			JMP RETURN
+ 0000071D  E8 00000000 E		call CLrscr
+ 00000722  68 00000020 R		push offset strString2
+ 00000727  68 00000000 R		push offset strString1
+ 0000072C  E8 00000000 E		call String_replace
+ 00000731  83 C4 08			add esp, 8
+ 00000734  A3 0000060D R		mov dReplacePtr, EAX
+ 00000739  EB 3A			JMP RETURN
 					
 					.elseif EDX == 21;-----------------------
- 000006D9  E8 00000000 E		call CLrscr
- 000006DE  50				push EAX
- 000006DF  53				push EBX
-				;	call String_toLowerCase@0
- 000006E0  83 C4 08			add esp, 8
- 000006E3  A3 0000064E R		mov dLowerPtr, EAX
- 000006E8  EB 18			JMP RETURN
+ 00000742  E8 00000000 E		call CLrscr
+ 00000747  50				push EAX
+ 00000748  53				push EBX
+ 00000749  E8 00000000 E		call String_toLowerCase@0
+ 0000074E  83 C4 08			add esp, 8
+ 00000751  A3 0000064E R		mov dLowerPtr, EAX
+ 00000756  EB 1D			JMP RETURN
 					
 					.elseif EDX == 22;-----------------------
- 000006F1  E8 00000000 E		call CLrscr
- 000006F6  50				push EAX
- 000006F7  53				push EBX
-				;	call String_toUpperCase@0
- 000006F8  83 C4 08			add esp, 8
- 000006FB  A3 0000068F R		mov dUpperPtr, EAX
- 00000700  EB 00			JMP RETURN
+ 0000075F  E8 00000000 E		call CLrscr
+ 00000764  50				push EAX
+ 00000765  53				push EBX
+ 00000766  E8 00000000 E		call String_toUpperCase@0
+ 0000076B  83 C4 08			add esp, 8
+ 0000076E  A3 0000068F R		mov dUpperPtr, EAX
+ 00000773  EB 00			JMP RETURN
 					
 					.endif
 					
- 00000702			RETURN:
- 00000702  C3				RET										;return
- 00000703			getSubRoutine ENDP						;end of getSubRoutine
+ 00000775			RETURN:
+ 00000775  C3				RET										;return
+ 00000776			getSubRoutine ENDP						;end of getSubRoutine
 
 				;----------------------------------------------------------------------------------------------------
- 00000703			String_length proc, intStrAddr:DWORD
+ 00000776			String_length proc, intStrAddr:DWORD
 				;
 				;		This sub routine counts the number of elements in strStringX and stores the result in EAX.
 				;
 				;	Receives the address of strStringX
 				;	Returns the value in the EAX register
 				;----------------------------------------------------------------------------------------------------
- 00000706  BB 00000000			MOV EBX, 0								;clear the EBX register
- 0000070B  B8 00000000			MOV EAX, 0								;clear the EAX register
+ 00000779  BB 00000000			MOV EBX, 0								;clear the EBX register
+ 0000077E  B8 00000000			MOV EAX, 0								;clear the EAX register
 					
- 00000710  8B 7D 08			MOV EDI, intStrAddr						;move str1Addr into EDI for indirect addressing
+ 00000783  8B 7D 08			MOV EDI, intStrAddr						;move str1Addr into EDI for indirect addressing
 					
- 00000713			L1:
- 00000713  8A 1F			MOV BL, [EDI]							;move the nth element of strString1 into BL
- 00000715  80 FB 00			CMP BL, 0								;compare BL to 0
- 00000718  74 04			JE RETURN								;jump to RETURN if the comparison is equal
- 0000071A  40				INC EAX									;increment EAX
- 0000071B  47				INC EDI									;increment string address to go to the next element
- 0000071C  EB F5			JMP L1									;loop to L1
+ 00000786			L1:
+ 00000786  8A 1F			MOV BL, [EDI]							;move the nth element of strString1 into BL
+ 00000788  80 FB 00			CMP BL, 0								;compare BL to 0
+ 0000078B  74 04			JE RETURN								;jump to RETURN if the comparison is equal
+ 0000078D  40				INC EAX									;increment EAX
+ 0000078E  47				INC EDI									;increment string address to go to the next element
+ 0000078F  EB F5			JMP L1									;loop to L1
 					
- 0000071E			RETURN:
+ 00000791			RETURN:
 					RET										;return
- 00000722			String_length ENDP						;end of String_length
+ 00000795			String_length ENDP						;end of String_length
 
 				end main								;end of main
-Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 19:01:43
+Microsoft (R) Macro Assembler Version 14.00.23506.0	    04/19/18 21:12:36
 masm3.asm						     Symbols 2 - 1
 
 
@@ -1200,7 +1205,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000864 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000722 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000795 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -1300,10 +1305,10 @@ String_indexOf_3 . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 String_lastIndexOf_1 . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_lastIndexOf_2 . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_lastIndexOf_3 . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-String_length  . . . . . . . . .	P Near	 00000703 _TEXT	Length= 0000001F Public STDCALL
+String_length  . . . . . . . . .	P Near	 00000776 _TEXT	Length= 0000001F Public STDCALL
   intStrAddr . . . . . . . . . .	DWord	 bp + 00000008
-  L1 . . . . . . . . . . . . . .	L Near	 00000713 _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 0000071E _TEXT	
+  L1 . . . . . . . . . . . . . .	L Near	 00000786 _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 00000791 _TEXT	
 String_replace . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_startsWith_1  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 String_startsWith_2  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1331,7 +1336,7 @@ WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ascint32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-getSubRoutine  . . . . . . . . .	P Near	 000002BA _TEXT	Length= 00000449 Public STDCALL
+getSubRoutine  . . . . . . . . .	P Near	 000002BA _TEXT	Length= 000004BC Public STDCALL
   STR2 . . . . . . . . . . . . .	L Near	 00000326 _TEXT	
   LENGTHCALL . . . . . . . . . .	L Near	 0000032C _TEXT	
   J4 . . . . . . . . . . . . . .	L Near	 0000036F _TEXT	
@@ -1344,7 +1349,7 @@ getSubRoutine  . . . . . . . . .	P Near	 000002BA _TEXT	Length= 00000449 Public 
   J10  . . . . . . . . . . . . .	L Near	 0000058F _TEXT	
   J11  . . . . . . . . . . . . .	L Near	 000005C7 _TEXT	
   J12  . . . . . . . . . . . . .	L Near	 000005FF _TEXT	
-  RETURN . . . . . . . . . . . .	L Near	 00000702 _TEXT	
+  RETURN . . . . . . . . . . . .	L Near	 00000775 _TEXT	
 getstring  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 intasc32 . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000021 Public STDCALL
@@ -1498,14 +1503,24 @@ STD_INPUT_HANDLE . . . . . . . .	Number	 -0000000Ah
 STD_OUTPUT_HANDLE  . . . . . . .	Number	 -0000000Bh   
 SetConsoleTitle  . . . . . . . .	Text   	 SetConsoleTitleA
 String_charat@0  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_concat@0  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_copy@0  . . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_endsWith@0  . . . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_equals@0  . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_equalsIgnoreCase@0  . . .	L Near	 00000000 FLAT	External STDCALL
+String_indexOf_1@0 . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_indexOf_2@0 . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_indexOf_3@0 . . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_lastIndexOf_1@0 . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_lastIndexOf_2@0 . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_lastIndexOf_3@0 . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_replace@0 . . . . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_startsWith_1@0  . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_startsWith_2@0  . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_substring_1@0 . . . . . .	L Near	 00000000 FLAT	External STDCALL
 String_substring_2@0 . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_toLowerCase@0 . . . . . .	L Near	 00000000 FLAT	External STDCALL
+String_toUpperCase@0 . . . . . .	L Near	 00000000 FLAT	External STDCALL
 TAB  . . . . . . . . . . . . . .	Number	 00000009h   
 TRUE . . . . . . . . . . . . . .	Number	 00000001h   
 TRUNCATE_EXISTING  . . . . . . .	Number	 00000005h   

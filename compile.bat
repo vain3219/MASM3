@@ -24,7 +24,13 @@ echo.
 IF NOT EXIST %2.obj echo -------------- ERRRORS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 echo.
 
-link /subsystem:console /out:%1.exe %1.obj %2.obj ..\..\Irvine\User32.Lib \masm32\lib\kernel32.lib ..\..\Irvine\Irvine32.lib ../macros/convutil201604.obj ../macros/io.obj ../macros/kernel32.lib ../macros/utility201609.obj
+ml  /coff  /c  /Zi  /Fl  %3.asm
+
+echo.
+IF NOT EXIST %3.obj echo -------------- ERRRORS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+echo.
+
+link /subsystem:console /out:%1.exe %1.obj %2.obj %3.obj ..\..\Irvine\User32.Lib \masm32\lib\kernel32.lib ..\..\Irvine\Irvine32.lib ../macros/convutil201604.obj ../macros/io.obj ../macros/kernel32.lib ../macros/utility201609.obj
 
 IF NOT EXIST %1.exe echo.
 IF EXIST %1.exe echo _____________________________________________________________________
